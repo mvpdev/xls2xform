@@ -6,7 +6,26 @@
     </h:title>
     <model>
       <instance>
-        <Data xmlns="">
+        <Data id="Demography">
+          <PreInterview>
+            <Village/>
+            <Homestead/>
+            <Household/>
+          </PreInterview>
+          <Setup>
+            <Date/>
+            <IntName/>
+            <IntID/>
+            <Conduct/>
+            <WhyNot/>
+            <NextVisit/>
+          </Setup>
+          <Introduction>
+            <ReadConsent/>
+            <AskForQuestions/>
+            <ConsentGiven/>
+            <IntConfirm/>
+          </Introduction>
           <HouseholdMember>
             <Name/>
             <PersonID/>
@@ -20,6 +39,21 @@
           </HouseholdMember>
         </Data>
       </instance>
+      <bind nodeset="/Data/PreInterview/Village" type="string"/>
+      <bind nodeset="/Data/PreInterview/Homestead" type="int"/>
+      <bind nodeset="/Data/PreInterview/Household" type="int"/>
+      <bind constraint="count(.) &lt;= 3" jr:noAddRemove="true()" nodeset="/Data/Setup"/>
+      <bind jr:preload="timestamp" jr:preloadParams="now" nodeset="/Data/Setup/Date" type="dateTime"/>
+      <bind nodeset="/Data/Setup/IntName" type="string"/>
+      <bind nodeset="/Data/Setup/IntID" type="int"/>
+      <bind nodeset="/Data/Setup/Conduct" type="string"/>
+      <bind nodeset="/Data/Setup/WhyNot" relevant="../Conduct='No'" type="string"/>
+      <bind nodeset="/Data/Setup/NextVisit" relevant="../Conduct='No'" type="date"/>
+      <bind nodeset="/Data/Introduction/ReadConsent" readonly="true()" type="string"/>
+      <bind nodeset="/Data/Introduction/AskForQuestions" readonly="true()" type="string"/>
+      <bind nodeset="/Data/Introduction/ConsentGiven" type="string"/>
+      <bind nodeset="/Data/Introduction/IntConfirm" relevant="../ConsentGiven='Yes'" type="string"/>
+      <bind nodeset="/Data/HouseholdMember" relevant="../Introduction/ConsentGiven='Yes'"/>
       <bind nodeset="/Data/HouseholdMember/Name" type="string"/>
       <bind nodeset="/Data/HouseholdMember/PersonID" type="string"/>
       <bind nodeset="/Data/HouseholdMember/Sex" type="string"/>
@@ -32,6 +66,177 @@
     </model>
   </h:head>
   <h:body>
+    <group>
+      <label>
+        Pre-Interview Information
+      </label>
+      <input ref="/Data/PreInterview/Village">
+        <label>
+          Village Code
+        </label>
+      </input>
+      <input ref="/Data/PreInterview/Homestead">
+        <label>
+          Homestead Number
+        </label>
+      </input>
+      <input ref="/Data/PreInterview/Household">
+        <label>
+          Household Number
+        </label>
+      </input>
+    </group>
+    <group>
+      <label>
+        Interview Set Up
+      </label>
+      <repeat nodeset="/Data/Setup">
+        <input ref="/Data/Setup/IntName">
+          <label>
+            Interviewer's Name
+          </label>
+        </input>
+        <input ref="/Data/Setup/IntID">
+          <label>
+            Interviewer's ID Number
+          </label>
+        </input>
+        <select1 ref="/Data/Setup/Conduct">
+          <label>
+            Can the interview be conducted at this time?
+          </label>
+          <item>
+            <label>
+              Yes
+            </label>
+            <value>
+              Yes
+            </value>
+          </item>
+          <item>
+            <label>
+              No
+            </label>
+            <value>
+              No
+            </value>
+          </item>
+        </select1>
+        <select1 ref="/Data/Setup/WhyNot">
+          <label>
+            Why is no one able to take the survey?
+          </label>
+          <item>
+            <label>
+              No competent household member at home 
+            </label>
+            <value>
+              NoCompetent
+            </value>
+          </item>
+          <item>
+            <label>
+              Entire household absent for extended period of time
+            </label>
+            <value>
+              AllAbsent
+            </value>
+          </item>
+          <item>
+            <label>
+              Postponed
+            </label>
+            <value>
+              Postponed
+            </value>
+          </item>
+          <item>
+            <label>
+              Refused
+            </label>
+            <value>
+              Refused
+            </value>
+          </item>
+          <item>
+            <label>
+              Dwelling vacant / destroyed
+            </label>
+            <value>
+              Vacant-Destroyed
+            </value>
+          </item>
+          <item>
+            <label>
+              Dwelling not found
+            </label>
+            <value>
+              Not-Found
+            </value>
+          </item>
+          <item>
+            <label>
+              Other
+            </label>
+            <value>
+              Other
+            </value>
+          </item>
+        </select1>
+        <input ref="/Data/Setup/NextVisit">
+          <label>
+            Schedule a time to return
+          </label>
+        </input>
+      </repeat>
+    </group>
+    <group>
+      <label>
+        Interview Introduction
+      </label>
+      <select1 ref="/Data/Introduction/ConsentGiven">
+        <label>
+          May I begin the interview now?
+        </label>
+        <item>
+          <label>
+            Yes
+          </label>
+          <value>
+            Yes
+          </value>
+        </item>
+        <item>
+          <label>
+            No
+          </label>
+          <value>
+            No
+          </value>
+        </item>
+      </select1>
+      <select1 ref="/Data/Introduction/IntConfirm">
+        <label>
+          Interviewer: Do you CONFIRM THAT THE &quot;INFORMED CONSENT STATEMENT&quot; HAS BEEN READ TO THE INTERVIEWEE AND THAT HE/SHE UNDERSTANDS AND CONSENTS TO PARTICIPATE IN THE INTERVIEW.
+        </label>
+        <item>
+          <label>
+            Yes
+          </label>
+          <value>
+            Yes
+          </value>
+        </item>
+        <item>
+          <label>
+            No
+          </label>
+          <value>
+            No
+          </value>
+        </item>
+      </select1>
+    </group>
     <group>
       <label>
         Household Member
@@ -244,7 +449,7 @@
               Don't Know
             </label>
             <value>
-              Don't-Know
+              Do-not-know
             </value>
           </item>
         </select1>
@@ -289,7 +494,7 @@
               Don't know
             </label>
             <value>
-              Don't-know
+              Do-not-know
             </value>
           </item>
         </select1>
@@ -302,4 +507,3 @@
     </group>
   </h:body>
 </h:html>
-
