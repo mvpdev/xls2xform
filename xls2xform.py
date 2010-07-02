@@ -14,7 +14,7 @@ from xlrd import open_workbook
 workbook = open_workbook( sys.argv[1] )
 
 # first set up all the key nodes for an xform
-from xml.dom.minidom import Document
+from xml.dom.minidom import Document, parseString
 
 choices = workbook.sheet_by_name('Choices')
 for sheet in workbook.sheets():
@@ -52,9 +52,13 @@ for sheet in workbook.sheets():
 
         def addLabel(node,label):
             if label:
-                lnode = doc.createElement("label")
-                lnode.appendChild( doc.createTextNode(label ) )
-                node.appendChild(lnode)
+                if label[0:5]=="XML: ":
+                    xmlstr = '<?xml version="1.0" ?><label>' + label[5:] + '</label>'
+                    node.appendChild( parseString(xmlstr).documentElement )
+                else:
+                    lnode = doc.createElement("label")
+                    lnode.appendChild( doc.createTextNode(label ) )
+                    node.appendChild(lnode)
 
         # fill in the content of the survey
         # want to get the title of the survey from the sheet name
@@ -88,6 +92,9 @@ for sheet in workbook.sheets():
                 ihead = ihead.parentNode
 
             # set up the bindings
+            if 'nodeset' in q['binding']:
+                ipath=q['binding']['nodeset']
+
             bind = doc.createElement("bind")
             bindAttributes = q['binding']
             for attribute in bindAttributes.keys():
@@ -99,7 +106,10 @@ for sheet in workbook.sheets():
             # set up the body, this could be cleaned up a bit
             if 'type' in q['control']:
                 bnode = doc.createElement( q['control']['type'] )
-                bnode.setAttribute( "ref", ipath )
+                if 'ref' in q['control']:
+                    bnode.setAttribute( "ref", q['control']['ref'] )
+                else:
+                    bnode.setAttribute( "ref", ipath )
                 addLabel( bnode, q['control']['label'] )
 
                 if 'choices' in q['control']:
@@ -129,7 +139,8 @@ for sheet in workbook.sheets():
         instance.firstChild.setAttribute( 'id', sheet.name )
 
         f = open(sheet.name + '.xml', 'w')
-        f.write( doc.toprettyxml(indent="  ").encode('utf-8') )
+        # f.write( doc.toprettyxml(indent="  ").encode('utf-8') )
+        f.write( doc.toxml().encode('utf-8') )
         f.close()
 
 quit()
