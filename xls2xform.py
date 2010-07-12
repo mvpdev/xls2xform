@@ -106,6 +106,8 @@ for sheet in workbook.sheets():
             # set up the body, this could be cleaned up a bit
             if 'type' in q['control']:
                 bnode = doc.createElement( q['control']['type'] )
+                if q['control']['type']=='upload':
+                    bnode.setAttribute( 'mediatype', 'image/*' )
                 if 'ref' in q['control']:
                     bnode.setAttribute( "ref", q['control']['ref'] )
                 else:
@@ -119,7 +121,7 @@ for sheet in workbook.sheets():
                         item = doc.createElement("item")
                         if choices.cell(i,value).value:
                             addLabel( item, choices.cell(i,label).value )
-                            item.appendChild( doc.createElement("value") ).appendChild( doc.createTextNode(choices.cell(i,value).value) )
+                            item.appendChild( doc.createElement("value") ).appendChild( doc.createTextNode(str( choices.cell(i,value).value )) )
                             bnode.appendChild(item)
                 bhead.appendChild(bnode)
             elif 'group' in q['control'] and q['control']['group']=='push':
