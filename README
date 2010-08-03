@@ -1,10 +1,10 @@
 xls2xform is a scrip to convert properly formatted excel into xforms
 for ODK. Running the following command:
 
-> python xls2xform.py surveys.py
+> python xls2xform.py surveys.xls
 
 creates an xform for each worksheet. This is a powerful way to create
-xforms, I'm using it to work around using loops in ODK.
+xforms, need to compare to alternatives.
 
 updateforms.sh is a shell script I use to load my newly created forms
 onto my emulator.
