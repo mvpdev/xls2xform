@@ -126,6 +126,7 @@ for sheet in workbook.sheets():
                 bhead.appendChild(bnode)
             elif 'group' in q['control'] and q['control']['group']=='push':
                 bhead = bhead.appendChild( doc.createElement( "group" ) )
+                bhead.setAttribute( "ref", ipath )
                 addLabel( bhead, q['control']['label'] )
 
                 if 'repeat' in q['control'] and q['control']['repeat']=='push':

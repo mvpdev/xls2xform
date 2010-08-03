@@ -3,6 +3,6 @@
 sudo mount -o loop ~/.android/avd/my_avd.avd/sdcard.img /media/sdcard
 sudo cp *.xml /media/sdcard/odk/forms/
 sudo umount /media/sdcard/
-~/files/ChildCount/odk/android-sdk-linux_86/tools/emulator -avd my_avd &
+~/files/work/ODK/android-sdk-linux_86/tools/emulator -avd my_avd &
 
 # http://blog.jayway.com/2009/04/22/working-with-sd-cards-in-the-android-emulator/
