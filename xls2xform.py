@@ -14,6 +14,7 @@
 # xls2xform.py by Andrew Marder 6/22/2010
 # a python program for translating a spreadsheet into an xform
 
+import re
 import sys
 from xlrd import open_workbook
 workbook = open_workbook( sys.argv[1] )
