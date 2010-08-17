@@ -67,7 +67,7 @@ for sheet in workbook.sheets():
 
         # fill in the content of the survey
         # want to get the title of the survey from the sheet name
-        title.appendChild( doc.createTextNode(sheet.name + ' Survey') )
+        title.appendChild( doc.createTextNode(sheet.name) )
 
         ihead = instance
         bhead = body
@@ -88,6 +88,7 @@ for sheet in workbook.sheets():
         
             # set up the instance
             if 'tag' in q['instance']:
+                assert not re.search(r"\s", q['instance']['tag']), "Instance tags may not contain white space: " + q['instance']['tag']
                 inode = doc.createElement( q['instance']['tag'] )
                 ihead.appendChild( inode )
                 ipath = path(instance,inode)
