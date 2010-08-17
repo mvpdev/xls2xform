@@ -6,6 +6,11 @@
 # gps, bar code scanner, photos, ...
 # review widget
 
+# redesign how I handle multiple choice options:
+# choice list name, choice value, choice label (different languages)
+# instead of push pop, probably just want begin loop, end loop, begin
+# group, end group
+
 # xls2xform.py by Andrew Marder 6/22/2010
 # a python program for translating a spreadsheet into an xform
 
