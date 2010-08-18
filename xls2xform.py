@@ -6,23 +6,30 @@
 # gps, bar code scanner, photos, ...
 # review widget
 
-# redesign how I handle multiple choice options:
-# choice list name, choice value, choice label (different languages)
-# instead of push pop, probably just want begin loop, end loop, begin
-# group, end group
-
 # xls2xform.py by Andrew Marder 6/22/2010
 # a python program for translating a spreadsheet into an xform
 
 import re
 import sys
 from xlrd import open_workbook
-workbook = open_workbook( sys.argv[1] )
-
-# first set up all the key nodes for an xform
 from xml.dom.minidom import Document, parseString
 
-choices = workbook.sheet_by_name('Choices')
+workbook = open_workbook( sys.argv[1] )
+
+# set up dictionary of multiple choice lists
+# the first row has the column headers
+s = workbook.sheet_by_name('Choices')
+choices = {}
+for row in range(1,s.nrows):
+    c = {}
+    for col in range(0,s.ncols):
+        c[s.cell(0,col).value] = s.cell(row,col).value
+    list_name = c.pop("list name")
+    if list_name in choices:
+        choices[list_name].append(c)
+    else:
+        choices[list_name] = [c]
+
 for sheet in workbook.sheets():
     if sheet.name != 'Choices':
 
@@ -74,76 +81,85 @@ for sheet in workbook.sheets():
         bhead = body
 
         # go through each question of the survey updating the xform
-        for row in range(2,sheet.nrows):
+        for row in range(1,sheet.nrows):
             q = {}
             for col in range(0,sheet.ncols):
-                category = sheet.cell(0,col).value     # instance, binding, or control
-                field = sheet.cell(1,col).value        # specific information on setting up the instance, binding, or control
-                value = sheet.cell(row,col).value      # for this question the value of the field
-
-                if category not in q:
-                    q[category] = {}
-
+                label = sheet.cell(0,col).value
+                value = sheet.cell(row,col).value
                 if value:
-                    q[category][field] = value
-        
-            # set up the instance
-            if 'tag' in q['instance']:
-                assert not re.search(r"\s", q['instance']['tag']), "Instance tags may not contain white space: " + q['instance']['tag']
-                inode = doc.createElement( q['instance']['tag'] )
+                    q[label] = value
+
+            command = q.pop("command")
+
+            if "tag" in q:
+                tag = q.pop("tag")
+                assert not re.search(r"\s", tag), "Instance tags may not contain white space: " + tag
+                inode = doc.createElement(tag)
                 ihead.appendChild( inode )
                 ipath = path(instance,inode)
-            if 'ihead' in q['instance'] and q['instance']['ihead']=='push':
-                ihead = inode
-            if 'ihead' in q['instance'] and q['instance']['ihead']=='pop':
-                ihead = ihead.parentNode
 
-            # set up the bindings
-            if 'nodeset' in q['binding']:
-                ipath=q['binding']['nodeset']
+            m = re.search(r"(begin|end) (survey|group|repeat)", command)
+            if m:
+                w = m.groups()
+                if w[0]=="begin":
+                    ihead = inode
+                    if w[1] in ["group", "repeat"]:
+                        bhead = bhead.appendChild(doc.createElement("group"))
+                        # bhead.setAttribute("ref", ipath)
+                        addLabel(bhead, q["label"])
+                        if w[1]=="repeat":
+                            bhead = bhead.appendChild(doc.createElement("repeat"))
+                            bhead.setAttribute("nodeset", ipath)
+                if w[0]=="end":
+                    ihead = ihead.parentNode
+                    if w[1]=="group":
+                        bhead = bhead.parentNode
+                    if w[1]=="repeat":
+                        bhead = bhead.parentNode.parentNode
+            else:
+                m = re.search(r"^q (string|select|select1|int|geopoint|decimal|date|picture|note)( (.*))?$", command)
+                assert m, "Unrecognized command: " + command
+                w = m.groups()
+                label = q.pop("label")
 
-            bind = doc.createElement("bind")
-            bindAttributes = q['binding']
-            for attribute in bindAttributes.keys():
-                bind.setAttribute( attribute, bindAttributes[attribute] )
-            if bind.hasAttributes():
-                bind.setAttribute( 'nodeset', ipath )
-                model.appendChild( bind )
-
-            # set up the body, this could be cleaned up a bit
-            if 'type' in q['control']:
-                bnode = doc.createElement( q['control']['type'] )
-                if q['control']['type']=='upload':
-                    bnode.setAttribute( 'mediatype', 'image/*' )
-                if 'ref' in q['control']:
-                    bnode.setAttribute( "ref", q['control']['ref'] )
+                bind = doc.createElement("bind")
+                if w[0]=="note":
+                    bind.setAttribute("type", "string")
+                    bind.setAttribute("readonly", "true()")
+                elif w[0]=="picture":
+                    bind.setAttribute("type", "binary")
                 else:
-                    bnode.setAttribute( "ref", ipath )
-                addLabel( bnode, q['control']['label'] )
+                    bind.setAttribute("type", w[0])
+                for attribute in q.keys():
+                    bind.setAttribute(attribute, q[attribute])
+                bind.setAttribute("nodeset", ipath)
+                model.appendChild(bind)
 
-                if 'choices' in q['control']:
-                    value = 2*(int(q['control']['choices']) - 1)
-                    label = value+1
-                    for i in range(1,choices.nrows):
-                        item = doc.createElement("item")
-                        if choices.cell(i,value).value:
-                            addLabel( item, choices.cell(i,label).value )
-                            item.appendChild( doc.createElement("value") ).appendChild( doc.createTextNode(str( choices.cell(i,value).value )) )
-                            bnode.appendChild(item)
+                control_type = {"string"   : "input",
+                                "int"      : "input",
+                                "geopoint" : "input",
+                                "decimal"  : "input",
+                                "date"     : "input",
+                                "note"     : "input",
+                                "select"   : "select",
+                                "select1"  : "select1",
+                                "picture"  : "upload",}
+                bnode = doc.createElement(control_type[w[0]])
+                if w[0]=="picture":
+                    bnode.setAttribute("mediatype", "image/*")
+                bnode.setAttribute("ref", ipath)
+                addLabel(bnode, label)
                 bhead.appendChild(bnode)
-            elif 'group' in q['control'] and q['control']['group']=='push':
-                bhead = bhead.appendChild( doc.createElement( "group" ) )
-                bhead.setAttribute( "ref", ipath )
-                addLabel( bhead, q['control']['label'] )
 
-                if 'repeat' in q['control'] and q['control']['repeat']=='push':
-                    bhead = bhead.appendChild( doc.createElement( "repeat" ) )
-                    bhead.setAttribute( "nodeset", ipath )
+                if w[0] in ["select", "select1"]:
+                    for c in choices[w[2]]:
+                        v = str(c["value"])
+                        item = doc.createElement("item")
+                        addLabel(item, c["label"])
+                        assert not re.search("\s", v), "Multiple choice values are not allowed to have spaces: " + v
+                        item.appendChild(doc.createElement("value")).appendChild(doc.createTextNode(v))
+                        bnode.appendChild(item)
 
-            if 'repeat' in q['control'] and q['control']['repeat']=='pop':
-                bhead = bhead.parentNode
-            if 'group' in q['control'] and q['control']['group']=='pop':
-                bhead = bhead.parentNode
 
         # id attribute required http://code.google.com/p/opendatakit/wiki/ODKAggregate
         instance.firstChild.setAttribute( 'id', sheet.name )
