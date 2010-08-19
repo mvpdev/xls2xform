@@ -1,9 +1,9 @@
 xls2xform is a script to convert properly formatted excel files into
 xforms for ODK. Running the following command:
 
-> python xls2xform.py Harvest.xls
+> python xls2xform.py surveys.xls
 
-creates an xform for each worksheet in Harvest.xls (excluding the
+creates an xform for each worksheet in surveys.xls (excluding the
 sheet named "Choices", which describes multiple choice options). This
 is a powerful way to create xforms, need to compare to alternatives.
 
