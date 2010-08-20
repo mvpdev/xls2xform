@@ -17,3 +17,10 @@ For recording the emulator use xwininfo to get the window id of the
 emulator, then run the command
 
 > recordmydesktop --windowid 0x4200003 --no-sound
+
+
+
+
+Document all features:
+XML tag
+max length of multiple choice value, tag?
