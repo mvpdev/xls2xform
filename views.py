@@ -20,7 +20,7 @@ def convert_file(request):
                     x = XForm(submission=s, file=survey)
                     x.save()
                     # list the files created
-                    return render_to_response("list.html", {"list": XForm.objects.filter(submission=s)})
+                return render_to_response("list.html", {"list": XForm.objects.filter(submission=s)})
             except Exception, e:
                 # record and display any error messages
                 s.error_msg = e.args[0]
