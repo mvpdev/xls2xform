@@ -1,19 +1,17 @@
 from django.db import models
 from django.core.files.storage import default_storage
 
-class File(models.Model):
-    file = models.FileField(upload_to="xls2xform/files/%Y%m%d%H%M%S", storage=default_storage) #")
-
-    def name(self):
-        return self.file.generate_filename()
+file_options = { "upload_to" : "xls2xform/files/%Y%m%d%H%M%S",
+                 "storage" : default_storage, }
 
 class Submission(models.Model):
-    file = models.ForeignKey(File)
-    error_msg = models.CharField(max_length=100)
-
-    def __unicode__(self):
-        return self.file.name()
+    file = models.FileField(**file_options)
+    error_msg = models.TextField()
+    private = models.BooleanField(default=True)
 
 class XForm(models.Model):
     submission = models.ForeignKey(Submission)
-    file = models.ForeignKey(File)
+    file = models.FileField(**file_options)
+
+    def __unicode__(self):
+        return self.file.path

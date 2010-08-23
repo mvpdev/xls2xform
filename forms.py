@@ -1,6 +1,7 @@
 from django.forms import ModelForm
-from models import File
+from models import Submission
 
-class FileForm(ModelForm):
+class SubmissionForm(ModelForm):
     class Meta:
-        model = File
+        model = Submission
+        fields = ("file", "private")
