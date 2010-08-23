@@ -1,8 +1,129 @@
-{% if msg %}{{ msg }}{% endif %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
 
-{% if form %}
-<form enctype="multipart/form-data" method="post" action="/xls2xform/">
-{{ form.as_p }}
-<input type="submit" value="Submit" />
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>XLS2XForm</title>
+	
+	<link type="text/css" href="/site_media/css/Aristo/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />	
+	<link href="/site_media/css/xls2xform-simple.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+
+	<script type="text/javascript">
+//<![CDATA[
+	
+		var xlsf = (function(j$){
+			function submittable(tf) {
+				if(tf) {
+					j$('#convert_button').removeClass('disabled')
+				} else {
+					j$('#convert_button').addClass('disabled')
+				}
+			}
+			function submitForm() {
+				j$('form').submit();
+			}
+			function checkSubmittable() {
+				this.submittable(j$('#id_file').val()!=="");
+			}
+
+			return {
+				submittable: submittable,
+				checkSubmittable: checkSubmittable,
+				submitForm: submitForm
+			}
+		})(jQuery);
+		
+
+//]]>
+</script>
+</head>
+<body>
+<div id="tabs">
+	<ul><li>
+	<a href="#maintab">
+		XLS &raquo; XForm Converter
+	</a>
+
+</li>
+</ul>
+	<div class="wrap" id="maintab">
+
+<div class="sect top"><h1><a href="#">XLS Template</a></h1><div class="instructions">
+	<p class="info">This custom designed XLS template can be filled with XForm field information and converted to XForm.</p>
+	<a href="/site_media/template/xls2xform.xls" class="bigbutton">Download XLS Template</a>
+</div>
+</div>
+<div class="sect mid">  <h1><a href="#">Uploader</a></h1>
+
+  <div class="" id="select_file">
+	{% if msg %}
+	<p class="error">
+		{{ msg }}
+	</p>
+	{% endif %}
+	{% if form %}
+	<table style="width:100%">
+		<tr>
+			<td>
+	<form enctype="multipart/form-data" method="post" action="/xls2xform/">
+	{{ form.as_p }}
+	</p>
+	</form>
+	</td>
+	<td>
+		<a href="javascript:xlsf.submitForm()" class="bigbutton disabled" id="convert_button">
+			Convert to XForm
+		</a>
+	</td>
+	</tr>
+	</table>
+	{% endif %}
+	
 </form>
-{% endif %}
+
+<script type="text/javascript">
+//<![CDATA[
+
+(function(j$){
+	/*-- On Page Load:
+	---- Checks if the file is submittable, adjusts "disabled" attr
+	--*/
+	xlsf.checkSubmittable();
+
+	/*-- On Input Change:
+	---- Checks if the file is submittable, adjusts "disabled" attr
+	--*/
+	j$('input#id_file').change(function(){
+		xlsf.checkSubmittable();
+	})
+})(jQuery);
+
+//]]>
+</script>
+</div>
+</div>
+<div class="sect bot">
+  <h1><a href="#">Privacy Policy</a></h1>
+
+  <p class="info">With the user's permission, the information uploaded through this tool will only be used to help improve the system.<br />
+	This tool was set up by the ChildCount team at the Earth Institute at Columbia University</p>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+(function(j$){
+	/*-- jQuery-UI initializers
+	--*/
+	j$('#tabs').tabs();
+	j$('.bigbutton').button();
+})(jQuery);
+
+//]]>
+</script>
+</body>
+</html>

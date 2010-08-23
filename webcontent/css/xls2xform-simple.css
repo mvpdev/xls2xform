@@ -1,0 +1,71 @@
+body {
+	margin: 12px 0;
+	width: 100%;
+	background-color: #efefef;
+}
+body {
+	
+}
+.ui-tabs {
+	background-color: #efefef;
+}
+#maintab {
+	padding: 0;
+	background-color: #fff;
+}
+h1 {
+	margin: 0;
+	font-size: 14px;
+	padding: 8px 14px 6px;
+	background-color: #efefef;
+}
+h1 a {
+	text-decoration: none;
+}
+#tabs {
+	margin: 0 auto;
+	width: 650px;
+}
+.instructions {
+	height: 85px;
+}
+.ui-tabs .ui-tabs-panel {
+	border: 1px solid #999;
+}
+.ui-tabs-panel .ui-button.disabled {
+	opacity: 0.5;
+}
+a.bigbutton {
+	margin: 3px;
+}
+.sect {
+	padding: 0 12px 4px;
+}
+.sect h1 {
+	margin: 0 -12px;
+}
+.ui-tabs .ui-tabs-nav {
+	border: 0 none;
+}
+ol#filelist {
+	list-style-type: none;
+	padding: 0;
+}
+ol#filelist li {
+	list-style-position: inside;
+	width: 50%;
+	float: left;
+}
+ol#filelist li a {
+	display: block;
+}
+ol#filelist li a span.filename {
+	border: 0px none;
+	font-family: Monospace;
+	padding: 0px 7px;
+}
+p.error {
+	border: 2px solid #f7b2be;
+	padding: 3px 6px;
+	background-color: #ffeef1;
+}

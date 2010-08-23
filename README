@@ -1,3 +1,5 @@
+# Intro:
+--------------------
 xls2xform is a script to convert properly formatted excel files into
 xforms for ODK. Running the following command:
 
@@ -10,19 +12,25 @@ is a powerful way to create xforms, need to compare to alternatives.
 updateforms.sh is a shell script I use to load my newly created forms
 onto my emulator.
 
-
-
-
 For recording the emulator use xwininfo to get the window id of the
 emulator, then run the command
 
 > recordmydesktop --windowid 0x4200003 --no-sound
 
 
+# Document all features:
+--------------------
+	XML tag
+	max length of multiple choice value, tag?
 
+# urls.py Configuration:
+--------------------
+	from xls2xform.views import convert_file
 
-Document all features:
-XML tag
-max length of multiple choice value, tag?
-
-AD Test commit
+	urlpatterns = patterns('',
+			(r'^xls2xform/', convert_file),
+			(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', 
+				{'document_root': '/path/to/xls2xform/xls2xform/webcontent'}),
+			(r'^xform_files/(?P<path>.*)$', 'django.views.static.serve',
+				{'document_root': '/path/to/xls2xform/xls2xform/files'})
+	)
