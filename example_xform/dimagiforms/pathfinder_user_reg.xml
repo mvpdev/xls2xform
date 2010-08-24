@@ -1,0 +1,258 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" 
+	xmlns="http://www.w3.org/2002/xforms" 
+	xmlns:ev="http://www.w3.org/2001/xml-events" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:jr="http://openrosa.org/javarosa">
+
+	<h:head>
+
+		<h:title>User Registration</h:title>
+
+		<model>
+		
+			<itext>
+			<translation lang="en">
+				<text id="username">
+					<value>Username</value>
+				</text>
+				
+				<text id="password">
+					<value>Password</value>
+				</text>
+				
+				<text id="confirmpassword">
+					<value>Please Confirm Password</value>
+				</text>
+				
+				<text id="fullname">
+					<value>Full Name</value>
+				</text>
+				<text id="region">
+					<value>Region</value>
+				</text>
+				
+				<text id="district">
+					<value>District</value>
+				</text>
+				<text id="ward">
+					<value>Ward</value>
+				</text>
+				<text id="hbcpid">
+					<value>HBCP ID</value>
+				</text>
+				<text id="sex">
+					<value>Sex</value>
+				</text>
+				
+				<text id="male">
+					<value>Male</value>
+				</text>
+				<text id="female">
+					<value>Female</value>
+				</text>
+				
+				<text id="training">
+					<value>Did the HBCP get the training according to National standard</value>
+				</text>
+				<text id="yes">
+					<value>Yes</value>
+				</text>
+				<text id="no">
+					<value>No</value>
+				</text>
+				
+				<text id="trainingdays">
+					<value>Training for how many days?</value>
+				</text>
+				<text id="trainingorganization">
+					<value>Which organization provided training?</value>
+				</text>
+				<text id="providertype">
+					<value>What Type of provider</value>
+				</text>
+				<text id="hbcp">
+					<value>HBCP</value>
+				</text>
+				<text id="supervisor">
+					<value>Supervisor</value>
+				</text>
+				<text id="supervisorname">
+					<value>Name of supervisor</value>
+				</text>
+				<text id="supervisorfacility">
+					<value>Name of Health facility of the supervisor</value>
+				</text>
+				<text id="supervisorid">
+					<value>Supervisor ID</value>
+				</text>
+				<text id="organizationsupervisor">
+					<value>Name of supervisor from the Organization</value>
+				</text>
+				
+				<text id="usertype">
+					<value>User Type</value>
+				</text>
+				
+				<text id="user_admin">
+					<value>Super User</value>
+				</text>
+				
+				<text id="user_normal">
+					<value>Normal User</value>
+				</text>
+			
+			</translation>
+			</itext>
+
+			<instance>
+				<user_registration xmlns="http://dev.commcarehq.org/Pathfinder/user_registration" xmlns:jrm="http://dev.commcarehq.org/jr/xforms" version="1" uiVersion="1">
+					<registration xmlns="http://openrosa.org/user-registration">
+					    <username/>
+					    <password/>
+					    <uuid/>
+					    <date/>
+					    
+					    <registering_phone_id/>
+					    <!--token/    UNUSED  -->
+					    
+					    <user_data>
+					    	<data key="chw_id"/>
+					    	<type key="user_type"/>
+					        <fullname key="full_name"/>
+					    	<region key="region"/>
+					    	<district key="district"/>
+					    	<ward key="ward"/>
+					        <sex key="sex"/>
+			      	        <training key="training"/>
+			      	        <trainingdays key="trainingdays"/>
+			      	        <trainingorg key="trainingorg"/>
+			      	        <providertype key="providertype"/>
+			      	        <supervisorname key="supervisorname"/>
+			      	        <supervisorfacility key="supervisorfacility"/>
+			      	        <supervisorid key="supervisorid"/>
+			      	        <orgsupervisor key="orgsupervisor"/>
+					    </user_data>
+					    
+			      	</registration>
+			      	
+			      	<confirmpass/>
+			      	<loadedguid/>
+			      	<freshguid/>			      	
+			      	
+				</user_registration>
+			</instance>
+	
+			<!-- High Level -->
+			<bind nodeset="registration/username" required="true()"  type="xsd:string" jr:preload="user" jr:preloadParams="username"/>
+			<bind nodeset="registration/password" required="true()" type="xsd:int"/>
+			<bind nodeset="registration/uuid" type="xsd:string" calculate="if(/user_registration/loadedguid='', /user_registration/freshguid,/user_registration/loadedguid)"/>
+			<bind nodeset="registration/date" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="start"/>
+			<bind nodeset="registration/registering_phone_id" type="xsd:string" jr:preload="property" jr:preloadParams="DeviceID" />
+			
+			<bind nodeset="confirmpass" type="xsd:int" jr:constraint="/user_registration/registration/password = ." jr:constraintMsg="Passwords do not match!"/>
+			<bind nodeset="loadedguid" type="xsd:string" jr:preload="user" jr:preloadParams="uuid" />
+			<bind nodeset="freshguid" type="xsd:string" jr:preload="uid" jr:preloadParams="general" />
+			
+			<!-- User Data -->
+			<bind id="chwid" nodeset="registration/user_data/data" jr:preload="user" jr:preloadParams="chw_id"/>
+			<bind id="type" nodeset="registration/user_data/type" jr:preload="user" jr:preloadParams="user_type"/>
+			<bind id="fullname" nodeset="registration/user_data/fullname" jr:preload="user" jr:preloadParams="full_name"/>
+			<bind id="region" nodeset="registration/user_data/region" jr:preload="user" jr:preloadParams="region"/>
+			<bind id="district" nodeset="registration/user_data/district" jr:preload="user" jr:preloadParams="district"/>
+			<bind id="ward" nodeset="registration/user_data/ward" jr:preload="user" jr:preloadParams="ward"/>
+			<bind nodeset="registration/user_data/sex" jr:preload="user" jr:preloadParams="sex"/>
+			<bind nodeset="registration/user_data/training" jr:preload="user" jr:preloadParams="training"/>
+			<bind nodeset="registration/user_data/trainingdays" relevant="/user_registration/registration/user_data/training='yes'" type="xsd:int" jr:preload="user" jr:preloadParams="trainingdays"/>
+			<bind nodeset="registration/user_data/trainingorg" relevant="/user_registration/registration/user_data/training='yes'"  jr:preload="user" jr:preloadParams="trainingorg"/>
+			<bind nodeset="registration/user_data/providertype" jr:preload="user" jr:preloadParams="providertype"/>
+			<bind nodeset="registration/user_data/supervisorname" jr:preload="user" jr:preloadParams="supervisorname"/>
+			<bind nodeset="registration/user_data/supervisorfacility" jr:preload="user" jr:preloadParams="supervisorfacility"/>
+			<bind nodeset="registration/user_data/supervisorid" jr:preload="user" jr:preloadParams="supervisorid"/>
+			<bind nodeset="registration/user_data/orgsupervisor" jr:preload="user" jr:preloadParams="orgsupervisor"/>
+			
+		</model>
+
+	</h:head>
+
+	<h:body>
+
+		<input ref="registration/username">
+			<label ref="jr:itext('username')"/>
+		</input>
+		<secret ref="registration/password">
+			<label ref="jr:itext('password')"/>
+		</secret>
+		<secret ref="confirmpass">
+			<label ref="jr:itext('confirmpassword')"/>
+		</secret>
+		<input bind="chwid">
+			<label ref="jr:itext('hbcpid')"/>
+		</input>
+		<select1 bind="type">
+			<label ref="jr:itext('usertype')"/>
+			<item><value>standard</value><label ref="jr:itext('user_normal')"/></item>
+			<item><value>admin</value><label ref="jr:itext('user_admin')"/></item>
+		</select1>
+		
+		<input bind="fullname">
+			<label ref="jr:itext('fullname')"/>
+		</input>
+		
+		<input bind="region">
+			<label ref="jr:itext('region')"/>
+		</input>
+		
+		<input bind="district">
+			<label ref="jr:itext('district')"/>
+		</input>
+		
+		<input bind="ward">
+			<label ref="jr:itext('ward')"/>
+		</input>
+		
+		<select1 ref="registration/user_data/sex">
+		    <label ref="jr:itext('sex')"/>
+		    <item><value>m</value><label ref="jr:itext('male')"/></item>
+		    <item><value>f</value><label ref="jr:itext('female')"/></item>
+		</select1>
+
+		<select1 ref="registration/user_data/training">
+		    <label ref="jr:itext('training')"/>
+		    <item><value>yes</value><label ref="jr:itext('yes')"/></item>
+		    <item><value>no</value><label ref="jr:itext('no')"/></item>
+		</select1>
+		
+		<input ref="registration/user_data/trainingdays">
+			<label ref="jr:itext('trainingdays')"/>
+		</input>
+		
+		<input ref="registration/user_data/trainingorg">
+			<label ref="jr:itext('trainingorganization')"/>
+		</input>
+		
+		<select1 ref="registration/user_data/providertype">
+		    <label ref="jr:itext('providertype')"/>
+		    <item><value>hbcp</value><label ref="jr:itext('hbcp')"/></item>
+		    <item><value>supervisor</value><label ref="jr:itext('supervisor')"/></item>
+		</select1>
+
+		<input ref="registration/user_data/supervisorname">
+			<label ref="jr:itext('supervisorname')"/>
+		</input>
+		
+		<input ref="registration/user_data/supervisorfacility">
+			<label ref="jr:itext('supervisorfacility')"/>
+		</input>
+		
+		<input ref="registration/user_data/supervisorid">
+			<label ref="jr:itext('supervisorid')"/>
+		</input>
+		
+		<input ref="registration/user_data/orgsupervisor">
+			<label ref="jr:itext('organizationsupervisor')"/>
+		</input>
+		
+	</h:body>
+
+</h:html>
+

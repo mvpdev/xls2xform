@@ -1,0 +1,373 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+
+	<h:head>
+
+		<h:title> referral</h:title>
+		<h:meta jr:name="crs/ovc/resolution/1" />
+
+		<model>
+			<instance>
+
+				<crs_ovc_referral xmlns="http://dev.commcarehq.org/crs/ovc/resolution" xmlns:jrm="http://dev.commcarehq.org/jr/xforms" version="2" uiVersion="2">
+					<Meta>
+			     	   <DeviceID />
+				        <TimeStart />
+				        <TimeEnd />
+			     	    <username />
+				        <chw_id />
+			    	    <uid />
+					</Meta>
+					
+					
+					<case>
+				      <case_id />
+			      	  <date_modified />
+      				  <referral>
+	    			    <referral_id/>
+	    			    <followup_date/>
+        				<update>
+	            		  <referral_type/>
+    		     			  <date_closed/>
+        				</update>
+    				  </referral>   
+			      	</case>
+			      	
+			      	<referral/>
+			      	
+					<why />
+					<when />
+					<how />
+					<method />
+					<test_Results />
+					<check_Card />
+
+					<remarks />
+
+				</crs_ovc_referral>
+
+			</instance>
+
+
+
+			
+			<!-- Meta Binds -->
+			<bind id="hidden1" nodeset="/crs_ovc_referral/Meta/DeviceID" type="xsd:string" jr:preload="property" jr:preloadParams="DeviceID" />
+			<bind id="hidden2" nodeset="/crs_ovc_referral/Meta/TimeStart" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="start" />
+			<bind id="hidden3" nodeset="/crs_ovc_referral/Meta/TimeEnd" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+			<bind id="hidden4" nodeset="/crs_ovc_referral/Meta/username" type="xsd:string" jr:preload="meta" jr:preloadParams="UserName" />
+			<bind id="hidden5" nodeset="/crs_ovc_referral/Meta/chw_id" type="xsd:string" jr:preload="meta" jr:preloadParams="UserID" />
+			<bind id="hidden6" nodeset="/crs_ovc_referral/Meta/uid" type="xsd:string" jr:preload="uid" jr:preloadParams="general" />
+			
+			<!-- Case XML Binds -->
+			<bind nodeset="case/case_id" jr:preload="case" jr:preloadParams="case-id" />
+			<bind nodeset="case/date_modified" type="dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+			
+			<bind nodeset="case/referral/referral_id" jr:preload="patient_referral" jr:preloadParams="id"/>
+			<bind nodeset="case/referral/update/referral_type" jr:preload="patient_referral" jr:preloadParams="type"/>
+			<bind nodeset="case/referral/update/date_closed" relevant="/crs_ovc_referral/referral = 'yes'"
+		    	jr:preload="timestamp" jr:preloadParams="end" />
+			<bind nodeset="case/referral/followup_date" type="xsd:date" relevant="/crs_ovc_referral/referral = 'no'"
+			    calculate="if(date(/crs_ovc_referral/when) >= date(today() + 2), /crs_ovc_referral/when, date(today() + 2))" />
+
+
+			<bind id="why" nodeset="/crs_ovc_referral/why" relevant="/crs_ovc_referral/referral = 'no'" />
+			<bind id="when" nodeset="/crs_ovc_referral/when" type="xsd:date" relevant="/crs_ovc_referral/referral = 'no'" />
+			<bind id="how" nodeset="/crs_ovc_referral/how" relevant="/crs_ovc_referral/referral = 'yes'" />
+			<bind id="method" nodeset="/crs_ovc_referral/method" relevant="/crs_ovc_referral/referral = 'yes'" />
+			<bind id="test_Results" nodeset="/crs_ovc_referral/test_Results" relevant="/crs_ovc_referral/referral = 'yes'" />
+			<bind id="seen_Card" nodeset="/crs_ovc_referral/check_Card" relevant="/crs_ovc_referral/referral = 'yes'" />
+			<bind nodeset="remarks" relevant="../referral = 'no'" />
+
+			<itext>
+
+				<translation lang="Swahili">
+
+					<text id="referral">
+
+						<value>Je Rufaa imekamilika? </value>
+
+					</text>
+
+					<text id="yes">
+
+						<value>Ndiyo</value>
+
+					</text>
+
+					<text id="no">
+
+						<value>Hapana</value>
+
+					</text>
+
+					<text id="why">
+
+						<value>Kwa nini haijakamilika? </value>
+
+					</text>
+
+					<text id="no_Time">
+
+						<value>Mgonjwa hakupata muda:</value>
+
+					</text>
+
+					<text id="didnt_come_back">
+
+						<value>Mgonjwa hakuleta majibu:</value>
+
+					</text>
+
+					<text id="not_Sure">
+
+						<value>Sijui:</value>
+
+					</text>
+
+					<text id="when">
+						<value>Mgonjwa anategemea kwenda kuhudhuria rufaa lini?</value>
+					</text>
+
+					<text id="how">
+						<value>Umepataje majibu ya rufaa ya mgonjwa?</value>
+					</text>
+
+					<text id="went_to_client">
+
+						<value>Nimekwenda nyumbani kwa mgonjwa</value>
+
+					</text>
+
+					<text id="came_to_me">
+
+						<value>Mgonjwa ameniletea majibu</value>
+
+					</text>
+
+					<text id="method">
+
+						<value>Umepata majibu ya rufaa kwa njia gani?</value>
+
+					</text>
+
+					<text id="verbal">
+
+						<value>Kwa njia ya maneno</value>
+
+					</text>
+
+					<text id="doctors_Note">
+
+						<value>Kanionyesha cheti kutoka kwa Daktari</value>
+
+					</text>
+
+					<text id="test_Results">
+						<value>Je majibu ya rufaa yakoje?</value>
+					</text>
+
+					<text id="positive">
+
+						<value>Positive</value>
+
+					</text>
+
+					<text id="negative">
+
+						<value>Negative</value>
+					</text>
+
+					<text id="received_care">
+
+						<value>Amepata Huduma</value>
+
+					</text>
+
+
+					<text id="check_Card">
+
+						<value>Je umehakikisha majibu kwenye cheti cha mgonjwa?</value>
+
+					</text>
+
+					<text id="remarks">
+						<value>Andika maoni yako</value>
+					</text>
+
+
+				</translation>
+
+
+				<translation lang="English">
+
+					<text id="referral">
+
+						<value>Has the referral been completed? </value>
+
+					</text>
+
+					<text id="yes">
+
+						<value>Yes</value>
+
+					</text>
+
+					<text id="no">
+
+						<value>No</value>
+
+					</text>
+
+					<text id="why">
+
+						<value>Why not? </value>
+
+					</text>
+
+					<text id="no_Time">
+
+						<value>Client didn't have time:</value>
+
+					</text>
+
+					<text id="didnt_come_back">
+
+						<value>Client didn't come back:</value>
+
+					</text>
+
+					<text id="not_Sure">
+
+						<value>Unsure:</value>
+
+					</text>
+
+					<text id="when">
+						<value>When is the Client intending to go?</value>
+					</text>
+
+				 
+
+					<text id="method">
+
+						<value>Method used to get Referral feedback?</value>
+
+					</text>
+
+					<text id="verbal">
+
+						<value>By Verbal</value>
+
+					</text>
+
+					<text id="doctors_Note">
+
+						<value>Seen Doctors Note</value>
+
+					</text>
+
+					 
+
+					<text id="received_care">
+
+						<value>Received Care</value>
+
+					</text>
+
+
+					 
+
+					<text id="remarks">
+						<value>Remarks</value>
+					</text>
+
+				</translation>
+
+			</itext>
+
+
+		</model>
+
+	</h:head>
+
+	<h:body>
+
+
+		<select1 ref="/crs_ovc_referral/referral">
+
+			<label ref="jr:itext('referral')">
+			</label>
+
+			<item>
+				<label ref="jr:itext('yes')">
+				</label>
+				<value>yes</value>
+			</item>
+
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>no</value>
+			</item>
+
+		</select1>
+
+		<select1 ref="/crs_ovc_referral/why">
+
+			<label ref="jr:itext('why')">
+			</label>
+
+			<item>
+				<label ref="jr:itext('no_Time')">
+				</label>
+				<value>no_Time</value>
+			</item>
+
+			<item>
+				<label ref="jr:itext('didnt_come_back')">
+				</label>
+				<value>didnt_come_back</value>
+			</item>
+			<item>
+				<label ref="jr:itext('not_Sure')">
+				</label>
+				<value>Unsure</value>
+			</item>
+
+		</select1>
+
+		<input bind="when">
+			<label ref="jr:itext('when')">
+			</label>
+		</input>
+		<input ref="remarks">
+			<label ref="jr:itext('remarks')">
+			</label>
+		</input>
+
+ 
+
+		<select1 ref="/crs_ovc_referral/method">
+
+			<label ref="jr:itext('method')">
+			</label>
+
+			<item>
+				<label ref="jr:itext('verbal')">
+				</label>
+				<value>Verbal</value>
+			</item>
+
+			<item>
+				<label ref="jr:itext('doctors_Note')">
+				</label>
+				<value>doctors_Note</value>
+			</item>
+
+		</select1>
+
+ 
+	</h:body>
+
+</h:html>
+

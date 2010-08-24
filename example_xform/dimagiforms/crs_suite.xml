@@ -1,0 +1,369 @@
+<suite version="1">
+
+    <!-- Parse and cache the XForm -->
+    <xform>
+        <resource id="crs_registration" version="1">
+           <location authority="local">./ovc_reg.xml</location>
+           <location authority="remote">./ovc_reg.xml</location>
+        </resource>
+    </xform>
+
+    <!-- Parse and cache the XForm -->
+    <xform>
+        <resource id="crs_followup" version="1">
+           <location authority="local">./ovc_fu.xml</location>
+           <location authority="remote">./ovc_fu.xml</location>
+        </resource>
+    </xform>
+
+    <!-- Parse and cache the XForm -->
+    <xform>
+        <resource id="crs_referral" version="1">
+     	   <location authority="local">./ovc_rfu.xml</location>
+           <location authority="remote">./ovc_rfu.xml</location>
+        </resource>
+    </xform>
+    
+     <!-- Parse and cache the XForm -->
+    <xform>
+        <resource id="crs_terminate" version="1">
+     	   <location authority="local">./ovc_term.xml</location>
+           <location authority="remote">./ovc_term.xml</location>
+        </resource>
+    </xform>
+    
+     <!-- Parse and cache the XForm -->
+    <xform>
+        <resource id="crs_wellbeing" version="1">
+     	   <location authority="local">./ovc_wb.xml</location>
+           <location authority="remote">./ovc_wb.xml</location>
+        </resource>
+    </xform>
+
+	  <!-- Parse and cache the XForm -->
+    <xform>
+        <resource id="crs_household" version="1">
+     	   <location authority="local">./ovc_household.xml</location>
+           <location authority="remote">./ovc_household.xml</location>
+        </resource>
+    </xform>
+    
+    <!-- Read and locally store the translation strings-->
+    <locale language="default">
+        <resource id="crs_english_strings" version="1">
+           <location authority="local">./english/crs_strings.txt</location>
+           <location authority="remote">./english/crs_strings.txt</location>
+        </resource>
+    </locale>
+    
+    <!-- Read and locally store the translation strings-->
+    <locale language="sw">
+        <resource id="crs_swahili_strings" version="1">
+           <location authority="local">./swahili/crs_strings.txt</location>
+           <location authority="remote">./swahili/crs_strings.txt</location>
+        </resource>
+    </locale>
+    
+    <!-- Define the short detail model for household cases -->
+    <detail id="client_short">
+        <title><text><locale id="commands.select"/></text></title>            
+        <model>
+            <data>
+      	        <refpending reference="case" field="initials"/>
+                <initials reference="case" field="initials"/>
+                <sex reference="case" field="sex"/>
+                <dob reference="case" field="dob"/>
+                <orphanstatus reference="case" field="orphan_status"/>
+                <hivstatus reference="case" field="hiv_status"/>
+                <wellbeing reference="case" field="wellbeing"/>
+            </data>
+        </model>
+        <field>
+            <header width="5"><text></text></header>
+            <template><text><!-- xpath function="/data/initials"/> --></text></template>
+        </field>
+        <field>
+            <header width="23"><text><locale id="select.header.initials"/></text></header>
+            <template width="21"><text><xpath function="/data/initials"/></text></template>
+        </field>
+        <field>
+            <header width="25"><text><locale id="select.header.sex"/></text></header>
+                        <template form="image"><text><xpath function="if(/data/sex = 0, $male,
+                                             if(/data/sex = 1, $female, ''))">
+                                             <variable name="male"><locale id="sex.male.image"/></variable>
+                                             <variable name="female"><locale id="sex.female.image"/></variable></xpath></text></template>
+        </field>
+        <field>
+            <header width="23"><text><locale id="select.header.age"/></text></header>
+            <template><text><xpath function="string(int((today() - /data/dob) div 365.25))"/></text></template>
+        </field>
+        <field>
+            <header><text></text></header>
+                        <template width="10" form="image"><text><xpath function="if(/data/orphanstatus = 2, $none,
+                        					 if(/data/orphanstatus = 1, $mother,
+                                             if(/data/orphanstatus = 0, $father, '')))">
+                                             <variable name="none"><locale id="orphan.none.image"/></variable>
+                                             <variable name="mother"><locale id="orphan.mother.image"/></variable>
+                                             <variable name="father"><locale id="orphan.father.image"/></variable></xpath></text></template>
+        </field>
+        <field>
+            <header><text></text></header>
+                        <template form="image"><text><xpath function="if(/data/hivstatus = 0, $positive,
+                        					 if(/data/hivstatus = 1, $negative, ''))">
+                                             <variable name="positive"><locale id="hiv.positive.image"/></variable>
+                                             <variable name="negative"><locale id="hiv.negative.image"/></variable></xpath></text></template>
+        </field>
+        <field>
+            <header><text></text></header>
+            <template width="23"><text><xpath function="/data/wellbeing"/></text></template>
+        </field>
+    </detail>
+
+    <!-- Define the long detail model for household cases -->
+    <detail id="client_long">            
+        <title><text><locale id="commands.select"/></text></title>            
+        <model>
+            <data>
+            	<name reference="case" field="name"/>
+            	<school reference="case" field="school"/>
+            	<number reference="case" field="external-id"/>
+            	<dob reference="case" field="dob"/>
+            </data>
+        </model>
+        <field>
+            <header><text><locale id="forms.name"/></text></header>
+            <template><text><xpath function="/data/name"/></text></template>
+        </field>
+        <field>
+            <header><text><locale id="forms.school"/></text></header>
+            <template><text><xpath function="/data/school"/></text></template>
+        </field>
+        <field>
+        	<header><text><locale id="forms.ovcnumber"/></text></header>
+        	<template><text><xpath function="/data/number"/></text></template>
+        </field>
+                <field>
+        <header><text><locale id="forms.dateofbirth"/></text></header>
+            <template><text><xpath function="format_date(/data/dob,'short')"/></text></template>
+        </field>
+    </detail>
+
+    <!-- Short Detail for Referrals -->
+    <detail id="client_ref_short">
+        <title><text><locale id="commands.openreferrals"/></text></title>            
+        <model>
+            <data>
+                <initials reference="case" field="initials"/>
+                <sex reference="case" field="sex"/>
+                <dob reference="case" field="dob"/>
+                <reftype reference="referral" field="type"/>
+            </data>
+        </model>
+        <field>
+            <header width="23"><text><locale id="select.header.initials"/></text></header>
+            <template width="21"><text><xpath function="/data/initials"/></text></template>
+        </field>
+        <field>
+            <header width="25"><text><locale id="select.header.sex"/></text></header>
+                        <template form="image"><text><xpath function="if(/data/sex = 0, $male,
+                                             if(/data/sex = 1, $female, ''))">
+                                             <variable name="male"><locale id="sex.male.image"/></variable>
+                                             <variable name="female"><locale id="sex.female.image"/></variable></xpath></text></template>
+        </field>
+        <field>
+            <header width="23"><text><locale id="select.header.age"/></text></header>
+            <template><text><xpath function="string(int((today() - /data/dob) div 365.25))"/></text></template>
+        </field>
+        <field>
+            <header><text></text></header>
+            <template width="40"><text><xpath function="if(/data/reftype = 1, $food,
+                        					 if(/data/reftype = 2, $shelter,
+                        					 if(/data/reftype = 3, $protection,
+                        					 if(/data/reftype = 4, $psych,
+                        					 if(/data/reftype = 5, $health,
+                        					 if(/data/reftype = 6, $education,
+                        					 if(/data/reftype = 7, $training,
+                        					 if(/data/reftype = 8, $economic,
+                        					 if(/data/reftype = 9, $other,
+                        					 if(/data/reftype = 10, $insurance, 
+                        					 ''))))))))))">
+                                             <variable name="food"><locale id="intervention.food"/></variable>
+                                             <variable name="shelter"><locale id="intervention.shelter"/></variable>
+                                             <variable name="protection"><locale id="intervention.protection"/></variable>
+                                             <variable name="psych"><locale id="intervention.psychosocial"/></variable>
+                                             <variable name="health"><locale id="intervention.health"/></variable>
+                                             <variable name="education"><locale id="intervention.education"/></variable>
+                                             <variable name="training"><locale id="intervention.training"/></variable>
+                                             <variable name="economic"><locale id="intervention.economic"/></variable>
+                                             <variable name="other"><locale id="intervention.others"/></variable>
+                                             <variable name="insurance"><locale id="intervention.insurance"/></variable>
+                                             </xpath></text></template>
+        </field>
+    </detail>
+
+    <!-- Define the long detail model for referrals -->
+    <detail id="client_ref_long">            
+        <title><text><locale id="commands.openreferrals"/></text></title>            
+        <model>
+            <data>
+            	<name reference="case" field="name"/>
+            	<school reference="case" field="school"/>
+            	<number reference="case" field="external-id"/>
+            	<dob reference="case" field="dob"/>
+            	<reftype reference="referral" field="type"/>
+            </data>
+        </model>
+        <field>
+            <header><text><locale id="forms.name"/></text></header>
+            <template><text><xpath function="/data/name"/></text></template>
+        </field>
+        <field>
+            <header><text><locale id="forms.school"/></text></header>
+            <template><text><xpath function="/data/school"/></text></template>
+        </field>
+        <field>
+        	<header><text><locale id="forms.ovcnumber"/></text></header>
+        	<template><text><xpath function="/data/number"/></text></template>
+        </field>
+                <field>
+        <header><text><locale id="forms.dateofbirth"/></text></header>
+            <template><text><xpath function="format_date(/data/dob,'short')"/></text></template>
+        </field>
+        <field>
+            <header><text><locale id="commands.openreferrals"/></text></header>
+            <template><text><xpath function="if(/data/reftype = 1, $food,
+                        					 if(/data/reftype = 2, $shelter,
+                        					 if(/data/reftype = 3, $protection,
+                        					 if(/data/reftype = 4, $psych,
+                        					 if(/data/reftype = 5, $health,
+                        					 if(/data/reftype = 6, $education,
+                        					 if(/data/reftype = 7, $training,
+                        					 if(/data/reftype = 8, $economic,
+                        					 if(/data/reftype = 9, $other,
+                        					 if(/data/reftype = 10, $insurance, 
+                        					 ''))))))))))">
+                                             <variable name="food"><locale id="intervention.food"/></variable>
+                                             <variable name="shelter"><locale id="intervention.shelter"/></variable>
+                                             <variable name="protection"><locale id="intervention.protection"/></variable>
+                                             <variable name="psych"><locale id="intervention.psychosocial"/></variable>
+                                             <variable name="health"><locale id="intervention.health"/></variable>
+                                             <variable name="education"><locale id="intervention.education"/></variable>
+                                             <variable name="training"><locale id="intervention.training"/></variable>
+                                             <variable name="economic"><locale id="intervention.economic"/></variable>
+                                             <variable name="other"><locale id="intervention.others"/></variable>
+                                             <variable name="insurance"><locale id="intervention.insurance"/></variable>
+                                             </xpath></text></template>
+        </field>
+    </detail>
+
+    <!-- Define entry actions for Household Visit Cases -->
+    <entry>                   
+        <form>http://dev.commcarehq.org/crs/ovc/registration</form>
+        <command id="client-reg">
+            <text><locale id="forms.register"/></text>
+        </command>
+    </entry>
+
+    <entry>                   
+        <form>http://dev.commcarehq.org/crs/ovc/intervention</form>
+        <command id="client-followup">
+            <text><locale id="forms.followup"/></text>
+        </command>
+        <entity>
+            <type>case</type>
+            <reference>case</reference>
+        </entity>
+        <details type="short">
+           <short id="client_short"/>
+           <long id="client_long"/>
+        </details>
+    </entry>
+
+    <entry>                   
+        <form>http://dev.commcarehq.org/crs/ovc/resolution</form>
+        <command id="client-referral">
+            <text><locale id="forms.referals"/></text>
+        </command>
+        <entity>
+            <type>case</type>
+            <reference>case</reference>
+        </entity>
+        <entity>
+            <type>referral</type>
+            <reference>referral</reference>
+        </entity>
+        <details type="short">
+           <short id="client_ref_short"/>
+           <long id="client_ref_long"/>
+        </details>
+    </entry>
+    
+    <entry>                   
+        <form>http://dev.commcarehq.org/crs/ovc/termination</form>
+        <command id="client-terminate">
+            <text><locale id="forms.termination"/></text>
+        </command>
+        <entity>
+            <type>case</type>
+            <reference>case</reference>
+        </entity>
+        <details type="short">
+           <short id="client_short"/>
+           <long id="client_long"/>
+        </details>
+    </entry>
+    
+    <entry>                   
+        <form>http://dev.commcarehq.org/crs/ovc/wellbeing</form>
+        <command id="client-wellbeing">
+            <text><locale id="forms.wellbeing"/></text>
+        </command>
+        <entity>
+            <type>case</type>
+            <reference>case</reference>
+        </entity>
+        <details type="short">
+           <short id="client_short"/>
+           <long id="client_long"/>
+        </details>
+    </entry>
+	 <entry>                   
+        <form>http://dev.commcarehq.org/crs/ovc/household</form>
+        <command id="client-household">
+            <text><locale id="forms.household"/></text>
+        </command>
+        <entity>
+            <type>case</type>
+            <reference>case</reference>
+        </entity>
+        <details type="short">
+           <short id="client_short"/>
+           <long id="client_long"/>
+        </details>
+    </entry>
+    
+    <view>
+    	<command id="list-clients">
+    		<text><locale id="commands.clientinformation"/></text>
+    	</command>
+    	<entity>
+            <type>case</type>
+            <reference>case</reference>
+        </entity>
+        <details type="short">
+           <short id="client_short"/>
+           <long id="client_long"/>
+        </details>
+    </view>
+    
+    <menu id="root">
+    	<text>crs</text>
+    	<command id="client-reg"/>
+    	<command id="client-followup"/>
+    	<command id="client-wellbeing"/>
+    	<command id="list-clients"/>
+    	<command id="client-referral"/>
+    	<command id="client-household"/>
+		<command id="client-terminate"/>
+    </menu>
+</suite>

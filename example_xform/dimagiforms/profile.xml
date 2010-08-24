@@ -1,0 +1,29 @@
+<profile version="1" update="jr://resource/profile.xml" requiredMajor="1" requiredMinor="0">
+    
+    <property key="purge-freq" value="7" force="true"/>
+    <property key="PostURL" value="http://data.commcarehq.org/receiver/submit/pathfinder" force="true"/>
+    <property key="PostTestURL" value="http://staging.commcarehq.org/receiver/submit/pathfinder" force="true"/>
+    <property key="ota-restore-url" value="http://data.commcarehq.org/ota_restore/"/>
+    <property key="cc-review-days" value="7"/>
+        
+    <property key="cur_locale" value="sw"/>
+    <property key="logenabled" value="Enabled"/>
+    <property key="log_prop_weekly" value="log_short"/>
+    <property key="log_prop_daily" value="log_never"/>
+    
+    
+    <features>
+        <checkoff active="true"/>
+        <reminders active="true">
+            <time>0</time>
+        </reminders>
+        <package active="false"/>
+        <users active="true">
+            <registration>http://dev.commcarehq.org/Pathfinder/user_registration</registration>
+        </users>
+    </features>
+    
+    <suite><resource id="pathfinder_houshold" version="1">
+        <location authority="local">jr://resource/pathfinder_household.xml</location>
+    </resource></suite>
+</profile>

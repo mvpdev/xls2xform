@@ -1,0 +1,1346 @@
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:ev="http://www.w3.org/2001/xml-events"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa">
+<h:head>
+    <h:title>CRS OVC Household Vulnerability Assessment Tool</h:title>
+	<meta jr:name="crs/ovc/household"/>
+     <model>
+      <instance>
+      <crs_household xmlns="http://dev.commcarehq.org/crs/ovc/household" xmlns:jrm="http://dev.commcarehq.org/jr/xforms" version="1" uiVersion="1">
+			<Meta>
+			   <DeviceID />
+			   <TimeStart />
+			   <TimeEnd />
+			   <username />
+			   <chw_id />
+			   <uid />
+			</Meta>
+			
+			<case>
+		      	<case_id />
+	      		<date_modified />
+	      	</case>			
+			
+			<!-- household size -->
+			<ovc_father_name/>
+			<ovc_father_dob/>
+			<ovc_mother_name/>
+			<ovc_mother_dob/>
+			<caregiver>
+				<name/>
+				<gender/>
+				<occupation/>
+				<marital_status/>
+				<dob/>
+				<hiv_status/>
+				<art_status/>
+			</caregiver>
+			<household_size/>
+			<number_ovc/>
+			<ages_household/>
+			<gender/>
+			<ovc_relationship/>
+			<marital_status/>
+			<occupation/>
+			<property/>
+			<shelter/>
+			<food_source/>
+			<nutrition/>
+			<health_status/>
+			<healthseeking_behavior/>
+			<water_source/>
+			<water_treatment/>
+			<sanitation/>
+			<prioritized_needs/>
+			<special_needs/>
+			
+        </crs_household>
+		</instance>
+			
+			<!-- Meta Binds -->
+			<bind id="hidden1" nodeset="/crs_household/Meta/DeviceID" type="xsd:string" jr:preload="property" jr:preloadParams="DeviceID" />
+			<bind id="hidden2" nodeset="/crs_household/Meta/TimeStart" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="start" />
+			<bind id="hidden3" nodeset="/crs_household/Meta/TimeEnd" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+			<bind id="hidden4" nodeset="/crs_household/Meta/username" type="xsd:string" jr:preload="meta" jr:preloadParams="UserName" />
+			<bind id="hidden5" nodeset="/crs_household/Meta/chw_id" type="xsd:string" jr:preload="meta" jr:preloadParams="UserID" />
+			<bind id="hidden6" nodeset="/crs_household/Meta/uid" type="xsd:string" jr:preload="uid" jr:preloadParams="general" />
+			
+			<!-- Case XML Binds -->
+			<bind nodeset="case/case_id" jr:preload="case" jr:preloadParams="case-id" />
+			<bind nodeset="case/date_modified" type="dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+			
+			<bind nodeset="ovc_mother_dob" type="xsd:date"/>
+			<bind nodeset="ovc_father_dob" type="xsd:date"/>
+			<bind nodeset="caregiver/dob" type="xsd:date" required="true()" constraint="(. <= today())" jr:constraintMsg="Swali lazima lijazwe"/>
+			<bind nodeset="caregiver/name" type="xsd:string" required="true()"/>
+			<bind nodeset="caregiver/gender" type="xsd:string" required="true()"/>
+			<bind nodeset="caregiver/art_status" relevant="selected(../hiv_status,'positive')"/>
+
+				<itext>
+				<translation lang="Swahili" default="true">
+				<!-- questions -->
+							
+					<text id="ovc_father_name">
+						<value>Jina la baba</value>
+					</text>
+					<text id="ovc_father_dob">
+						<value>tarehe ya kuzaliwa baba</value>
+					</text>
+
+					<text id="ovc_mother_name">
+						<value>Jina la mama</value>
+					</text>
+					<text id="ovc_mother_dob">
+						<value>tarehe ya kuzaliwa mama</value>
+					</text>
+					<text id="caregiver_name">
+						<value>Jina la mlezi</value>
+					</text>
+
+					<text id="caregiver_gender">
+						<value>Jinsia ya mlezi</value>
+					</text>
+					<text id="caregiver_occupation">
+						<value>Kazi/shughuli ya mlezi</value>
+					</text>
+					<text id="caregiver_marital">
+						<value>Hali ya ndoa ya mlezi</value>
+					</text>
+					<text id="caregiver_dob">
+						<value>Tarehe ya kuzaliwa mlezi</value>
+					</text>
+					<text id="caregiver_hiv_status">
+						<value>Maambukizi ya virusi vya ukimwi kwa mlezi</value>
+					</text>
+					<text id="caregiver_art_status">
+						<value>Tiba ya kuongeza kinga ya mwili</value>
+					</text>
+					<text id="household_size">
+						<value>Ukubwa wa Kaya</value>
+					</text>
+					<text id="number_ovc">
+						<value>Idadi ya watoto yatima katika kaya</value>
+					</text>
+					<text id="ages_household">
+						<value>Umri wa wanakaya</value>
+					</text>
+					<text id="gender">
+						<value>Jinsia</value>
+					</text>
+					<text id="ovc_relationship">
+						<value>Uhusiano wa wanakaya na mtoto yatima</value>
+					</text>
+					<text id="marital_status">
+						<value>Hali ya Ndoa</value>
+					</text>
+					<text id="occupation">
+						<value>Kazi</value>
+					</text>
+					<text id="property">
+						<value>Rasilimali</value>
+					</text>
+					<text id="shelter">
+						<value>Makazi</value>
+					</text>
+					<text id="food_source">
+						<value>Msingi wa Chakula</value>
+					</text>
+					<text id="nutrition">
+						<value>Virutubisho</value>
+					</text>
+					<text id="health_status">
+						<value>Hali ya Afya</value>
+					</text>
+					<text id="healthseeking_behavior">
+						<value>Utaratibu wa Kupata huduma ya afya</value>
+					</text>
+					<text id="water_source">
+						<value>Chanzo cha maji</value>
+					</text>
+					<text id="water_treatment">
+						<value>Matibabu ya Maji</value>
+					</text>
+					<text id="sanitation">
+						<value>Usafi Wa Mazingira</value>
+					</text>
+					<text id="prioritized_needs">
+						<value>Mahitaji ya Kipaumbele</value>
+					</text>
+					<text id="special_needs">
+						<value>Mahitaji Spesho</value>
+					</text>
+					<!--questions-->
+					<!--answers-->
+					<text id="caregiver_gender_male">
+						<value>Me</value>
+					</text>
+					<text id="caregiver_gender_female">
+						<value>Ke</value>
+					</text>
+					<text id="caregiver_marital_single">
+						<value>hajaolewa</value>
+					</text>
+					<text id="caregiver_marital_married">
+						<value>Ameoloewa</value>
+					</text>
+					<text id="caregiver_marital_divorced">
+						<value>Wametengana</value>
+					</text>
+					<text id="caregiver_marital_separated">
+						<value>Aliyeachika</value>
+					</text>
+					<text id="caregiver_marital_widowed">
+						<value>Mjane</value>
+					</text>
+					<text id="caregiver_hiv_positive">
+						<value>Ana VVU</value>
+					</text>
+					<text id="caregiver_hiv_negative">
+						<value>Hana VVU</value>
+					</text>
+					<text id="caregiver_hiv_unknown">
+						<value>Haijulikani kama ana VVU</value>
+					</text>
+					<text id="caregiver_art_therapy">
+						<value>Dawa za Kuongeza Kinga Mwilini</value>
+					</text>
+
+					<text id="caregiver_art_pro">
+						<value>Dawa za Mgonjwa Nyemelezi</value>
+					</text>
+
+					<text id="household_one_three">
+						<value>1-3 Wanakaya</value>
+					</text>
+					<text id="household_four_six">
+						<value>4-6 Wanakaya</value>
+					</text>
+					<text id="household_seven_nine">
+						<value>7-9 Wanakaya</value>
+					</text>
+					<text id="household_more_ten">
+						<value>Zaidi ya Wanakaya 10</value>
+					</text>
+
+					<text id="ovc_count_one_two">
+						<value>1-2 Yatima katika kaya</value>
+					</text>
+					<text id="ovc_count_three_four">
+						<value>3-4 Yatima katika kaya</value>
+					</text>
+					<text id="ovc_count_five_six">
+						<value>5-6 Yatima Katika Kaya</value>
+					</text>
+					<text id="ovc_count_more_seven">
+						<value>Yatima 7 na zaidi katika kaya</value>
+					</text>
+
+					<text id="ovc_age_count_one">
+						<value>1-3 Wanakaya umri &lt; 18 miaka</value>
+					</text>
+					<text id="ovc_age_count_two">
+						<value>4-6 wanakaya umri &lt; 18 miaka</value>
+					</text>
+					<text id="ovc_age_count_three">
+						<value>7-9 wanakaya umri &lt; 18 miaka</value>
+					</text>
+					<text id="ovc_age_count_four">
+						<value>Wanakaya 10  na zaidi umri &lt; 18 miaka</value>
+					</text>
+
+					<text id="caregiver_age_one">
+						<value>Umri wa mlezi Miaka 25-34</value>
+					</text>
+					<text id="caregiver_age_two">
+						<value>Umri wa mlezi Miaka 35-44</value>
+					</text>
+					<text id="caregiver_age_three">
+						<value>Umri wa mlezi Miaka 45-54</value>
+					</text>
+					<text id="caregiver_age_four">
+						<value>Umri wa mlezi > Miaka 55 </value>
+					</text>
+
+					<text id="caregiver_gender_one">
+						<value>1-2 Wanawake katika kaya</value>
+					</text>
+					<text id="caregiver_gender_two">
+						<value>3-4 Wanawake katika kaya</value>
+					</text>
+					<text id="caregiver_gender_three">
+						<value>5-6 Wanawake katika kaya</value>
+					</text>
+					<text id="caregiver_gender_four">
+						<value>Wanawake 7 na zaidi katika kaya</value>
+					</text>
+
+					<text id="rship_one">
+						<value>Mama/Baba Baba/Mama wa Kambo Mkuu wa Kaya mtoto</value>
+					</text>
+
+					<text id="rship_two">
+						<value>Shangazi/Mjomba Bibi/Babu > miaka 55</value>
+					</text>
+					
+					<text id="rship_three">
+						<value>Babu/Bibi wazee Umri > Miaka 55  Ndugu wa Mbali</value>
+					</text>
+					<text id="rship_four">
+						<value>Hamna Uhusiano?Msamaria</value>
+					</text>
+
+					<text id="marital_one">
+						<value>Mlezi aliyeolewa/Aliyeoa</value>
+					</text>
+					<text id="marital_two">
+						<value>Hajaolewa/ameachika Mlezi wametengana</value>
+					</text>
+					<text id="marital_three">
+						<value>Mlezi mjane</value>
+					</text>
+					<text id="marital_four">
+						<value>Mkuu wa kaya mtoto</value>
+					</text>
+
+
+					<text id="occupation_one">
+						<value>Angalau mwana kaya mmoja anafanya kazi ya kulpiwa mshahara</value>
+					</text>
+					<text id="occupation_two">
+						<value>Angalau mwana kaya mmoja anafanya biashara</value>
+					</text>
+					<text id="occupation_three">
+						<value>Mwanakaya moja anajishu ghulisha na kilimo</value>
+					</text>
+					<text id="occupation_four">
+						<value>Hakuna mwanakaya anayejushugulisha na shughuli ya uzalishaji</value>
+					</text>
+
+					<text id="property_one">
+						<value>Shamba kubwa/Gari</value>
+					</text>
+					<text id="property_two">
+						<value>Shamba/jembe la kulimia</value>
+					</text>
+					<text id="property_three">
+						<value>Baiskeli/radio/ufugaji kuku</value>
+					</text>
+					<text id="property_four">
+						<value>Hakuna rasilmali</value>
+					</text>
+
+					<text id="shelter_one">
+						<value>Nyumba ya kudumu</value>
+					</text>
+					<text id="shelter_two">
+						<value>Nyumba ya kudumu isiyo ya kutegemewa</value>
+					</text>
+					<text id="shelter_three">
+						<value>jengo la dharura</value>
+					</text>
+					<text id="shelter_four">
+						<value>Iliyoegeshwa au hakuna nyumba</value>
+					</text>
+
+					<text id="foodsource_one">
+						<value>Shamba</value>
+					</text>
+					<text id="foodsource_two">
+						<value>Masoko</value>
+					</text>
+					<text id="foodsource_three">
+						<value>Ndugu/Rafiki</value>
+					</text>
+					<text id="foodsource_four">
+						<value>Hakuna msingi maalumu</value>
+					</text>
+
+					<text id="nutrition_one">
+						<value>Mara tatu kwa siku</value>
+					</text>
+					<text id="nutrition_two">
+						<value>Mara mbili kwa siku</value>
+					</text>
+					<text id="nutrition_three">
+						<value>Mara moja tu kwa siku</value>
+					</text>
+					<text id="nutrition_four">
+						<value>Mara nyingine huishi bila chakula</value>
+					</text>
+
+					<text id="health_one">
+						<value>Wanakaya wote wana afya nzuri</value>
+					</text>
+					<text id="health_two">
+						<value>Mara chache huumwa</value>
+					</text>
+					<text id="health_three">
+						<value>Mara kwa mara huumwa</value>
+					</text>
+					<text id="health_four">
+						<value>Wanaumwa</value>
+					</text>
+
+					<text id="healthseeking_one">
+						<value>Huenda hospitali</value>
+					</text>
+					<text id="healthseeking_two">
+						<value>Hununua dawa dirishani</value>
+					</text>
+					<text id="healthseeking_three">
+						<value>Huenda kwa mganga wa kienyeji/Maombi</value>
+					</text>
+					<text id="healthseeking_four">
+						<value>Husubiri Kupona</value>
+					</text>
+
+					
+
+					<text id="water_one">
+						<value>Yenye dawa/ya bomba</value>
+					</text>
+					<text id="water_two">
+						<value>Kisima cha kujengewa</value>
+					</text>
+					<text id="water_three">
+						<value>Mto Ziwa/Mfereji</value>
+					</text>
+					<text id="water_four">
+						<value>Kisima kilichowazi/hukatika</value>
+					</text>
+
+					<text id="water_treatment_one">
+						<value>Yenye dawa /ya bombani</value>
+					</text>
+					<text id="water_treatment_two">
+						<value>Yaliyochemshwa/klorini</value>
+					</text>
+					<text id="water_treatment_three">
+						<value>Mara ingine huwekwa dawa</value>
+					</text>
+					<text id="water_treatment_four">
+						<value>Huwa hayawekwi dawa kabisa</value>
+					</text>
+
+					<text id="sanitation_one">
+						<value>Ipo sehemu ya kujisaidia, ya kuweka taka/vyombo </value>
+					</text>
+					<text id="sanitation_two">
+						<value>Kuna angalau huduma mbili</value>
+					</text>
+					<text id="sanitation_three">
+						<value>Kuna huduma moja wapo</value>
+					</text>
+					<text id="sanitation_four">
+						<value>Hakuna huduma yoyote</value>
+					</text>
+
+					<text id="priority_one">
+						<value>Elimu/Afya/Saikolojia</value>
+					</text>
+					<text id="priority_two">
+						<value>Elimu/Makazi</value>
+					</text>
+					<text id="priority_three">
+						<value>Elimu/Chakula</value>
+					</text>
+					
+					<text id="priority_four">
+						<value>Malezi/Kiuchumi</value>
+					</text>
+
+					<text id="special_needs_one">
+						<value>Hakuna Mahitaji Spesho</value>
+					</text>
+					<text id="special_needs_two">
+						<value>Yatima/Mlezi mwenye ulemavu wa akili na viungo</value>
+					</text>
+					<text id="special_needs_three">
+						<value>Yatima mlezi mgonjwa/mzee sana</value>
+					</text>
+					<text id="special_needs_four">
+						<value>Yatima asiyekuwa na mlezi</value>
+					</text>
+
+
+					<!--answers-->
+				</translation>
+			
+
+				<translation lang="English">
+					<text id="ovc_father_name">
+						<value>father's name</value>
+					</text>
+					<text id="ovc_father_dob">
+						<value>Father's Date of Birth</value>
+					</text>
+
+					<text id="ovc_mother_name">
+						<value>Mother's Name</value>
+					</text>
+					<text id="ovc_mother_dob">
+						<value>Mother's date of birth</value>
+					</text>
+				<text id="caregiver_name">
+						<value>Caregiver Name</value>
+					</text>
+					<text id="caregiver_gender">
+						<value>Caregiver gender</value>
+					</text>
+					<text id="caregiver_occupation">
+						<value>Caregiver occupation</value>
+					</text>
+					<text id="caregiver_marital">
+						<value>Caregiver marital</value>
+					</text>
+					<text id="caregiver_dob">
+						<value>Caregiver date of birth</value>
+					</text>
+					<text id="caregiver_hiv_status">
+						<value>Caregiver HIV status</value>
+					</text>
+					<text id="caregiver_art_status">
+						<value>Caregiver ART Status</value>
+					</text>
+					<text id="household_size">
+						<value>Household Size</value>
+					</text>
+					<text id="number_ovc">
+						<value>Number of OVC in Household</value>
+					</text>
+					<text id="ages_household">
+						<value>Ages of Household Members</value>
+					</text>
+					<text id="gender">
+						<value>Gender</value>
+					</text>
+					<text id="ovc_relationship">
+						<value>Relationship to OVC</value>
+					</text>
+					<text id="marital_status">
+						<value>Marital Status</value>
+					</text>
+					<text id="occupation">
+						<value>Occupation</value>
+					</text>
+					<text id="property">
+						<value>Property</value>
+					</text>
+					<text id="shelter">
+						<value>Shelter</value>
+					</text>
+					<text id="food_source">
+						<value>Source of food</value>
+					</text>
+					<text id="nutrition">
+						<value>Nutrition</value>
+					</text>
+					<text id="health_status">
+						<value>Health Status</value>
+					</text>
+					<text id="healthseeking_behavior">
+						<value>Health Seeking Behavior</value>
+					</text>
+					<text id="water_source">
+						<value>Water Source</value>
+					</text>
+					<text id="water_treatment">
+						<value>Water Treatment</value>
+					</text>
+					<text id="sanitation">
+						<value>Sanitation</value>
+					</text>
+					<text id="prioritized_needs">
+						<value>Prioritized Needs</value>
+					</text>
+					<text id="special_needs">
+						<value>Special needs</value>
+					</text>
+					<!--answers-->
+					<text id="caregiver_gender_male">
+						<value>Male</value>
+					</text>
+					<text id="caregiver_gender_female">
+						<value>Female</value>
+					</text>
+						<text id="caregiver_marital_single">
+						<value>Single</value>
+					</text>
+					<text id="caregiver_marital_married">
+						<value>Married</value>
+					</text>
+					<text id="caregiver_marital_divorced">
+						<value>Divorced</value>
+					</text>
+					<text id="caregiver_marital_separated">
+						<value>Separated</value>
+					</text>
+					<text id="caregiver_marital_widowed">
+						<value>Widowed</value>
+					</text>
+					<text id="caregiver_hiv_positive">
+						<value>HIV Positive</value>
+					</text>
+					<text id="caregiver_hiv_negative">
+						<value>HIV Negative</value>
+					</text>
+					<text id="caregiver_hiv_unknown">
+						<value>Unknown</value>
+					</text>
+					<text id="caregiver_art_therapy">
+						<value>ART Therapy</value>
+					</text>
+
+					<text id="caregiver_art_pro">
+						<value>Prophylaxis</value>
+					</text>
+
+					<text id="household_one_three">
+						<value>1-3 Household Members</value>
+					</text>
+					<text id="household_four_six">
+						<value>4-6 Household Members</value>
+					</text>
+					<text id="household_seven_nine">
+						<value>7-9 Household Members</value>
+					</text>
+					<text id="household_more_ten">
+						<value>Above 10 Members</value>
+					</text>
+
+					<text id="ovc_count_one_two">
+						<value>1-2 OVC in Household</value>
+					</text>
+					<text id="ovc_count_three_four">
+						<value>3-4 OVC in Household</value>
+					</text>
+					<text id="ovc_count_five_six">
+						<value>5-6 OVC in Household</value>
+					</text>
+					<text id="ovc_count_more_seven">
+						<value>7 and above OVC in Household</value>
+					</text>
+
+					<text id="ovc_age_count_one">
+						<value>1-3 Household members aged &lt; 18 years</value>
+					</text>
+					<text id="ovc_age_count_two">
+						<value>4-6 Household members aged &lt; 18 years</value>
+					</text>
+					<text id="ovc_age_count_three">
+						<value>7-9 Household members aged &lt; 18 years</value>
+					</text>
+					<text id="ovc_age_count_four">
+						<value>10 and above household members  &lt; 18 years</value>
+					</text>
+
+					<text id="caregiver_age_one">
+						<value>Caregiver aged 25-34</value>
+					</text>
+					<text id="caregiver_age_two">
+						<value>Caregiver aged 35-44</value>
+					</text>
+					<text id="caregiver_age_three">
+						<value>Caregiver aged 45-54</value>
+					</text>
+					<text id="caregiver_age_four">
+						<value>Caregiver aged &gt; 55 &lt; 24 </value>
+					</text>
+
+					<text id="caregiver_gender_one">
+						<value>1-2 females in the household</value>
+					</text>
+					<text id="caregiver_gender_two">
+						<value>3-4 females in the household</value>
+					</text>
+					<text id="caregiver_gender_three">
+						<value>5-6 females in the household</value>
+					</text>
+					<text id="caregiver_gender_four">
+						<value>7 and above females in the household</value>
+					</text>
+
+					<text id="rship_one">
+						<value>Mother/Father/Stepmother Child headed household</value>
+					</text>
+
+					<text id="rship_two">
+						<value>Aunt/Uncles grandparents &gt; 55 years </value>
+					</text>
+					
+					<text id="rship_three">
+						<value>Old grandparents aged &gt; 55 years distant relatives</value>
+					</text>
+					<text id="rship_four">
+						<value>No Relation/Sympathizer</value>
+					</text>
+
+					<text id="marital_one">
+						<value>Married Caregiver</value>
+					</text>
+					<text id="marital_two">
+						<value>Single/Divorced/Separated Caregiver</value>
+					</text>
+					<text id="marital_three">
+						<value>Widowed Caregiver</value>
+					</text>
+					<text id="marital_four">
+						<value>Child headed household</value>
+					</text>
+
+
+					<text id="occupation_one">
+						<value>At least one household member is salaried </value>
+					</text>
+					<text id="occupation_two">
+						<value>At least one household member in business</value>
+					</text>
+					<text id="occupation_three">
+						<value>One household member involved in farming</value>
+					</text>
+					<text id="occupation_four">
+						<value>No household member involved in productive activity </value>
+					</text>
+
+					<text id="property_one">
+						<value>Developed plot/vehicle</value>
+					</text>
+					<text id="property_two">
+						<value>Land/herd of cattle</value>
+					</text>
+					<text id="property_three">
+						<value>Bicycle/radio/poultry</value>
+					</text>
+					<text id="property_four">
+						<value>No property</value>
+					</text>
+
+					<text id="shelter_one">
+						<value>Permanent House</value>
+					</text>
+					<text id="shelter_two">
+						<value>Semi-permanent house</value>
+					</text>
+					<text id="shelter_three">
+						<value>Temporary Structure</value>
+					</text>
+					<text id="shelter_four">
+						<value>Dilapidated or no house</value>
+					</text>
+
+					<text id="foodsource_one">
+						<value>Farm</value>
+					</text>
+					<text id="foodsource_two">
+						<value>Markets</value>
+					</text>
+					<text id="foodsource_three">
+						<value>Relatives/Friends</value>
+					</text>
+					<text id="foodsource_four">
+						<value>No reliable source</value>
+					</text>
+
+					<text id="nutrition_one">
+						<value>3 times a day</value>
+					</text>
+					<text id="nutrition_two">
+						<value>2 times a day</value>
+					</text>
+					<text id="nutrition_three">
+						<value>Only once a day</value>
+					</text>
+					<text id="nutrition_four">
+						<value>Sometimes go without food</value>
+					</text>
+
+					<text id="health_one">
+						<value>All household members are well</value>
+					</text>
+					<text id="health_two">
+						<value>Rarely fall sick</value>
+					</text>
+					<text id="health_three">
+						<value>Frequently sick</value>
+					</text>
+					<text id="health_four">
+						<value>Sickling</value>
+					</text>
+
+					<text id="healthseeking_one">
+						<value>Go to hospital</value>
+					</text>
+					<text id="healthseeking_two">
+						<value>Buy drugs over the counter</value>
+					</text>
+					<text id="healthseeking_three">
+						<value>Visit herbalist/prayermen</value>
+					</text>
+					<text id="healthseeking_four">
+						<value>Always wait to heal</value>
+					</text>
+
+					
+
+					<text id="water_one">
+						<value>Treated/tap water</value>
+					</text>
+					<text id="water_two">
+						<value>Protected spring</value>
+					</text>
+					<text id="water_three">
+						<value>Lake/river/stream</value>
+					</text>
+					<text id="water_four">
+						<value>Open pond/run offs</value>
+					</text>
+
+					<text id="water_treatment_one">
+						<value>treated/tap water</value>
+					</text>
+					<text id="water_treatment_two">
+						<value>Boil/put chlorine</value>
+					</text>
+					<text id="water_treatment_three">
+						<value>Sometimes treat</value>
+					</text>
+					<text id="water_treatment_four">
+						<value>Do not treat all</value>
+					</text>
+
+					<text id="sanitation_one">
+						<value>have latrine rubbish pit/dish track </value>
+					</text>
+					<text id="sanitation_two">
+						<value>Have at least 2 of the facilities</value>
+					</text>
+					<text id="sanitation_three">
+						<value>Have 1 one of the facilities</value>
+					</text>
+					<text id="sanitation_four">
+						<value>Do not have any of the facilities</value>
+					</text>
+
+					<text id="priority_one">
+						<value>Education/health/PSS</value>
+					</text>
+					<text id="priority_two">
+						<value>Education/Shelter</value>
+					</text>
+					<text id="priority_three">
+						<value>Education/Food</value>
+					</text>
+					<text id="priority_four">
+						<value>Guardianship/IGA</value>
+					</text>
+
+					<text id="special_needs_one">
+						<value>No special need</value>
+					</text>
+					<text id="special_needs_two">
+						<value>OVC/Caregiver with mental/physical disabilities</value>
+					</text>
+					<text id="special_needs_three">
+						<value>Sickling OVC/caregiver/very old caregiver</value>
+					</text>
+					<text id="special_needs_four">
+						<value>OVC without any guardian</value>
+					</text>
+
+
+					<!--answers-->
+				</translation>
+
+				</itext>
+
+		</model>
+		</h:head>
+			<h:body>
+			<input ref="/crs_household/ovc_father_name">
+				<label ref="jr:itext('ovc_father_name')"></label>
+			</input>
+			<input ref="/crs_household/ovc_father_dob">
+				<label ref="jr:itext('ovc_father_dob')"></label>
+			</input>
+			<input ref="/crs_household/ovc_mother_name">
+				<label ref="jr:itext('ovc_mother_name')"></label>
+			</input>
+			<input ref="/crs_household/ovc_mother_dob">
+				<label ref="jr:itext('ovc_mother_dob')"></label>
+			</input>
+
+		<group ref="/crs_household/caregiver">
+			<input ref="/crs_household/caregiver/name">
+			<label ref="jr:itext('caregiver_name')"></label>
+			</input>
+			<select1 ref="/crs_household/caregiver/gender">
+				<label ref="jr:itext('caregiver_gender')"></label>
+				<item>
+					<label ref="jr:itext('caregiver_gender_male')"></label>
+					<value>male</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_gender_female')"></label>
+					<value>female</value>
+				</item>
+			</select1>
+			<input ref="/crs_household/caregiver/occupation">
+				<label ref="jr:itext('caregiver_occupation')"></label>
+			</input>
+				<select1 ref="/crs_household/caregiver/marital_status">
+				<label ref="jr:itext('caregiver_marital')"></label>
+				<item>
+					<label ref="jr:itext('caregiver_marital_single')"></label>
+					<value>Single</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_marital_married')"></label>
+					<value>Married</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_marital_divorced')"></label>
+					<value>Divorced</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_marital_separated')"></label>
+					<value>separated</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_marital_widowed')"></label>
+					<value>widowed</value>
+				</item>
+			</select1>
+			<input ref="/crs_household/caregiver/dob">
+				<label ref="jr:itext('caregiver_dob')"></label>
+			</input>
+				<select1 ref="/crs_household/caregiver/hiv_status">
+				<label ref="jr:itext('caregiver_hiv_status')"></label>
+				<item>
+					<label ref="jr:itext('caregiver_hiv_positive')"></label>
+					<value>positive</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_hiv_negative')"></label>
+					<value>negative</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_hiv_unknown')"></label>
+					<value>unknown</value>
+				</item>
+			</select1>
+
+				<select1 ref="/crs_household/caregiver/art_status">
+				<label ref="jr:itext('caregiver_art_status')"></label>
+				<item>
+					<label ref="jr:itext('caregiver_art_therapy')"></label>
+					<value>ARV_Therapy</value>
+				</item>
+				<item>
+					<label ref="jr:itext('caregiver_art_pro')"></label>
+					<value>Prophylaxis</value>
+				</item>
+			</select1>
+				
+		</group>
+
+		<select1 ref="/crs_household/household_size">
+			<label ref="jr:itext('household_size')">
+			</label>
+			<item>
+<label ref="jr:itext('household_one_three')"></label>
+			<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('household_four_six')"></label>				
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('household_seven_nine')"></label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('household_more_ten')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+						
+		
+		<select1 ref="/crs_household/number_ovc">
+			<label ref="jr:itext('number_ovc')">
+			</label>
+			<item>
+				<label ref="jr:itext('ovc_count_one_two')">
+			</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('ovc_count_three_four')">
+			</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('ovc_count_five_six')">
+			</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('ovc_count_more_seven')">
+			</label>
+				<value>4</value>
+			</item>
+		</select1>
+							
+
+		<select1 ref="/crs_household/ages_household">
+			<label ref="jr:itext('ages_household')">
+			</label>
+			<item>
+				<label ref="jr:itext('ovc_age_count_one')">
+			</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('ovc_age_count_two')">
+			</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('ovc_age_count_three')">
+			</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('ovc_age_count_four')">
+			</label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/gender">
+			<label ref="jr:itext('gender')">
+			</label>
+			<item>
+				<label ref="jr:itext('caregiver_gender_one')">
+			</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('caregiver_gender_two')">
+			</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('caregiver_gender_three')">
+			</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('caregiver_gender_four')">
+			</label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/ovc_relationship">
+			<label ref="jr:itext('ovc_relationship')">
+			</label>
+			<item>
+				<label ref="jr:itext('rship_one')">
+			</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('rship_two')">
+			</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('rship_three')">
+			</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('rship_four')">
+			</label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/marital_status">
+			<label ref="jr:itext('marital_status')">
+			</label>
+			<item>
+<label ref="jr:itext('marital_one')">
+			</label>
+			<value>1</value>
+			</item>
+			<item>
+<label ref="jr:itext('marital_two')">
+			</label>
+			<value>2</value>
+			</item>
+			<item>
+<label ref="jr:itext('marital_three')">
+			</label>
+			<value>3</value>
+			</item>
+			<item>
+<label ref="jr:itext('marital_four')">
+			</label>
+			<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/occupation">
+			<label ref="jr:itext('occupation')"></label>
+			<item>
+			<label ref="jr:itext('occupation_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('occupation_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('occupation_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('occupation_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/property">
+			<label ref="jr:itext('property')"></label>
+			<item>
+			<label ref="jr:itext('property_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('property_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('property_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('property_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/shelter">
+			<label ref="jr:itext('shelter')"></label>
+			<item>
+			<label ref="jr:itext('shelter_one')"></label>
+			<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('shelter_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('shelter_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('shelter_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+	<select1 ref="/crs_household/food_source">
+		<label ref="jr:itext('food_source')"></label>
+			<item>
+		<label ref="jr:itext('foodsource_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+		<label ref="jr:itext('foodsource_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+		<label ref="jr:itext('foodsource_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+		<label ref="jr:itext('foodsource_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/nutrition">
+			<label ref="jr:itext('nutrition')"></label>
+			<item>
+			<label ref="jr:itext('nutrition_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('nutrition_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('nutrition_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('nutrition_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+
+
+		<select1 ref="/crs_household/health_status">
+			<label ref="jr:itext('health_status')"></label>
+			<item>
+			<label ref="jr:itext('health_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('health_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('health_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('health_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/healthseeking_behavior">
+		<label ref="jr:itext('healthseeking_behavior')"></label>
+			<item>
+			<label ref="jr:itext('healthseeking_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+		<label ref="jr:itext('healthseeking_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+		<label ref="jr:itext('healthseeking_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+		<label ref="jr:itext('healthseeking_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+
+
+		<select1 ref="/crs_household/water_source">
+			<label ref="jr:itext('water_source')"></label>
+			<item>
+			<label ref="jr:itext('water_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('water_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('water_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('water_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+
+		<select1 ref="/crs_household/water_treatment">
+			<label ref="jr:itext('water_treatment')"></label>
+			<item>
+			<label ref="jr:itext('water_treatment_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('water_treatment_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('water_treatment_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('water_treatment_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/sanitation">
+			<label ref="jr:itext('sanitation')"></label>
+			<item>
+			<label ref="jr:itext('sanitation_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('sanitation_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('sanitation_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('sanitation_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/special_needs">
+			<label ref="jr:itext('prioritized_needs')"></label>
+			<item>
+			<label ref="jr:itext('priority_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('priority_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('priority_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('priority_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_household/special_needs">
+			<label ref="jr:itext('special_needs')"></label>
+			<item>
+			<label ref="jr:itext('special_needs_one')"></label>
+				<value>1</value>
+			</item>
+			<item>
+			<label ref="jr:itext('special_needs_two')"></label>
+				<value>2</value>
+			</item>
+			<item>
+			<label ref="jr:itext('special_needs_three')"></label>
+				<value>3</value>
+			</item>
+			<item>
+			<label ref="jr:itext('special_needs_four')"></label>
+				<value>4</value>
+			</item>
+		</select1>
+		
+			</h:body>
+</h:html>
+
+
+
+

@@ -1,0 +1,1260 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+
+	<h:head>
+
+		<h:title>Crs wellbeing</h:title>
+		<meta jr:name="crs/ovc/wellbeing/1" />
+
+		<model>
+			<instance>
+
+				<crs_wellbeing xmlns="http://dev.commcarehq.org/crs/ovc/wellbeing" xmlns:jrm="http://dev.commcarehq.org/jr/xforms" version="2" uiVersion="2">
+					<Meta>
+			     	   <DeviceID />
+				        <TimeStart />
+				        <TimeEnd />
+			     	    <username />
+				        <chw_id />
+			    	    <uid />
+					</Meta>
+					
+					<case>
+				      	<case_id />
+			      		<date_modified />
+				      	<update>
+				      		<wellbeing/>
+				      	</update>
+			      	</case>
+
+					<!-- food -->
+					<two_meals />
+					<enough_food />
+					<no_food />
+					<total_food/>
+
+					<!-- education -->
+					<teachers_teach />
+					<exercise_materials />
+					<insufficient_teaching />
+					<like_school />
+					<study_materials />
+					<total_education/>
+
+
+					<!-- shelter -->
+					<have_shelter />
+					<feel_secure />
+					<feel_safe />
+					<total_shelter/>
+
+
+					<!-- economic -->
+					<need_work />
+					<enough_money />
+					<adult_care />
+					<total_economic/>
+
+
+					<!-- protection -->
+					<treated_differently />
+					<treated_same />
+					<village_treatment />
+					<enough_sleep />
+					<average_protection/>
+
+
+					<!-- mental -->
+					<have_people />
+					<able_things />
+					<am_happy />
+					<safe_place />
+					<average_mental/>
+
+					<!-- family -->
+
+					<have_someone />
+					<have_adults />
+					<emotional_help />
+					<feel_supported />
+					<average_family/>
+
+					<!-- health -->
+					<feel_strong />
+					<my_health />
+					<health_good />
+					<growing_well />
+					<average_health/>
+
+					<!-- community -->
+					<my_belief />
+					<gives_comfort />
+					<faith_community />
+					<average_community/>
+
+					<!-- spirituality -->
+					<my_community />
+					<feel_welcome />
+					<my_household />
+					<average_spirituality/>
+
+				</crs_wellbeing>
+
+			</instance>
+
+
+			<!-- Meta Binds -->
+			<bind id="hidden1" nodeset="/crs_wellbeing/Meta/DeviceID" type="xsd:string" jr:preload="property" jr:preloadParams="DeviceID" />
+			<bind id="hidden2" nodeset="/crs_wellbeing/Meta/TimeStart" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="start" />
+			<bind id="hidden3" nodeset="/crs_wellbeing/Meta/TimeEnd" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+			<bind id="hidden4" nodeset="/crs_wellbeing/Meta/username" type="xsd:string" jr:preload="meta" jr:preloadParams="UserName" />
+			<bind id="hidden5" nodeset="/crs_wellbeing/Meta/chw_id" type="xsd:string" jr:preload="meta" jr:preloadParams="UserID" />
+			<bind id="hidden6" nodeset="/crs_wellbeing/Meta/uid" type="xsd:string" jr:preload="uid" jr:preloadParams="general" />
+			
+			<!-- Case XML Binds -->
+			<bind nodeset="case/case_id" jr:preload="case" jr:preloadParams="case-id" />
+			<bind nodeset="case/date_modified" type="dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+			
+			<bind nodeset="case/update/wellbeing" calculate="/crs_wellbeing/total_food + /crs_wellbeing/total_education + /crs_wellbeing/total_shelter + /crs_wellbeing/total_economic + /crs_wellbeing/average_protection + /crs_wellbeing/average_mental + /crs_wellbeing/average_health + /crs_wellbeing/average_spirituality + /crs_wellbeing/average_community "/>
+
+			<!-- food -->
+			<bind id="two_meals" nodeset="/crs_wellbeing/two_meals" type="xsd:string" required="true()" />
+			<bind id="enough_food" nodeset="/crs_wellbeing/enough_food" type="xsd:string" required="true()" />
+			<bind id="no_food" nodeset="/crs_wellbeing/no_food" type="xsd:string" required="true()" />
+			<bind id="total_food" nodeset="/crs_wellbeing/total_food" type="xsd:int" calculate="int(../two_meals) + int(../enough_food) + int(../no_food)"/>
+			<!-- education -->
+			<bind id="teachers_teach" nodeset="/crs_wellbeing/teachers_teach" type="xsd:string" required="true()" />
+			<bind id="exercise_materials" nodeset="/crs_wellbeing/exercise_materials" type="xsd:string" required="true()" />
+			<bind id="insufficient_teaching" nodeset="/crs_wellbeing/insufficient_teaching" type="xsd:string" required="true()" />
+			<bind id="like_school" nodeset="/crs_wellbeing/like_school" type="xsd:string" required="true()" />
+			<bind id="study_materials" nodeset="/crs_wellbeing/study_materials" type="xsd:string" required="true()" />
+			<bind id="average_education" nodeset="/crs_wellbeing/total_education" type="xsd:int" calculate="int(../teachers_teach) + int(../exercise_materials) + int(../insufficient_teaching) + int(../like_school) + int(../study_materials)" />
+			
+			<!-- shelter -->
+			<bind id="have_shelter" nodeset="/crs_wellbeing/have_shelter" type="xsd:string" required="true()" />
+			<bind id="feel_secure" nodeset="/crs_wellbeing/feel_secure" type="xsd:string" required="true()" />
+			<bind id="feel_safe" nodeset="/crs_wellbeing/feel_safe" type="xsd:string" required="true()" />
+			<bind id="average_shelter" nodeset="/crs_wellbeing/total_shelter" type="xsd:int" calculate="int(../have_shelter) + int(../feel_secure) + int(../feel_safe)" />
+			
+			<!-- economic -->
+			<bind id="need_work" nodeset="/crs_wellbeing/need_work" type="xsd:string" required="true()" />
+			<bind id="enough_money" nodeset="/crs_wellbeing/enough_money" type="xsd:string" required="true()" />
+			<bind id="adult_care" nodeset="/crs_wellbeing/adult_care" type="xsd:string" required="true()" />
+			<bind id="average_economic" nodeset="/crs_wellbeing/total_economic" type="xsd:int" calculate="int(../need_work) + int(../enough_money) + int(../adult_care)" />
+			
+			<!-- protection -->
+			<bind id="treated_differently" nodeset="/crs_wellbeing/treated_differently" type="xsd:string" required="true()" />
+			<bind id="treated_same" nodeset="/crs_wellbeing/treated_same" type="xsd:string" required="true()" />
+			<bind id="village_treatment" nodeset="/crs_wellbeing/village_treatment" type="xsd:string" required="true()" />
+			<bind id="enough_sleep" nodeset="/crs_wellbeing/enough_sleep" type="xsd:string" required="true()" />
+			<bind id="average_protection" nodeset="/crs_wellbeing/average_protection" type="xsd:int" calculate="int(../treated_differently) + int(../treated_same) + int(../village_treatment) + int(../enough_sleep)" />
+			
+			<!-- mental -->
+			<bind id="have_people" nodeset="/crs_wellbeing/have_people" type="xsd:string" required="true()" />
+			<bind id="able_things" nodeset="/crs_wellbeing/able_things" type="xsd:string" required="true()" />
+			<bind id="am_happy" nodeset="/crs_wellbeing/am_happy" type="xsd:string" required="true()" />
+			<bind id="safe_place" nodeset="/crs_wellbeing/safe_place" type="xsd:string" required="true()" />
+			<bind id="total_mental" nodeset="/crs_wellbeing/average_mental" type="xsd:int" calculate="int(../have_people) + int(../able_things) + int(../am_happy) + int(../safe_place)" />
+			
+			<!-- family -->
+
+			<bind id="have_someone" nodeset="/crs_wellbeing/have_someone" type="xsd:string" required="true()" />
+			<bind id="have_adults" nodeset="/crs_wellbeing/have_adults" type="xsd:string" required="true()" />
+			<bind id="emotional_help" nodeset="/crs_wellbeing/emotional_help" type="xsd:string" required="true()" />
+			<bind id="feel_supported" nodeset="/crs_wellbeing/feel_supported" type="xsd:string" required="true()" />
+			<bind id="average_family" nodeset="/crs_wellbeing/average_family" type="xsd:int" calculate="int(../have_someone) + int(../have_adults) + int(../emotional_help) + int(../feel_supported)" />
+			
+			<!-- health -->
+			<bind id="feel_strong" nodeset="/crs_wellbeing/feel_strong" type="xsd:string" required="true()" />
+			<bind id="my_health" nodeset="/crs_wellbeing/my_health" type="xsd:string" required="true()" />
+			<bind id="health_good" nodeset="/crs_wellbeing/health_good" type="xsd:string" required="true()" />
+			<bind id="growing_well" nodeset="/crs_wellbeing/growing_well" type="xsd:string" required="true()" />
+			<bind id="total_health" nodeset="/crs_wellbeing/average_health" type="xsd:int" calculate="int(../feel_strong) + int(../my_health) + int(../health_good) + int(../growing_well)" />
+			
+			<!-- spirituality -->
+
+			<bind id="my_belief" nodeset="/crs_wellbeing/my_belief" type="xsd:string" required="true()" />
+			<bind id="gives_comfort" nodeset="/crs_wellbeing/gives_comfort" type="xsd:string" required="true()" />
+			<bind id="faith_community" nodeset="/crs_wellbeing/faith_community" type="xsd:string" required="true()" />
+			<bind id="average_spirituality" nodeset="/crs_wellbeing/average_spirituality" type="xsd:int" calculate="int(../my_belief) + int(../gives_comfort) + int(../faith_community )" />
+			
+			<!-- community -->
+			<bind id="my_community" nodeset="/crs_wellbeing/my_community" type="xsd:string" required="true()" />
+
+			<bind id="feel_welcome" nodeset="/crs_wellbeing/feel_welcome" type="xsd:string" required="true()" />
+			<bind id="my_household" nodeset="/crs_wellbeing/my_household" type="xsd:string" required="true()" />
+			<bind id="total_community" nodeset="/crs_wellbeing/average_community" type="xsd:int" calculate="int(../my_community) + int(../feel_welcome) + int(../my_household)" />
+			
+
+			<itext>
+				<translation lang="Swahili" default="true">
+					<text id="two_meals">
+						<value>Nakula walao milo miwili kwa siku</value>
+					</text>
+
+					<text id="no">
+						<value>Hakuna</value>
+					</text>
+
+					<text id="some">
+						<value>Baadhi</value>
+					</text>
+
+					<text id="all">
+						<value>Yote</value>
+					</text>
+
+					<text id="enough_food">
+						<value>Nina chakula cha kunitosha kula</value>
+					</text>
+
+					<text id="no_food">
+						<value>Nalala Njaa</value>
+					</text>
+
+					<text id="teachers_teach">
+						<value>Walimu wangu wananielekeza kama wanafunzi wengine</value>
+					</text>
+
+					<text id="exercise_materials">
+						<value>Nina vifaa ninavyohitaji kwa ajili ya mazoezi darasani</value>
+					</text>
+
+					<text id="insufficient_teaching">
+						<value>Sielekezwi vizuri kama wanafunzi wenzangu</value>
+					</text>
+					<text id="like_school">
+						<value>Napenda Shule</value>
+					</text>
+					<text id="study_materials">
+						<value>Nina  vitabu na  vifaa vya kutosha kwa ajili ya shule</value>
+					</text>
+					<text id="have_shelter">
+						<value>Nina  nyumba ambayo ninaweza kulala usiku</value>
+					</text>
+					<text id="feel_secure">
+						<value>Kuna usalama niliko</value>
+					</text>
+					<text id="feel_safe">
+						<value>Kuna usalama ninakoishi</value>
+					</text>
+					<text id="need_work">
+						<value>Mahudhurio yangu shuleni yanaathiriwa na kuhitaji kufanya kazi</value>
+					</text>
+					<text id="enough_money">
+						<value>Familia yangu ina hela za kutosha kukidhi mahitaji yangu</value>
+					</text>
+					<text id="adult_care">
+						<value>Mmoja wa wakubwa wanaotuhudumia  anapata pesa anakofanya kazi</value>
+					</text>
+					<text id="treated_differently">
+						<value>Naelekezwa tofauti na watoto wengine kwenye kaya yangu</value>
+					</text>
+					<text id="treated_same">
+						<value>Naelekezwa sawa na watoto wengine kwenye kaya yangu</value>
+					</text>
+					<text id="village_treatment">
+						<value>Naelekezwa tofauti na watoto wengine kijijini kwangu, jirani, ninakoishi</value>
+					</text>
+					<text id="enough_sleep">
+						<value>Sipati usingizi wa kutosha na ninajisikia kuchoka kwa sababu ya kazi ninazozifanya kabla na baada ya shule</value>
+					</text>
+					<text id="have_people">
+						<value>Nina mtu wa kuongea naye ninapokuwa na shida</value>
+					</text>
+					<text id="able_things">
+						<value>Ninaweza kufanya vitu vizuri kama watu wengine</value>
+					</text>
+					<text id="am_happy">
+						<value>Nina furaha kama watoto wengine wa umri wangu</value>
+					</text>
+					<text id="safe_place">
+						<value>Najisikia naishi sehemu yenye usalama</value>
+					</text>
+					<text id="have_someone">
+						<value>Nyumbani nina mtu wa kunijali ninapoumizwa au kujisikia vibaya</value>
+					</text>
+					<text id="have_adults">
+						<value>Nina wakubwa ambao nawaamini</value>
+					</text>
+					<text id="emotional_help">
+						<value>Ninapata msaada wa kutoka kwa familia yangu</value>
+					</text>
+					<text id="feel_supported">
+						<value>Ninahudumiwa na familia yote</value>
+					</text>
+
+					<text id="feel_strong">
+						<value>Najisikia mwenye nguvu na afya</value>
+					</text>
+
+					<text id="my_health">
+						<value>Nina wasiwasi na afya yangu</value>
+					</text>
+
+					<text id="health_good">
+						<value>Afya yangu ni nzuri</value>
+					</text>
+
+					<text id="growing_well">
+						<value>Ninakua vizuri kama watoto wengine wa umri wangu</value>
+					</text>
+
+					<text id="my_belief">
+						<value>Kumwamini Mungu Kunanipa uwezo wa kukabiliana na matatizo</value>
+					</text>
+
+					<text id="gives_comfort">
+						<value>Kumwamini Mungu kunanifariji na kunipa matumaini</value>
+					</text>
+
+					<text id="faith_community">
+						<value>Imani ya jumuiya yangu ni muhimu kwangu</value>
+					</text>
+
+					<text id="my_community">
+						<value>Watu katika jamii yangu hujaribu kunisaidia</value>
+					</text>
+					<text id="feel_welcome">
+						<value>Huwa nakaribishwa na kupewa nafasi katika huduma za kiroho</value>
+					</text>
+
+					<text id="my_household">
+						<value>Kaya yangu hupata huduma za bure kusaidia watoto wanaoishi hapa</value>
+					</text>
+
+				</translation>
+
+				<translation lang="English">
+					<text id="two_meals">
+						<value>I eat at least two meals a day</value>
+					</text>
+
+					<text id="no">
+						<value>None</value>
+					</text>
+
+					<text id="some">
+						<value>Some</value>
+					</text>
+
+					<text id="all">
+						<value>All</value>
+					</text>
+					<text id="enough_food">
+						<value>I have enough food  to eat</value>
+					</text>
+
+					<text id="no_food">
+						<value>I go to bed hungry</value>
+					</text>
+					<text id="teachers_teach">
+						<value>My teachers  treat me  like the other students</value>
+					</text>
+
+					<text id="exercise_materials">
+						<value>I have the materials  I need to do  my classwork</value>
+					</text>
+
+					<text id="insufficient_teaching">
+						<value>I am not treated as well as the other students in my class</value>
+					</text>
+
+					<text id="like_school">
+						<value> I like School</value>
+					</text>
+
+					<text id="study_materials">
+						<value>I have enough books and supplies for school</value>
+					</text>
+
+					<text id="have_shelter">
+						<value>I have  a house  where I can sleep  at night</value>
+					</text>
+
+					<text id="feel_secure">
+						<value>I  feel  secure in my neighbourhood</value>
+					</text>
+
+					<text id="feel_safe">
+						<value>I feel safe where I live</value>
+					</text>
+
+					<text id="need_work">
+						<value>My school  attendance is affected by  my need  to  work</value>
+					</text>
+					<text id="enough_money">
+						<value>My family has  enough money  to  buy  the  things  we  need</value>
+					</text>
+					<text id="adult_care">
+						<value>One of the adults taking care of us (me) earns money working at a job</value>
+					</text>
+					<text id="treated_differently">
+						<value>I’m treated differently from the other children in my household</value>
+					</text>
+					<text id="treated_same">
+						<value> I'm treated the same as other children in my school</value>
+					</text>
+					<text id="village_treatment">
+						<value>I'm treated differently from other children in my village, neighborhood, compound</value>
+					</text>
+					<text id="enough_sleep">
+						<value>I do not get enough sleep and feel tired because of all the work I do before and after school</value>
+					</text>
+					<text id="have_people">
+						<value>I have people I can talk to when I have a problem</value>
+					</text>
+					<text id="able_things">
+						<value>I am able to do things as well as most other people</value>
+					</text>
+					<text id="am_happy">
+						<value>I am as happy as other kids my age</value>
+					</text>
+					<text id="safe_place">
+						<value>I feel I live in a safe place</value>
+					</text>
+					<text id="have_someone">
+						<value>At home,I have someone to look after me if I get hurt or feel sad</value>
+					</text>
+
+					<text id="have_adults">
+						<value>I  have adults that I can trust</value>
+					</text>
+
+					<text id="emotional_help">
+						<value>I get the emotional help and support I need from my family</value>
+					</text>
+
+					<text id="feel_supported">
+						<value>I feel I am supported by my extended family</value>
+					</text>
+
+					<text id="feel_strong">
+						<value>I feel strong and healthy</value>
+					</text>
+
+					<text id="my_health">
+						<value>I worry about my health</value>
+					</text>
+					<text id="health_good">
+						<value>My health is good</value>
+					</text>
+					<text id="growing_well">
+						<value>I am growing as well as other kids my age</value>
+					</text>
+					<text id="my_belief">
+						<value>My belief in God gives me strength to face difficulties</value>
+					</text>
+
+					<text id="gives_comfort">
+						<value>My belief in God gives me comfort and reassurance</value>
+					</text>
+
+					<text id="faith_community">
+						<value>My faith community is important to me</value>
+					</text>
+					<text id="my_community">
+						<value>People in my community try to help me</value>
+					</text>
+
+					<text id="feel_welcome">
+						<value>I feel welcome to take part in religious services</value>
+					</text>
+
+					<text id="my_household">
+						<value>My household receives free support to care for the children who live here</value>
+					</text>
+
+				</translation>
+
+			</itext>
+		</model>
+
+
+	</h:head>
+
+	<h:body>
+
+		<select1 ref="/crs_wellbeing/two_meals">
+			<label ref="jr:itext('two_meals')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/enough_food">
+			<label ref="jr:itext('enough_food')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/no_food">
+			<label ref="jr:itext('no_food')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>1</value>
+			</item>
+		</select1>
+		<!--
+		<trigger ref="/crs_wellbeing/average_food">
+			<label>Average for food and nutrition is <output value="/crs_wellbeing/average_food" />
+			</label>
+		</trigger>
+-->
+		<select1 ref="/crs_wellbeing/teachers_teach">
+			<label ref="jr:itext('teachers_teach')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/exercise_materials">
+			<label ref="jr:itext('exercise_materials')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/insufficient_teaching">
+			<label ref="jr:itext('insufficient_teaching')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>1</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/like_school">
+			<label ref="jr:itext('like_school')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/study_materials">
+			<label ref="jr:itext('study_materials')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<!--
+		<trigger ref="/crs_wellbeing/average_education">
+			<label>Average for education is <output value="/crs_wellbeing/average_education" />
+			</label>
+		</trigger>
+-->
+		<select1 ref="/crs_wellbeing/have_shelter">
+			<label ref="jr:itext('have_shelter')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/feel_secure">
+			<label ref="jr:itext('feel_secure')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/feel_safe">
+			<label ref="jr:itext('feel_safe')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+		<!--
+		<trigger ref="/crs_wellbeing/average_shelter">
+			<label>Average for shelter is <output value="/crs_wellbeing/average_shelter" />
+			</label>
+		</trigger>
+-->
+		<select1 ref="/crs_wellbeing/need_work">
+			<label ref="jr:itext('need_work')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>1</value>
+			</item>
+		</select1>
+
+
+		<select1 ref="/crs_wellbeing/enough_money">
+			<label ref="jr:itext('enough_money')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/adult_care">
+			<label ref="jr:itext('adult_care')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+		<!--
+		<trigger ref="/crs_wellbeing/average_economic">
+			<label>Average for economic is <output value="/crs_wellbeing/average_economic" />
+			</label>
+		</trigger>
+-->
+		<select1 ref="/crs_wellbeing/treated_differently">
+			<label ref="jr:itext('treated_differently')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>1</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/treated_same">
+			<label ref="jr:itext('treated_same')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/village_treatment">
+			<label ref="jr:itext('village_treatment')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>1</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/enough_sleep">
+			<label ref="jr:itext('enough_sleep')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>1</value>
+			</item>
+		</select1>
+
+		<!--
+		<trigger ref="/crs_wellbeing/average_protection">
+			<label>Average for protection is <output value="/crs_wellbeing/average_protection" />
+			</label>
+		</trigger>
+-->
+
+		<select1 ref="/crs_wellbeing/have_people">
+			<label ref="jr:itext('have_people')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+		<select1 ref="/crs_wellbeing/able_things">
+			<label ref="jr:itext('able_things')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+		<select1 ref="/crs_wellbeing/am_happy">
+			<label ref="jr:itext('am_happy')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/safe_place">
+			<label ref="jr:itext('safe_place')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<!--
+		<trigger ref="/crs_wellbeing/average_mental">
+			<label>Average for mental health is <output value="/crs_wellbeing/average_mental" />
+			</label>
+		</trigger>
+-->
+
+		<select1 ref="/crs_wellbeing/have_someone">
+			<label ref="jr:itext('have_someone')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/have_adults">
+			<label ref="jr:itext('have_adults')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/emotional_help">
+			<label ref="jr:itext('emotional_help')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+		<select1 ref="/crs_wellbeing/feel_supported">
+			<label ref="jr:itext('feel_supported')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<!--
+		<trigger ref="/crs_wellbeing/average_family">
+			<label>Average for  family is <output value="/crs_wellbeing/average_family" />
+			</label>
+		</trigger>
+-->
+
+		<select1 ref="/crs_wellbeing/feel_strong">
+			<label ref="jr:itext('feel_strong')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/my_health">
+			<label ref="jr:itext('my_health')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>3</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>1</value>
+			</item>
+		</select1>
+
+
+		<select1 ref="/crs_wellbeing/health_good">
+			<label ref="jr:itext('health_good')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/growing_well">
+			<label ref="jr:itext('growing_well')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<!--
+		<trigger ref="/crs_wellbeing/average_health">
+			<label>Average for  health is <output value="/crs_wellbeing/average_health" />
+			</label>
+		</trigger>
+-->
+
+		<select1 ref="/crs_wellbeing/my_belief">
+			<label ref="jr:itext('my_belief')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/gives_comfort">
+			<label ref="jr:itext('gives_comfort')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/faith_community">
+			<label ref="jr:itext('faith_community')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+		<!--
+		<trigger ref="/crs_wellbeing/average_spirituality">
+			<label>Average for  spirituality is <output value="/crs_wellbeing/average_spirituality" />
+			</label>
+		</trigger>
+-->
+
+
+		<select1 ref="/crs_wellbeing/my_community">
+			<label ref="jr:itext('my_community')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+		<select1 ref="/crs_wellbeing/feel_welcome">
+			<label ref="jr:itext('feel_welcome')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<select1 ref="/crs_wellbeing/my_household">
+			<label ref="jr:itext('my_household')">
+			</label>
+			<item>
+				<label ref="jr:itext('no')">
+				</label>
+				<value>1</value>
+			</item>
+			<item>
+				<label ref="jr:itext('some')">
+				</label>
+				<value>2</value>
+			</item>
+			<item>
+				<label ref="jr:itext('all')">
+				</label>
+				<value>3</value>
+			</item>
+		</select1>
+
+		<!--
+		<trigger ref="/crs_wellbeing/average_community">
+			<label>Average for community is <output value="/crs_wellbeing/average_community" />
+			</label>
+		</trigger>
+-->
+	</h:body>
+
+</h:html>
+

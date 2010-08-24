@@ -1,0 +1,622 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+	<h:head>
+		<h:title>Pathfinder Followup</h:title>
+		<meta jr:name="pathfinder_client_followup" />
+		<model>
+			<itext>
+
+				<!--
+
+*************************************************************
+
+ENGLISH LABELS
+
+***********************************************************
+
+-->              
+                
+                
+				<translation lang="en">
+				
+				<text id="type_of_client">
+				<value>Type of client</value>
+				</text>
+				<text id="hiv">
+
+				<value>HIV Infection</value>
+
+				</text>
+				<text id="sickle_cell">
+
+				<value>Sickle cell disease</value>
+
+				</text>
+				<text id="heart">
+
+				<value>Heart diseases</value>
+
+				</text>
+				<text id="diabetes">
+
+					<value>Diabetes</value>
+
+				</text>
+				<text id="mental">
+
+					<value>Mental retardation</value>
+
+				</text>
+				<text id="cancer">
+
+					<value>Cancer</value>
+					</text>
+					<text id="tb">
+					<value>Tuberculosis(TB)</value>
+				</text>
+				<text id="others">
+					<value>Others</value>
+				</text>
+								
+				<text id="date_of_visit">
+				<value>Date of Visit</value>
+				</text>
+				<text id="client_condition">
+				<value>Client condition</value>
+				</text>
+				<text id="working">
+				<value>Working</value>
+				</text>
+				<text id="ambulatory">
+				<value>Ambulatory</value>
+				</text>
+				<text id="bedridden">
+				<value>Bedridden</value>
+				</text>
+					
+				
+				<text id="social_medical_problems">
+
+				<value>Client's psychosocial problems </value>
+
+				</text>
+				<text id="medication_given">
+
+				<value>Supplies/Medication given</value>
+
+				</text>
+				
+					
+				<text id="services_given">
+
+				<value>Services given</value>
+
+				</text>
+				<text id="nutritional_counselling">
+
+				<value>Nutritional  counselling </value>
+
+				</text>
+				<text id="infectious_education">
+
+				<value>Education about infections</value>
+
+				</text>
+				<text id="fp">
+
+				<value>Education about family planning</value>
+
+				</text>
+				<text id="testing">
+
+				<value>Education about early testing</value>
+
+				</text>
+				<text id="counselling">
+
+					<value>psychological counselling</value>
+
+				</text>
+				<text id="house">
+
+					<value>House Keeping</value>
+
+				</text>
+				<text id="health">
+
+					<value>Health services</value>
+					</text>
+					<text id="treatment">
+
+					<value>Treatment services</value>
+
+				</text>
+				<text id="safe_delivery">
+
+					<value>Safe delivery</value>
+
+				</text>
+				<text id="net">
+
+					<value>net</value>
+					</text>
+					<text id="std">
+
+					<value>std</value>
+					</text>
+						
+
+				<text id="referrals_hiv">
+
+				<value>Referrals given</value>
+
+				</text>
+				
+				<text id="counselling_and_testing">
+
+				<value>Counselling and Testing</value>
+
+				</text>
+				<text id="referred_to_ctc">
+
+				<value>Referral to care and treatment clinic(CTC)</value>
+
+				</text>
+				<text id="opportunistic_infections">
+
+				<value>Referral to a health centre because of opportunistic infections</value>
+
+				</text>
+				<text id="tb_clinic">
+
+					<value>TB treatment clinic</value>
+
+				</text>
+				<text id="ref_fp">
+
+					<value>referral to family planning services</value>
+
+				</text>
+				<text id="pmtct">
+
+					<value>Preventing mother to child transmission(PMTCT)</value>
+
+				</text>
+				<text id="other_services">
+
+					<value>Referral for other services</value>
+
+				</text>
+				
+				
+				<text id="registered_no_arvs">
+
+					<value>Registered at CTC but hasn't started ARVs</value>
+
+				</text>
+				<text id="registered_and_arvs">
+
+					<value>Registered at CTC and is using ARVs</value>
+
+				</text>
+				<text id="not_registered">
+
+					<value>Not registered at CTC</value>
+
+				</text>
+				<text id="ctc">
+					<value>Care and treatment for AIDS</value>
+				</text>
+				<text id="reg_followup_hiv">
+					<value>Status of registration/followup(HIV)</value>
+				</text>
+				
+                 <text id="new">
+					<value>New Client</value>
+				</text>
+				<text id="continuing">
+					<value>Continuing Client</value>
+				</text>
+				<text id="dead">
+					<value>Dead Client</value>
+				</text>
+				<text id="lost">
+					<value>Lost to follow up</value>
+				</text>
+				<text id="transferred">
+					<value>Transferred to another area</value>
+				</text>
+				<text id="migrated">
+					<value>Migrated to another area</value>
+				</text>
+				<text id="no_need">
+					<value>No longer in need of services</value>
+				</text>
+				<text id="opted_out">
+					<value>Opted out of the program</value>
+				</text>
+				<text id="remarks">
+					<value>Remarks</value>
+				</text>
+									
+				</translation>
+				<!--
+
+*************************************************************
+
+SWAHILI LABELS
+
+***********************************************************
+
+-->
+				<translation lang="sw" default="true">
+				
+				<text id="type_of_client">
+				<value>Aina ya Mgonjwa</value>
+				</text>
+				<text id="hiv">
+
+				<value>Maambukizi ya VVU</value>
+
+				</text>
+				<text id="sickle_cell">
+
+				<value>Sickle cell disease</value>
+
+				</text>
+				<text id="heart">
+
+				<value>Magonjwa ya moyo</value>
+
+				</text>
+				<text id="diabetes">
+
+					<value>Kisukari</value>
+
+				</text>
+				<text id="mental">
+
+					<value>Mtindio wa ubongo</value>
+
+				</text>
+				<text id="cancer">
+
+					<value>Saratani</value>
+					</text>
+					<text id="tb">
+					<value>Kifua kikuu</value>
+				</text>
+				<text id="others">
+					<value>Mengineyo</value>
+				</text>
+				<text id="date_of_visit">
+					<value>Tarehe ya kutembelea</value>
+				</text>
+				<text id="client_condition">
+					<value>Hali ya mgonjwa</value>
+				</text>
+				<text id="working">
+					<value>Anaweza kufanya shughuli zake za kila siku</value>
+				</text>
+				<text id="ambulatory">
+					<value>anajimudu mwenyewe(kuoga,kula,kuvaa)</value>
+				</text>
+				<text id="bedridden">
+					<value>Hajimudu</value>
+				</text>
+								
+				<text id="social_medical_problems">
+
+					<value>Matatizo (ya kijamii/kitabibu) ya mgonjwa</value>
+
+				</text>
+				<text id="medication_given">
+
+					<value>Vifaa/Dawa zilizotolewa</value>
+
+				</text>
+				
+				
+				<text id="services_given">
+
+					<value>Huduma zilizotolewa</value>
+
+				</text>
+				<text id="nutritional_counselling">
+
+				<value>Ushauri wa lishe </value>
+
+				</text>
+				<text id="infectious_education">
+
+				<value>Elimu kuhusu maambukizi</value>
+
+				</text>
+				<text id="fp">
+
+				<value>Elimu kuhusu  uzazi wa mpango</value>
+
+				</text>
+				<text id="testing">
+
+				<value>Upimaji wa awali</value>
+
+				</text>
+				<text id="counselling">
+
+					<value>Ushauri wa kisaikolojia</value>
+
+				</text>
+				<text id="house">
+
+					<value>Usafi wa nyumba</value>
+
+				</text>
+				<text id="health">
+
+					<value>Huduma za afya</value>
+					</text>
+					<text id="treatment">
+
+					<value>Huduma za tiba</value>
+
+				</text>
+				<text id="safe_delivery">
+
+					<value>Uzazi salama</value>
+
+				</text>
+				<text id="net">
+
+					<value>Chandarua</value>
+					</text>
+					<text id="std">
+
+					<value>Magonjwa yatokanayo na kujamiiana</value>
+					</text>
+					
+				
+				<text id="referrals_hiv">
+
+					<value>Rufaa zilizotolewa</value>
+
+				</text>
+				
+				<text id="counselling_and_testing">
+
+					<value>Ushauri nasaha na kupima</value>
+
+				</text>
+				<text id="ref_fp">
+
+					<value>rufaa kwenda huduma za uzazi wa mpango</value>
+
+				</text>
+				<text id="referred_to_ctc">
+
+					<value>Rufaa kwenda kliniki ya tiba na huduma(CTC)</value>
+
+				</text>
+				<text id="opportunistic_infections">
+
+					<value>Rufaa kwenda kituo cha huduma za afya kutokana na magonjwa nyemelezi</value>
+
+				</text>
+				<text id="tb_clinic">
+
+					<value>Kliniki ya kutibu kifua kikuu</value>
+
+				</text>
+				
+				<text id="pmtct">
+
+					<value>Huduma za kuzuia maambukizi toka kwa mama kwenda kwa mtoto</value>
+
+				</text>
+				<text id="other_services">
+
+					<value>Rufaa kwenda huduma nyingine</value>
+
+				</text>
+				
+				
+				<text id="registered_no_arvs">
+
+					<value>Ameandikishwa CTC lakini hajaanza ARV</value>
+
+				</text>
+				<text id="registered_and_arvs">
+
+					<value>Ameandikishwa CTC  na anatumia ARV</value>
+
+				</text>
+				<text id="not_registered">
+
+				<value>Hajaandikishwa  CTC</value>
+
+				</text>
+				<text id="ctc">
+					<value>Hali ya matunzo na tiba ya UKIMWI(CTC)</value>
+				</text>
+				<text id="reg_followup_hiv">
+					<value>Hali ya usajili/ufuatiliaji</value>
+				</text>
+				
+                 <text id="new">
+					<value>Mpya</value>
+				</text>
+				<text id="continuing">
+					<value>Anaendelea na huduma</value>
+				</text>
+				<text id="dead">
+					<value>Amefariki</value>
+				</text>
+				<text id="lost">
+					<value>Amepotea</value>
+				</text>
+				<text id="transferred">
+					<value>Amehamishiwa mahali pengine</value>
+				</text>
+				<text id="migrated">
+					<value>Amehama</value>
+				</text>
+				<text id="no_need">
+					<value>Hana haja na huduma(amepona na hana VVU)</value>
+				</text>
+				<text id="opted_out">
+					<value>Amejitoa</value>
+				</text>
+					<text id="remarks">
+					<value>Maoni</value>
+				</text>
+				
+					
+				</translation>
+			</itext>
+
+		<instance>
+  	      <pf_followup xmlns="http://dev.commcarehq.org/Pathfinder/pathfinder_cc_followup" xmlns:jrm="http://dev.commcarehq.org/jr/xforms" version="3" uiVersion="1">
+			<Meta>
+				<DeviceID />
+				<TimeStart />
+				<TimeEnd />
+				<username />
+				<chw_id/>
+				<uid/>
+			</Meta>
+			
+			<case>
+			  <case_id />
+			  <date_modified />
+			  <close />
+			  <referral>
+    			<referral_id/>
+        		<followup_date/>
+        		<open>
+            	  <referral_types/>
+        		</open>
+    		  </referral> 
+			</case>
+			
+			<patient>
+			  <type_of_client/>
+              <date_of_visit/>
+			  <client_condition/>
+			  <social_medical_problems/>
+			  <medication_given/>
+			  <services_given/>
+			  <referrals_hiv/>
+			  <ctc/>
+			  <reg_followup_hiv/>
+			  <remarks/>
+			</patient>
+		  </pf_followup>
+		</instance>
+
+		<bind nodeset="case/case_id" jr:preload="case" jr:preloadParams="case-id" />
+		<bind nodeset="case/date_modified" type="dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+		<bind nodeset="case/close" relevant="/pf_followup/patient/reg_followup_hiv != 'new' and
+		                                     /pf_followup/patient/reg_followup_hiv != 'continuing'" />
+		<bind nodeset="case/referral" relevant="count-selected(/pf_followup/patient/referrals_hiv) > 0"/>
+		<bind nodeset="case/referral/referral_id" jr:preload="uid" jr:preloadParams="general"/>
+		<bind nodeset="case/referral/followup_date" type="date" calculate="date(today() + 2)"/>
+		<bind nodeset="case/referral/open/referral_types" calculate="/pf_followup/patient/referrals_hiv"/>
+
+	  <bind nodeset="Meta/DeviceID" jr:preload="property" jr:preloadParams="DeviceID" />
+      <bind nodeset="Meta/username" jr:preload="meta" jr:preloadParams="UserName" />
+      <bind nodeset="Meta/chw_id" jr:preload="meta" jr:preloadParams="UserID" />
+      <bind nodeset="Meta/TimeStart" type="dateTime" jr:preload="timestamp" jr:preloadParams="start" />
+      <bind nodeset="Meta/TimeEnd" type="dateTime" jr:preload="timestamp" jr:preloadParams="end" />
+	  <bind nodeset="Meta/uid" type="xsd:string" jr:preload="uid" jr:preloadParams="general" />
+	     
+	    <bind id="type_of_client" nodeset="/pf_followup/patient/type_of_client" type="xsd:string" required="true()" />  
+        <bind id="date_of_visit" nodeset="/pf_followup/patient/date_of_visit" type="xsd:date" required = "true()"required = "true()"constraint=" .&lt;= today()" jr:constraintMsg="Haiwezekani mgonjwa kutembelewa mbele ya leo"/>
+		<bind id="client_condition" nodeset="/pf_followup/patient/client_condition" type="xsd:string" required="true()" />
+		<bind id="social_medical_problems" nodeset="/pf_followup/patient/social_medical_problems" type="xsd:string" required="true()" />
+		<bind id="medication_given" nodeset="/pf_followup/patient/medication_given" type="xsd:string" required="true()" />
+		<bind id="services_given" nodeset="/pf_followup/patient/services_given" type="xsd:string"/>
+		<bind id="referrals_hiv" nodeset="/pf_followup/patient/referrals_hiv" type="xsd:string" />
+		<bind id="ctc" nodeset="/pf_followup/patient/ctc" type="xsd:string" required="true()" />
+		<bind id="reg_followup_hiv" nodeset="/pf_followup/patient/reg_followup_hiv" type="xsd:string" required="true()" />
+		<bind id="remarks" nodeset="/pf_followup/patient/remarks" type="xsd:string" required="true()" />
+
+		</model>
+	</h:head>
+	<h:body>
+		<!--
+
+*************************************************************
+
+QUESTIONS
+
+***********************************************************
+
+-->      
+        <select1 ref="/pf_followup/patient/type_of_client">
+		<label ref="jr:itext('type_of_client')"></label>
+		<item><label ref="jr:itext('hiv')"></label><value>hiv</value></item>
+		<item><label ref="jr:itext('sickle_cell')"></label><value>sickle_cell</value></item>
+        <item><label ref="jr:itext('heart')"></label><value>heart</value></item>
+		<item><label ref="jr:itext('diabetes')"></label><value>diabetes</value></item>
+		<item><label ref="jr:itext('mental')"></label><value>mental</value></item>
+        <item><label ref="jr:itext('cancer')"></label><value>cancer</value></item>
+		<item><label ref="jr:itext('tb')"></label><value>tb</value></item>
+        <item><label ref="jr:itext('others')"></label><value>others</value></item>
+	    </select1>
+        <input bind="date_of_visit"><label ref="jr:itext('date_of_visit')"></label></input>
+	    <select1 ref="/pf_followup/patient/client_condition">
+		<label ref="jr:itext('client_condition')"></label>
+		<item><label ref="jr:itext('working')"></label><value>Working</value></item>
+		<item><label ref="jr:itext('ambulatory')"></label><value>Ambulatory</value></item>
+        <item><label ref="jr:itext('bedridden')"></label><value>Bedridden</value></item>
+	    </select1>
+	    <input bind="social_medical_problems"><label ref="jr:itext('social_medical_problems')"></label></input>
+	    <input bind="medication_given"><label ref="jr:itext('medication_given')"></label></input>
+		<select ref="/pf_followup/patient/services_given">
+		<label ref="jr:itext('services_given')"></label>
+		<item><label ref="jr:itext('nutritional_counselling')"></label><value>nutritional</value></item>
+		<item><label ref="jr:itext('infectious_education')"></label><value>infectious</value></item>
+		<item><label ref="jr:itext('fp')"></label><value>fp</value></item>
+        <item><label ref="jr:itext('testing')"></label><value>testing</value></item>
+		<item><label ref="jr:itext('counselling')"></label><value>counselling</value></item>
+        <item><label ref="jr:itext('house')"></label><value>house</value></item>
+		<item><label ref="jr:itext('health')"></label><value>health</value></item>
+        <item><label ref="jr:itext('treatment')"></label><value>treatment</value></item>
+		<item><label ref="jr:itext('safe_delivery')"></label><value>safe_delivery</value></item>
+		<item><label ref="jr:itext('net')"></label><value>net</value></item>
+		<item><label ref="jr:itext('std')"></label><value>std</value></item>
+	    </select>
+	    <select ref="/pf_followup/patient/referrals_hiv">
+		<label ref="jr:itext('referrals_hiv')"></label>
+		<item><label ref="jr:itext('counselling_and_testing')"></label><value>coun_and_test</value></item>
+		<item><label ref="jr:itext('referred_to_ctc')"></label><value>ref_to_ctc</value></item>
+        <item><label ref="jr:itext('opportunistic_infections')"></label><value>opp_inf</value></item>
+		<item><label ref="jr:itext('tb_clinic')"></label><value>tb_clinic</value></item>
+		<item><label ref="jr:itext('pmtct')"></label><value>pmtct</value></item>
+		<item><label ref="jr:itext('ref_fp')"></label><value>ref_fp</value></item>
+        <item><label ref="jr:itext('other_services')"></label><value>other_services</value></item>
+	    </select>
+		<select1 ref="/pf_followup/patient/ctc">
+		<label ref="jr:itext('ctc')"></label>
+		<item><label ref="jr:itext('registered_no_arvs')"></label><value>reg_no_arvs</value></item>
+		<item><label ref="jr:itext('registered_and_arvs')"></label><value>reg_and_arvs</value></item>
+        <item><label ref="jr:itext('not_registered')"></label><value>not_registered</value></item>
+	    </select1>
+        <select1 ref="/pf_followup/patient/reg_followup_hiv">
+		<label ref="jr:itext('reg_followup_hiv')"></label>
+		<item><label ref="jr:itext('new')"></label><value>new</value></item>
+		<item><label ref="jr:itext('continuing')"></label><value>continuing</value></item>
+        <item><label ref="jr:itext('dead')"></label><value>dead</value></item>
+		<item><label ref="jr:itext('lost')"></label><value>lost</value></item>
+		<item><label ref="jr:itext('transferred')"></label><value>transferred</value></item>
+        <item><label ref="jr:itext('migrated')"></label><value>migrated</value></item>
+		<item><label ref="jr:itext('no_need')"></label><value>no_need</value></item>
+        <item><label ref="jr:itext('opted_out')"></label><value>opted_out</value></item>
+	    </select1>
+		
+	    <input bind="remarks"><label ref="jr:itext('remarks')"></label></input>
+		 
+		
+
+
+	</h:body>
+</h:html>

@@ -1,0 +1,256 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns="http://www.w3.org/2002/xforms"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:jr="http://openrosa.org/javarosa">
+
+<h:head>
+	<h:title>ClickLocation</h:title>
+	<meta jr:name="ClickLocation"/>
+	<model>
+
+	<instance>
+		<data version="1" uiVersion="1" xmlns:jrm="http://dev.commcarehq.org/jr/xforms" xmlns="http://app.datahq.org/moz/location">
+			<Meta>
+				<DeviceID/>
+				<TimeStart/>
+				<TimeEnd/>
+				<username/>
+				<chw_id/>
+				<uid/>
+				<CommCareVersion>1.0</CommCareVersion>
+			</Meta>
+			<TextSection0_data />
+			<START_TIME_AND_DATE_data />
+			<ENUMID_data />
+			<TextSection1_data />
+			<PROV_data />
+			<DIST_data />
+			<DIST_COD_data />
+			<POST_data />
+			<POST_COD_data />
+			<LOC_data />
+			<LOC_COD_data />
+			<LOCTYPE_data />
+			<VILLAGE_data />
+			<VILlAGE_COD_data />
+			<ENUM_data />
+			<SURVEYLOC_data />
+		</data>
+	</instance>
+
+	<bind id="hidden1" nodeset="/data/Meta/DeviceID" type="xsd:string" jr:preload="property" jr:preloadParams="DeviceID"/>
+	<bind id="hidden2" nodeset="/data/Meta/TimeStart" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="start"/>
+	<bind id="hidden3" nodeset="/data/Meta/TimeEnd" type="xsd:dateTime" jr:preload="timestamp" jr:preloadParams="end"/>
+	<bind id="hidden4" nodeset="/data/Meta/username" type="xsd:string" jr:preload="meta" jr:preloadParams="UserName"/>
+	<bind id="hidden5" nodeset="/data/Meta/chw_id" type="xsd:string" jr:preload="meta" jr:preloadParams="UserID"/>
+	<bind id="hidden6" nodeset="/data/Meta/uid" type="xsd:string" jr:preload="uid" jr:preloadParams="general"/>
+	<bind nodeset="/data/TextSection0_data" type="xsd:string" calculate="'TEXT_SECTION'" required="true()"/>
+	<bind nodeset="/data/START_TIME_AND_DATE_data" type="xsd:dateTime" calculate="if(/data/TextSection0_data != '', now(), '')" />
+	<bind nodeset="/data/ENUMID_data" type="xsd:string"  required="true()"/>
+	<bind nodeset="/data/TextSection1_data" type="xsd:string" calculate="'TEXT_SECTION'" required="true()"/>
+	<bind nodeset="/data/PROV_data" type="xsd:select1" required="true()" />
+	<bind nodeset="/data/DIST_data" type="xsd:string" required="true()" />
+	<bind nodeset="/data/DIST_COD_data" type="xsd:integer" required="true()" />
+	<bind nodeset="/data/POST_data" type="xsd:string" required="true()" />
+	<bind nodeset="/data/POST_COD_data" type="xsd:integer" required="true()" />
+	<bind nodeset="/data/LOC_data" type="xsd:string" required="true()" />
+	<bind nodeset="/data/LOC_COD_data" type="xsd:integer" required="true()" />
+	<bind nodeset="/data/LOCTYPE_data" type="xsd:select1" required="true()" />
+	<bind nodeset="/data/VILLAGE_data" type="xsd:string" required="true()" />
+	<bind nodeset="/data/VILlAGE_COD_data" type="xsd:integer" required="true()" />
+	<bind nodeset="/data/ENUM_data" type="xsd:integer" required="true()" />
+	<bind nodeset="/data/SURVEYLOC_data" type="geopoint" required="true()" />
+
+	<itext>
+		<translation lang="English">
+			<text id="TextSection0">
+				<value>Survey location confirmation</value>
+			</text>
+			<text id="TextSection0_hint">
+				<value>OK_TO_NEXT</value>
+			</text>
+			<text id="START_TIME_AND_DATE">
+				<value>The current date and time is:</value>
+			</text>
+			<text id="ENUMID">
+				<value>Enter your enumerator Identification number</value>
+			</text>
+			<text id="ENUMID_hint">
+				<value>"If you do not remember your enumerator ID, please ask your team leader"</value>
+			</text>
+			<text id="TextSection1">
+				<value>Next we will record the location as an administrative entity and record a GPS measurement</value>
+			</text>
+			<text id="PROV">
+				<value>Province</value>
+			</text>
+			<text id="PROV_item_0">
+				<value>Zambezia</value>
+			</text>
+			<text id="DIST">
+				<value>Enter District</value>
+			</text>
+			<text id="DIST_COD">
+				<value>Enter District Code</value>
+			</text>
+			<text id="POST">
+				<value>Enter Administrative Post</value>
+			</text>
+			<text id="POST_COD">
+				<value>Enter Administrative Post Code</value>
+			</text>
+			<text id="LOC">
+				<value>Enter Localidade</value>
+			</text>
+			<text id="LOC_COD">
+				<value>Enter Localidade code</value>
+			</text>
+			<text id="LOCTYPE">
+				<value>Select Locality type</value>
+			</text>
+			<text id="LOCTYPE_item_0">
+				<value>Rural</value>
+			</text>
+			<text id="LOCTYPE_item_1">
+				<value>Urban</value>
+			</text>
+			<text id="VILLAGE">
+				<value>Enter name of Bairro or Village</value>
+			</text>
+			<text id="VILlAGE_COD">
+				<value>Enter the code of the Bairro or Village</value>
+			</text>
+			<text id="ENUM">
+				<value>Enter the Enumeration Area Code</value>
+			</text>
+			<text id="SURVEYLOC">
+				<value>Saving the GPS coordinates by the house</value>
+			</text>
+			<text id="SURVEYLOC_hint">
+				<value>Make sure you have a view of the sky.</value>
+			</text>
+		</translation>
+		<translation lang="Portuguese" default="">
+			<text id="TextSection0">
+				<value>Confirmação de local</value>
+			</text>
+			<text id="START_TIME_AND_DATE">
+				<value>A data e hora atual:</value>
+			</text>
+			<text id="ENUMID">
+				<value>introduza o seu identificação enumerado</value>
+			</text>
+			<text id="ENUMID_hint">
+				<value>"Se você não se lembra do seu enumerador ID, por favor, pergunte ao seu chefe de equipa"</value>
+			</text>
+			<text id="TextSection1">
+				<value>Determinar o local para este estudo</value>
+			</text>
+			<text id="PROV">
+				<value>Escolha o nome da Provincia</value>
+			</text>
+			<text id="PROV_item_0">
+				<value>Zambézia</value>
+			</text>
+			<text id="DIST">
+				<value>Digite  o nome de Districto</value>
+			</text>
+			<text id="DIST_COD">
+				<value>Digite o codigo do Districto</value>
+			</text>
+			<text id="POST">
+				<value>Digite o nome de Posto Administrativo</value>
+			</text>
+			<text id="POST_COD">
+				<value>Digite o codigo de Posto Administrativo</value>
+			</text>
+			<text id="LOC">
+				<value>Digite o nome de localidade</value>
+			</text>
+			<text id="LOC_COD">
+				<value>Digite o codigo de Localidate</value>
+			</text>
+			<text id="LOCTYPE">
+				<value>Escolha o tipo de localidade</value>
+			</text>
+			<text id="LOCTYPE_item_0">
+				<value>Rural</value>
+			</text>
+			<text id="LOCTYPE_item_1">
+				<value>Urban</value>
+			</text>
+			<text id="VILLAGE">
+				<value>Digite o nome do Bairro ou Aldeia</value>
+			</text>
+			<text id="VILlAGE_COD">
+				<value>Digite o código do Bairro ou Aldeia</value>
+			</text>
+			<text id="ENUM">
+				<value>Digite o código de área de enumeração</value>
+			</text>
+			<text id="SURVEYLOC">
+				<value>Guardar as coordenadas GPS na área de enumeração</value>
+			</text>
+			<text id="SURVEYLOC_hint">
+				<value>Certifique-se de ter uma visão do céu.</value>
+			</text>
+		</translation>
+	</itext>
+	</model>
+</h:head>
+
+
+<h:body>
+
+<trigger ref="/data/TextSection0_data"><label ref="jr:itext('TextSection0')"/></trigger>
+
+
+<input ref="ENUMID_data">
+	<label ref="jr:itext('ENUMID')"/>
+	<hint ref="jr:itext('ENUMID_hint')"/>
+</input>
+<trigger ref="/data/TextSection1_data"><label ref="jr:itext('TextSection1')"/></trigger>
+
+<select1 ref="PROV_data">
+	<label ref="jr:itext('PROV')"/>
+		<item><label ref="jr:itext('PROV_item_0')" /><value>Zambezia</value></item>
+</select1>
+<input ref="DIST_data">
+	<label ref="jr:itext('DIST')"/>
+</input>
+<input ref="DIST_COD_data">
+	<label ref="jr:itext('DIST_COD')"/>
+</input>
+<input ref="POST_data">
+	<label ref="jr:itext('POST')"/>
+</input>
+<input ref="POST_COD_data">
+	<label ref="jr:itext('POST_COD')"/>
+</input>
+<input ref="LOC_data">
+	<label ref="jr:itext('LOC')"/>
+</input>
+<input ref="LOC_COD_data">
+	<label ref="jr:itext('LOC_COD')"/>
+</input>
+<select1 ref="LOCTYPE_data">
+	<label ref="jr:itext('LOCTYPE')"/>
+		<item><label ref="jr:itext('LOCTYPE_item_0')" /><value>Rural</value></item>
+		<item><label ref="jr:itext('LOCTYPE_item_1')" /><value>Urban</value></item>
+</select1>
+<input ref="VILLAGE_data">
+	<label ref="jr:itext('VILLAGE')"/>
+</input>
+<input ref="VILlAGE_COD_data">
+	<label ref="jr:itext('VILlAGE_COD')"/>
+</input>
+<input ref="ENUM_data">
+	<label ref="jr:itext('ENUM')"/>
+</input>
+<input ref="SURVEYLOC_data">
+	<label ref="jr:itext('SURVEYLOC')"/>
+	<hint ref="jr:itext('SURVEYLOC_hint')"/>
+</input>
+</h:body>
+</h:html>
