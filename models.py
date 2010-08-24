@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.files.storage import default_storage
 
-file_options = { "upload_to" : "xls2xform/files/%Y%m%d%H%M%S",
+file_options = { "upload_to" : "xls2xform/submissions/%Y%m%d%H%M%S",
                  "storage" : default_storage, }
 
 class Submission(models.Model):
