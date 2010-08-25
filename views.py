@@ -1,8 +1,11 @@
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from forms import SubmissionForm
 from models import Submission, XForm
 from xls2xform import write_xforms
+from django.conf import settings
+
 import os
 
 def convert_file(request):
@@ -34,5 +37,5 @@ def convert_file(request):
 
 
 def download_xform(request, path):
-	xml_data_file = open("%sxls2xform/files/%s" % (MEDIA_ROOT, path), "rb").read()
+	xml_data_file = open("%sxls2xform/%s" % (settings.MEDIA_ROOT, path), "rb").read()
 	return HttpResponse(xml_data_file, mimetype="application/download")
