@@ -28,7 +28,7 @@ def convert_file(request):
 				return render_to_response("list.html", {"list": XForm.objects.filter(submission=s)})
 			except Exception, e:
 				# record and display any error messages
-				s.error_msg = e.args[0]
+				s.error_msg = " ".join(e.args)
 				s.save()
 				return render_to_response("upload.html", {"msg": s.error_msg, "form": SubmissionForm(), "most_recent_survey": most_recent_survey})
 		else:
