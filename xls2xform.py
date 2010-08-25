@@ -17,6 +17,22 @@ from xml.dom.minidom import Document, parseString
 # sys.argv[1]
 
 def write_xforms(xls_file_path):
+    """Convert a properly formatted excel file into XForms for use
+    with Open Data Kit.
+
+    Description of how to format the excel file:
+
+    Supported Commands:
+    (begin|end) (survey|group|repeat)
+    q (string|int|geopoint|decimal|date|picture|note)
+    q (select|select1) list-name
+
+    Labels are interpreted as XML, this is great for doing things with
+    the output tag. We want to make referencing variables easier,
+    maybe $varname.
+
+    We do not support multiple languages yet, but we will.
+    """
     workbook = open_workbook(xls_file_path)
     m = re.search(r"^(.*/)", xls_file_path)
     folder = m.group(0) if m else ""
@@ -26,7 +42,7 @@ def write_xforms(xls_file_path):
 
     # set up dictionary of multiple choice lists
     # the first row has the column headers
-    s = workbook.sheet_by_name('Choices')
+    s = workbook.sheet_by_name('Select Choices')
     choices = {}
     for row in range(1,s.nrows):
         c = {}
@@ -39,7 +55,7 @@ def write_xforms(xls_file_path):
             choices[list_name] = [c]
 
     for sheet in workbook.sheets():
-        if sheet.name != 'Choices':
+        if sheet.name != 'Select Choices':
 
             doc = Document()
 
@@ -66,20 +82,16 @@ def write_xforms(xls_file_path):
             model.appendChild(instance)
 
             def path(a,b):
-            # Return the xpath from node a to node b
+                """Return the xpath from node a to node b."""
                 if a.isSameNode(b):
                     return ''
                 return path(a,b.parentNode) + '/' + b.localName
 
             def addLabel(node,label):
+                """Parse label as XML and make it a child of node."""
                 if label:
-                    if label[0:5]=="XML: ":
-                        xmlstr = '<?xml version="1.0" ?><label>' + label[5:] + '</label>'
-                        node.appendChild( parseString(xmlstr).documentElement )
-                    else:
-                        lnode = doc.createElement("label")
-                        lnode.appendChild( doc.createTextNode(label ) )
-                        node.appendChild(lnode)
+                    xmlstr = '<?xml version="1.0" ?><label>' + label + '</label>'
+                    node.appendChild( parseString(xmlstr).documentElement )
 
             # fill in the content of the survey
             # want to get the title of the survey from the sheet name
