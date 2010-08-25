@@ -29,3 +29,8 @@ def convert_file(request):
         else:
             # invalid forms should try uploading again
             return render_to_response("upload.html", {"form": populated_form})
+
+
+def download_xform(request, path):
+	xml_data_file = open("%sxls2xform/files/%s" % (MEDIA_ROOT, path), "rb").read()
+	return HttpResponse(xml_data_file, mimetype="application/download")
