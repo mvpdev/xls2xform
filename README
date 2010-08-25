@@ -25,12 +25,14 @@ emulator, then run the command
 
 # urls.py Configuration:
 --------------------
-	from xls2xform.views import convert_file
+# Copy the following into urls.py
 
-	urlpatterns = patterns('',
-			(r'^xls2xform/', convert_file),
-			(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', 
-				{'document_root': '/path/to/xls2xform/xls2xform/webcontent'}),
-			(r'^xform_files/(?P<path>.*)$', 'django.views.static.serve',
-				{'document_root': '/path/to/xls2xform/xls2xform/files'})
-	)
+from xls2xform.views import convert_file
+from xls2xform.views import download_xform
+
+urlpatterns = patterns('',
+		(r'^xls2xform/', convert_file),
+		(r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
+			{'document_root': '%swebcontent' % MEDIA_ROOT }),
+		(r'^xform_files/(?P<path>.*)$', download_xform)
+)
