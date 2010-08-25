@@ -1,5 +1,5 @@
 *~
 *.pyc
-submissions
+submissions/*
 ._*
 .DS_Store
