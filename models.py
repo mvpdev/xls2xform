@@ -13,5 +13,8 @@ class XForm(models.Model):
     submission = models.ForeignKey(Submission)
     file = models.FileField(**file_options)
 
-    def __unicode__(self):
-        return self.file.path
+	def __unicode__(self):
+		return self.uri()
+
+	def uri(self):
+		return re.sub(r"^/(.*xls2xform.files)/", "/xform_files/", self.file.path)
