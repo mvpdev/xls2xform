@@ -23,17 +23,35 @@
 </ul>
 	<div class="wrap" id="maintab">
 
-<div class="sect mid">  <h1><a href="#">Converted File</a></h1>
-  <div id="download_file"><ol id="filelist">
-  {% for item in list %}
-  <li><a href="{{ item }}" class="">Download: <span class="filename">{{item}}</span></a></li>
-  {% endfor %}
-</ol>
-<br style="clear:both" /><br style="clear:both" /></div>
+<div class="sect mid">
+	<h1><a href="#">Converted File{{ "s" }}</a></h1>
+	<div id="download_file">
+		<ol id="filelist">
+{% for item in list %}
+			<li>
+				<a href="{{ item }}" target="_BLANK">Download: <span class="filename">{{ item }}</span></a>
+			</li>
+{% endfor %}
+		</ol>
+<script type="text/javascript">
+//<![CDATA[
+(function(j$){
+	j$('ol#filelist span.filename').each(function(li){
+		var lname = this.innerHTML;
+		var fname = lname.match(new RegExp('xform_files/(.+)\/(.*)'))[2]
+		j$(this).text(fname);
+	})
+})(jQuery);
+//]]>
+</script>
+	<br style="clear:both" /><br style="clear:both" />
+	</div>
 </div>
-<div class="sect top">  <h1><a href="#">Back</a></h1>
-
-  <div style="height: 50px;padding:12px 0 0"><a href="/xls2xform" class="bigbutton">Upload a new XLS</a></div>
+<div class="sect top">
+	<h1><a href="#">Back</a></h1>
+	<div style="height: 50px;padding:12px 0 0">
+		<a href="/xls2xform" class="bigbutton">Upload a new XLS</a>
+	</div>
 </div>
 </div>
 </div>
