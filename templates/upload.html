@@ -43,13 +43,18 @@
 </head>
 <body>
 <div id="tabs">
-	<ul><li>
-	<a href="#maintab">
-		XLS &raquo; XForm Converter
-	</a>
-
-</li>
-</ul>
+	<ul>
+		<li>
+			<a href="#maintab">
+				XLS &raquo; XForm Converter
+			</a>
+		</li>
+		<li>
+			<a href="#instructions">
+				Instructions for Use
+			</a>
+		</li>
+	</ul>
 	<div class="wrap" id="maintab">
 
 <div class="sect top"><h1><a href="#">XLS Template</a></h1><div class="instructions">
@@ -113,6 +118,15 @@
   <p class="info">With the user's permission, the information uploaded through this tool will only be used to help improve the system.<br />
 	This tool was set up by the ChildCount team at the Earth Institute at Columbia University</p>
 </div>
+</div>
+<div id="instructions">
+	<div class="codewrap">
+	<code>
+		{% for help_line in help_lines %}
+{{ help_line }}<br />
+		{% endfor %}
+	</code>
+	</div>
 </div>
 </div>
 <script type="text/javascript">
