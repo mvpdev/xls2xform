@@ -1,6 +1,3 @@
-Intro
------
-
 xls2xform is a script to convert properly formatted excel files into
 xforms for ODK. Running the following command:
 
@@ -22,17 +19,17 @@ emulator, then run the command
 Document all features
 ---------------------
 
-	XML tag
-	max length of multiple choice value, tag?
+XML tag
+max length of multiple choice value, tag?
 
 
 Embedding this app in a django project
 --------------------------------------
 urls.py:
 
-from django.conf.urls.defaults import *
-
-urlpatterns = patterns('',
-                       (r'^', include('simple.xls2xform.urls')),
-)
+    from django.conf.urls.defaults import *
+    
+    urlpatterns = patterns('',
+        (r'^', include('simple.xls2xform.urls')),
+    )
 
