@@ -34,10 +34,10 @@ def convert_file(request):
                 # record and display any error messages
                 s.error_msg = e.__str__()
                 s.save()
-                return render_to_response("upload.html", {"msg": s.error_msg, "form": SubmissionForm(), "most_recent_survey": most_recent_survey, "help_string": help_string})
+                return render_to_response("upload.html", {"msg": s.error_msg, "form": SubmissionForm(), "most_recent_survey": most_recent_survey, "help_lines": help_lines})
         else:
             # invalid forms should try uploading again
-            return render_to_response("upload.html", {"form": populated_form, "most_recent_survey": most_recent_survey, "help_string": help_string})
+            return render_to_response("upload.html", {"form": populated_form, "most_recent_survey": most_recent_survey, "help_lines": help_lines})
 
 
 def download_xform(request, path):
