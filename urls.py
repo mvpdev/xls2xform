@@ -10,8 +10,10 @@ from views import download_xform
 # want to use this directory (pwd) rather than media_root
 
 urlpatterns = patterns('',
-                       (r'^$', convert_file),
-                       (r'^example_xls/(?P<path>.*)$', 'django.views.static.serve',
-			{'document_root': settings.MEDIA_ROOT + 'xls2xform/example_xls'}),
-                       (r'^(?P<path>submissions/.*)$', download_xform)
-                       )
+                        (r'^$', convert_file),
+                        (r'^sm/(?P<path>.*)$', 'django.views.static.serve',
+							{'document_root': '%sxls2xform/webcontent' % settings.MEDIA_ROOT}),
+                        (r'^example_xls/(?P<path>.*)$', 'django.views.static.serve',
+							{'document_root': settings.MEDIA_ROOT + 'xls2xform/example_xls'}),
+                        (r'^(?P<path>submissions/.*)$', download_xform)
+                    )

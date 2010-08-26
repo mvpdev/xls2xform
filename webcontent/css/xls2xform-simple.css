@@ -9,9 +9,14 @@ body {
 .ui-tabs {
 	background-color: #efefef;
 }
-#maintab {
+#maintab, #instructions {
 	padding: 0;
 	background-color: #fff;
+}
+#instructions div.codewrap {
+	margin: 10px;
+	padding: 14px;
+	border: 1px solid #dedede;
 }
 h1 {
 	margin: 0;
