@@ -21,4 +21,8 @@ class XForm(models.Model):
         return self.uri()
 
     def uri(self):
-        return re.sub(r"^/(.*xls2xform.files)/", "/xform_files/", self.file.path)
+        """For downloading XForms we want this path to be relative to
+        the app directory."""
+        m = re.search(r"xls2xform(.*)", self.file.path)
+        assert m, "This XForm isn't stored in the app directory: " + self.file.path
+        return m.group(0)
