@@ -1,9 +1,10 @@
-# Intro:
---------------------
+Intro
+-----
+
 xls2xform is a script to convert properly formatted excel files into
 xforms for ODK. Running the following command:
 
-> python xls2xform.py surveys.xls
+    python xls2xform.py surveys.xls
 
 creates an xform for each worksheet in surveys.xls (excluding the
 sheet named "Choices", which describes multiple choice options). This
@@ -15,15 +16,23 @@ onto my emulator.
 For recording the emulator use xwininfo to get the window id of the
 emulator, then run the command
 
-> recordmydesktop --windowid 0x4200003 --no-sound
+    recordmydesktop --windowid 0x4200003 --no-sound
 
 
-# Document all features:
---------------------
+Document all features
+---------------------
+
 	XML tag
 	max length of multiple choice value, tag?
 
-# urls.py Configuration:
---------------------
-# Replace urls.py with the following import
-from xls2xform.urls import *
+
+Embedding this app in a django project
+--------------------------------------
+urls.py:
+
+from django.conf.urls.defaults import *
+
+urlpatterns = patterns('',
+                       (r'^', include('simple.xls2xform.urls')),
+)
+
