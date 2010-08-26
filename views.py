@@ -41,5 +41,5 @@ def convert_file(request):
 
 
 def download_xform(request, path):
-    xml_data_file = open("%sxls2xform/%s" % (settings.MEDIA_ROOT, path), "rb").read()
+    xml_data_file = open("xls2xform/" + path, "rb").read()
     return HttpResponse(xml_data_file, mimetype="application/download")
