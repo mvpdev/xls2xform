@@ -1,26 +1,21 @@
-xls2xform is a script to convert properly formatted excel files into
-xforms for ODK. Running the following command:
+`xls2xform` is a Python script designed to make writing surveys for
+Open Data Kit a snap. To start, check out some files in `example_xls`
+to get an idea of the survey language accepted by the script.
 
-    python xls2xform.py surveys.xls
+To use the script run the following command:
 
-creates an xform for each worksheet in surveys.xls (excluding the
-sheet named "Choices", which describes multiple choice options). This
-is a powerful way to create xforms, need to compare to alternatives.
+    python xls2xform.py file.xls
 
-updateforms.sh is a shell script I use to load my newly created forms
-onto my emulator.
-
-For recording the emulator use xwininfo to get the window id of the
-emulator, then run the command
-
-    recordmydesktop --windowid 0x4200003 --no-sound
-
+This creates an xform for each worksheet in surveys.xls (excluding the
+sheet named "Select Choices", which describes multiple choice
+options).
 
 Document all features
 ---------------------
 
-XML tag
-max length of multiple choice value, tag?
+* I need to do this in `xls2xform.py`
+* XML tag
+* max length of multiple choice value, tag?
 
 
 Embedding this app in a django project
@@ -30,6 +25,6 @@ urls.py:
     from django.conf.urls.defaults import *
     
     urlpatterns = patterns('',
-        (r'^', include('simple.xls2xform.urls')),
+        (r'^', include('project-name.xls2xform.urls')),
     )
 
