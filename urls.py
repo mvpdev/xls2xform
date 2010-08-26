@@ -2,18 +2,17 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 from django.conf.urls.defaults import *
-from django.conf import settings
 
 from views import convert_file
 from views import download_xform
 
-# want to use this directory (pwd) rather than media_root
+# all paths are relative to the django project
 
 urlpatterns = patterns('',
-                        (r'^$', convert_file),
-                        (r'^sm/(?P<path>.*)$', 'django.views.static.serve',
-							{'document_root': '%sxls2xform/webcontent' % settings.MEDIA_ROOT}),
-                        (r'^example_xls/(?P<path>.*)$', 'django.views.static.serve',
-							{'document_root': settings.MEDIA_ROOT + 'xls2xform/example_xls'}),
-                        (r'^(?P<path>submissions/.*)$', download_xform)
-                    )
+                       (r'^$', convert_file),
+                       (r'^sm/(?P<path>.*)$', 'django.views.static.serve',
+                        {'document_root': 'xls2xform/webcontent'}),
+                       (r'^example_xls/(?P<path>.*)$', 'django.views.static.serve',
+                        {'document_root': 'xls2xform/example_xls'}),
+                       (r'^(?P<path>submissions/.*)$', download_xform)
+                       )
