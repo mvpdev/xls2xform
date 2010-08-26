@@ -111,6 +111,10 @@ def write_xforms(xls_file_path):
 
                 command = q.pop("command")
 
+                # skip blank commands
+                if not command:
+                    continue
+
                 if "tag" in q:
                     tag = q.pop("tag")
                     if re.search(r"\s", tag):
