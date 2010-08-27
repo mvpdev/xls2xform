@@ -17,21 +17,21 @@ from xml.dom.minidom import Document, parseString
 # sys.argv[1]
 
 def write_xforms(xls_file_path):
-    """Convert a properly formatted excel file into XForms for use
-    with Open Data Kit.
+    """# Convert a properly formatted excel file into XForms for use
+with Open Data Kit.
 
-    Description of how to format the excel file:
+## Description of how to format the excel file:
 
-    Supported Commands:
-    (begin|end) (survey|group|repeat)
-    q (string|int|geopoint|decimal|date|picture|note)
-    q (select|select1) list-name
+## Supported Commands:
+* (begin|end) (survey|group|repeat)
+* q (string|int|geopoint|decimal|date|picture|note)
+* q (select|select1) list-name
 
-    Labels are interpreted as XML, this is great for doing things with
-    the output tag. We want to make referencing variables easier,
-    maybe $varname.
+Labels are interpreted as XML, this is great for doing things with
+the output tag. We want to make referencing variables easier,
+maybe $varname.
 
-    We do not support multiple languages yet, but we will.
+We do not support multiple languages yet, but we will.
     """
     workbook = open_workbook(xls_file_path)
     m = re.search(r"^(.*/)", xls_file_path)

@@ -8,12 +8,12 @@ from forms import SubmissionForm
 from models import Submission, XForm
 from xls2xform import write_xforms
 from django.conf import settings
-
+import markdown
 import os
 
 def convert_file(request):
     most_recent_survey = "surveys00.xls"
-    help_lines = open('xls2xform/xls2xform.py').read().split('"""')[1].split("\n") # A bit crude, but functional
+	documentation = markdown.markdown(write_xforms.__doc__)
     if request.method != "POST":
         # if nothing's posted give them an empty form
         return render_to_response("upload.html", {"form": SubmissionForm(), "most_recent_survey": most_recent_survey, "help_lines": help_lines})
