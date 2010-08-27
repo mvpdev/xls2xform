@@ -17,12 +17,12 @@ from xml.dom.minidom import Document, parseString
 # sys.argv[1]
 
 def write_xforms(xls_file_path):
-    """# Convert a properly formatted excel file into XForms for use
-with Open Data Kit.
+    """## Convert a properly formatted excel file into XForms for use with Open Data Kit.
 
-## Description of how to format the excel file:
+### How to format the excel file:
 
-## Supported Commands:
+**Supported Commands:**
+
 * (begin|end) (survey|group|repeat)
 * q (string|int|geopoint|decimal|date|picture|note)
 * q (select|select1) list-name
@@ -32,7 +32,7 @@ the output tag. We want to make referencing variables easier,
 maybe $varname.
 
 We do not support multiple languages yet, but we will.
-    """
+"""
     workbook = open_workbook(xls_file_path)
     m = re.search(r"^(.*/)", xls_file_path)
     folder = m.group(0) if m else ""
