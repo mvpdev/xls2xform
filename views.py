@@ -13,10 +13,10 @@ import os
 
 def convert_file(request):
     most_recent_survey = "surveys00.xls"
-	documentation = markdown.markdown(write_xforms.__doc__)
+    documentation = markdown.markdown(write_xforms.__doc__)
     if request.method != "POST":
         # if nothing's posted give them an empty form
-        return render_to_response("upload.html", {"form": SubmissionForm(), "most_recent_survey": most_recent_survey, "help_lines": help_lines})
+        return render_to_response("upload.html", {"form": SubmissionForm(), "most_recent_survey": most_recent_survey, "documentation": documentation})
     else:
         # otherwise pull the data out of the request and process it
         populated_form = SubmissionForm(request.POST, request.FILES)
@@ -34,10 +34,10 @@ def convert_file(request):
                 # record and display any error messages
                 s.error_msg = e.__str__()
                 s.save()
-                return render_to_response("upload.html", {"msg": s.error_msg, "form": SubmissionForm(), "most_recent_survey": most_recent_survey, "help_lines": help_lines})
+                return render_to_response("upload.html", {"msg": s.error_msg, "form": SubmissionForm(), "most_recent_survey": most_recent_survey, "documentation": documentation})
         else:
             # invalid forms should try uploading again
-            return render_to_response("upload.html", {"form": populated_form, "most_recent_survey": most_recent_survey, "help_lines": help_lines})
+            return render_to_response("upload.html", {"form": populated_form, "most_recent_survey": most_recent_survey, "documentation": documentation})
 
 
 def download_xform(request, path):

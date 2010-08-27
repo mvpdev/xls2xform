@@ -118,12 +118,8 @@
 	<a href="/example_xls/{{ most_recent_survey }}" class="bigbutton">Download XLS Template</a>
 
 	<h1>Documentation</h1>
-	<div class="codewrap">
-		<code>
-		{% for help_line in help_lines %}
-{{ help_line }}<br />
-		{% endfor %}
-		</code>
+	<div class="docs">
+		{{ documentation|safe }}
 	</div>
 </div>
 <script type="text/javascript">
