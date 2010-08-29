@@ -28,3 +28,8 @@ urls.py:
         (r'^', include('project-name.xls2xform.urls')),
     )
 
+
+In the Production App, urls.py is not used to serve static content
+--------------------------------------
+
+All static directives set in urls.py need to be transferred over to the Apache configuration file in order to work with mod_wsgi.
