@@ -10,6 +10,22 @@ This creates an xform for each worksheet in surveys.xls (excluding the
 sheet named "Select Choices", which describes multiple choice
 options).
 
+
+How to use `xls2xform` with Open Data Kit
+-----------------------------------------
+0. Design survey. What questions does this survey intend to answer?
+   What survey data is needed to answer these questions?
+1. Write survey in Excel survey language described on
+   http://xform.childcount.com
+
+   I will illustrate this step by showing how I translated Vijay's
+   survey questions on infrastructure.
+2. Convert the Excel file into XForms for Open Data Kit on
+   http://xform.childcount.com
+3. Upload the XForms to http://childcount.appspot.com
+4. Download the XForms to the phone from http://childcount.appspot.com
+5. Enter data on the phone
+
 Document all features
 ---------------------
 
