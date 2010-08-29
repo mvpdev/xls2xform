@@ -10,11 +10,22 @@
 # a python program for translating a spreadsheet into an xform
 
 import re
+import os
 import sys
 from xlrd import open_workbook
 from xml.dom.minidom import Document, parseString
 
-# sys.argv[1]
+def path(a,b):
+    """Return the xpath from node a to node b."""
+    if a.isSameNode(b):
+        return ''
+    return path(a,b.parentNode) + '/' + b.localName
+
+def addLabel(node,label):
+    """Parse label as XML and make it a child of node."""
+    if label:
+        xmlstr = '<?xml version="1.0" ?><label>' + label + '</label>'
+        node.appendChild( parseString(xmlstr).documentElement )
 
 def write_xforms(xls_file_path):
     """Convert a properly formatted excel file into XForms for use
@@ -34,14 +45,14 @@ def write_xforms(xls_file_path):
     We do not support multiple languages yet, but we will.
     """
     workbook = open_workbook(xls_file_path)
-    m = re.search(r"^(.*/)", xls_file_path)
-    folder = m.group(0) if m else ""
+    folder = os.path.dirname(xls_file_path)
 
-    # return a list of surveys written
+    # this function returns a list of the surveys written
     surveys = []
 
     # set up dictionary of multiple choice lists
     # the first row has the column headers
+    # choices[list_name] is a list of choice dictionaries
     s = workbook.sheet_by_name('Select Choices')
     choices = {}
     for row in range(1,s.nrows):
@@ -80,18 +91,6 @@ def write_xforms(xls_file_path):
             head.appendChild(title)
             head.appendChild(model)
             model.appendChild(instance)
-
-            def path(a,b):
-                """Return the xpath from node a to node b."""
-                if a.isSameNode(b):
-                    return ''
-                return path(a,b.parentNode) + '/' + b.localName
-
-            def addLabel(node,label):
-                """Parse label as XML and make it a child of node."""
-                if label:
-                    xmlstr = '<?xml version="1.0" ?><label>' + label + '</label>'
-                    node.appendChild( parseString(xmlstr).documentElement )
 
             # fill in the content of the survey
             # want to get the title of the survey from the sheet name
@@ -201,3 +200,7 @@ def write_xforms(xls_file_path):
             f.close()
             surveys.append(outfile)
     return surveys
+
+# call write_xforms on the absolute path of the excel file passed as
+# an argument
+write_xforms(os.path.join(os.getcwd(), sys.argv[1]))
