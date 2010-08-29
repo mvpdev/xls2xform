@@ -193,7 +193,7 @@ def write_xforms(xls_file_path):
             else:
                 raise Exception("The %s worksheet never called the begin survey command." % sheet.name)
 
-            outfile = folder + sheet.name + ".xml"
+            outfile = os.path.join(folder, sheet.name + ".xml")
             f = open(outfile, "w")
             # f.write( doc.toprettyxml(indent="  ").encode('utf-8') )
             f.write( doc.toxml().encode('utf-8') )
