@@ -48,6 +48,12 @@ urls.py:
         (r'^', include('project-name.xls2xform.urls')),
     )
 
+In the Production App, urls.py is not used to serve static content
+------------------------------------------------------------------
+
+All static directives set in urls.py need to be transferred over to
+the Apache configuration file in order to work with mod_wsgi.
+
 Note on using Android Emulator
 ------------------------------
 #!/bin/bash
@@ -57,4 +63,4 @@ sudo cp *.xml /media/sdcard/odk/forms/
 sudo umount /media/sdcard/
 /files/work/ODK/android-sdk-linux_86/tools/emulator -avd my_avd &
 
--# http://blog.jayway.com/2009/04/22/working-with-sd-cards-in-the-android-emulator/
+# http://blog.jayway.com/2009/04/22/working-with-sd-cards-in-the-android-emulator/

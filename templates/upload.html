@@ -8,6 +8,8 @@
 	
 	<link type="text/css" href="/sm/css/Aristo/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />	
 	<link href="/sm/css/xls2xform-simple.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/sm/images/cc-favicon.png" type="image/x-icon" />
+    <link rel="icon" href="/sm/images/cc-favicon.png" type="image/x-icon" />
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
@@ -29,7 +31,6 @@
 			function checkSubmittable() {
 				this.submittable(j$('#id_file').val()!=="");
 			}
-
 			return {
 				submittable: submittable,
 				checkSubmittable: checkSubmittable,
@@ -46,50 +47,37 @@
 	<ul>
 		<li>
 			<a href="#maintab">
-				XLS &raquo; XForm Converter
+				Converter
 			</a>
 		</li>
 		<li>
 			<a href="#instructions">
-				Instructions for Use
+				Documentation
 			</a>
 		</li>
 	</ul>
-	<div class="wrap" id="maintab">
-
-<div class="sect top"><h1><a href="#">XLS Template</a></h1><div class="instructions">
-	<p class="info">This custom designed XLS template can be filled with XForm field information and converted to XForm.</p>
-	<a href="/example_xls/{{ most_recent_survey }}" class="bigbutton">Download XLS Template</a>
-</div>
-</div>
-<div class="sect mid">  <h1><a href="#">Uploader</a></h1>
-
-  <div class="" id="select_file">
-	{% if msg %}
-	<p class="error">
-		{{ msg }}
-	</p>
-	{% endif %}
-	{% if form %}
+	<div class="content-box" id="maintab">
+		<h1>Upload</h1>
+  		<div class="" id="select_file">
+{% if msg %}
+			<p class="error">{{ msg }}</p>
+{% endif %}
+{% if form %}
+	<p class="advice">Use the Uploader to turn properly formatted XLS files into XForms. See the documentation tab to read how to fill out the <a href="/example_xls/{{ most_recent_survey }}">XLS template</a>.</p>
 	<table style="width:100%">
 		<tr>
 			<td>
 	<!-- note: action is the url this form goes to after submitting. -->
-	<form enctype="multipart/form-data" method="post" action="/">
-	{{ form.as_p }}
-	</p>
-	</form>
-	</td>
-	<td>
-		<a href="javascript:xlsf.submitForm()" class="bigbutton disabled" id="convert_button">
-			Convert to XForm
-		</a>
-	</td>
-	</tr>
-	</table>
-	{% endif %}
-	
+<form enctype="multipart/form-data" method="post" action="/">
+{{ form.as_p }}
 </form>
+			</td>
+			<td>
+<a href="javascript:xlsf.submitForm()" class="bigbutton disabled" id="convert_button">Convert to XForm</a>
+			</td>
+		</tr>
+	</table>
+{% endif %}
 
 <script type="text/javascript">
 //<![CDATA[
@@ -110,35 +98,39 @@
 
 //]]>
 </script>
-</div>
-</div>
-<div class="sect bot">
-  <h1><a href="#">Privacy Policy</a></h1>
+		</div>
 
-  <p class="info">With the user's permission, the information uploaded through this tool will only be used to help improve the system.<br />
-	This tool was set up by the ChildCount team at the Earth Institute at Columbia University</p>
+	<h1>Privacy Policy</h1>
+	<p class="info">With the user's permission, the information uploaded through this tool will only be used to help improve the system.</p>
+
+  	<h1>Support</h1>
+  	<p class="info">
+		Check out the <a href="#">Google Groups</a> page if you want clarification on how to use this tool.
+  	</p>
+
+	<h1>Source Code</h1>
+	<p class="info">Want to contribute to this tool? View this project on <a href="http://github.com/amarder/xls2xform">GitHub</a>.</p>
 </div>
-</div>
-<div id="instructions">
-	<div class="codewrap">
-	<code>
-		{% for help_line in help_lines %}
-{{ help_line }}<br />
-		{% endfor %}
-	</code>
+<div class="content-box" id="instructions">
+
+	<h1>XLS Template</h1>
+	<p class="info">This custom designed XLS template can be filled with XForm field information and converted to XForm.</p>
+	<a href="/example_xls/{{ most_recent_survey }}" class="bigbutton">Download XLS Template</a>
+
+	<h1>Documentation</h1>
+	<div class="docs">
+		{{ documentation|safe }}
 	</div>
-</div>
 </div>
 <script type="text/javascript">
 //<![CDATA[
 (function(j$){
-	/*-- jQuery-UI initializers
-	--*/
+/*-- jQuery-UI initializers --*/
 	j$('#tabs').tabs();
 	j$('.bigbutton').button();
 })(jQuery);
-
 //]]>
 </script>
+<script src="/sm/js/make-pretty-shade.js"></script>
 </body>
 </html>

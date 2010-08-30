@@ -8,61 +8,59 @@
 	
 	<link type="text/css" href="/sm/css/Aristo/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />	
 	<link href="/sm/css/xls2xform-simple.css" rel="stylesheet" type="text/css" />
+	<link rel="shortcut icon" href="/sm/images/cc-favicon.png" type="image/x-icon" />
+	<link rel="icon" href="/sm/images/cc-favicon.png" type="image/x-icon" />
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
-
 </head>
 <body>
 <div id="tabs">
-	<ul><li>
-	<a href="#maintab">
-		XLS &raquo; XForm Converter
-	</a>
-</li>
-</ul>
-	<div class="wrap" id="maintab">
-
-<div class="sect mid">
-	<h1><a href="#">Converted File{{ "s" }}</a></h1>
-	<div id="download_file">
+	<ul>
+		<li>
+			<a href="#maintab">
+				Converter
+			</a>
+		</li>
+	</ul>
+	<div class="content-box" id="maintab">
+		<h1>Converted File</h1>
 		<ol id="filelist">
-{% for item in list %}
+		{% for item in list %}
 			<li>
 				<a href="{{ item }}" target="_BLANK">Download: <span class="filename">{{ item }}</span></a>
 			</li>
-{% endfor %}
+		{% endfor %}
 		</ol>
-<script type="text/javascript">
-//<![CDATA[
-(function(j$){
-	j$('ol#filelist span.filename').each(function(li){
-		var lname = this.innerHTML;
-		var fname = lname.match(new RegExp('xform_files/(.+)\/(.*)'))[2]
-		j$(this).text(fname);
-	})
-})(jQuery);
-//]]>
-</script>
-	<br style="clear:both" /><br style="clear:both" />
-	</div>
-</div>
-<div class="sect top">
-	<h1><a href="#">Back</a></h1>
-	<div style="height: 50px;padding:12px 0 0">
-		<a href="/" class="bigbutton">Upload a new XLS</a>
-	</div>
-</div>
-</div>
-</div>
-<script type="text/javascript">
-//<![CDATA[
-(function(j$){
-	j$('#tabs').tabs();
-	j$('.bigbutton').button();
-})(jQuery);
+		<script type="text/javascript">
+		//<![CDATA[
+		(function(){
+			$('ol#filelist span.filename').each(function(li){
+				var lname = this.innerHTML.split("/");
+				var fname = lname[lname.length - 1];
+				$(this).text(fname);
+			})
+		})(jQuery);
+		//]]>
+		</script>
+<br style="clear:both" /><br style="clear:both" />
+  	<h1>Support</h1>
+  	<p class="info">
+		Check out the <a href="#">Google Groups</a> page if you want clarification on how to use this tool.
+  	</p>
 
+	<h1>Source Code</h1>
+	<p class="info">Want to contribute to this tool? View this project on <a href="http://github.com/amarder/xls2xform">GitHub</a>.</p>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+(function(j$){
+/*-- jQuery-UI initializers --*/
+	$('#tabs').tabs();
+	$('.bigbutton').button();
+})();
 //]]>
 </script>
+<script src="/sm/js/make-pretty-shade.js"></script>
 </body>
 </html>
