@@ -1,73 +1,83 @@
-# useful piece on adding functions to xforms:
-# http://groups.google.com/group/open-data-kit/browse_thread/thread/325a81f8016d618f
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-# learn how to handle languages
-# acknowledgements
-# gps, bar code scanner, photos, ...
-# review widget
-
-# xls2xform.py by Andrew Marder 6/22/2010
-# a python program for translating a spreadsheet into an xform
+"""A Python script to convert properly formatted excel files into
+XForms for use with Open Data Kit."""
 
 import os, re, sys
 from xlrd import open_workbook
 from xml.dom.minidom import Document, parseString
 
-def path(a,b):
-    """Return the xpath from node a to node b."""
-    if a.isSameNode(b):
-        return ''
-    return path(a,b.parentNode) + '/' + b.localName
+class ParseError(Exception):
+    def __init__(self, type, info):
+        self.type = type
+        self.info = info
 
-def addLabel(node,label):
-    """Parse label as XML and make it a child of node."""
-    if label:
-        xmlstr = '<?xml version="1.0" ?><label>' + label + '</label>'
-        node.appendChild( parseString(xmlstr).documentElement )
+def xpath(a, b):
+    """Return the XPath from node a to node b, assumes b is a descendant
+    of a."""
+    if a.isSameNode(b):
+        return ""
+    return xpath(a, b.parentNode) + "/" + b.localName
+
+def add_label(xml_str, node):
+    """Add a label to node's list of children, the XML contained in
+    that label comes from xml_str.
+
+    We want to make referencing variables easier, maybe using
+    $varname."""
+    if xml_str:
+        I THINK I NEED TO USE UNICODE STRINGS HERE
+        s = '<?xml version="1.0" ?><label>' + xml_str + "</label>"
+        node.appendChild( parseString(s).documentElement )
+
+def construct_choice_lists(sheet):
+    """Return a dictionary of multiple choice lists from the Excel
+    Worksheet 'sheet'.
+
+    The Worksheet named 'Select Choices' defines the choices for
+    all multiple choice questions. This sheet must have three
+    columns with the following headers: 'list name', 'value', and
+    'label'. Each row below the columns headers describes a single
+    choice option, the value in the 'list name' column is the name
+    of the list of multiple choice options that this option
+    belongs to. The 'value' column specifies the value that will
+    be stored in the database when this option is chosen, and the
+    'label' column is what the surveyor will see on the phone's
+    screen."""
+    d = {}
+    for row in range(1,sheet.nrows):
+        c = {}
+        for col in range(0,sheet.ncols):
+            c[sheet.cell(0,col).value] = sheet.cell(row,col).value
+        list_name = c.pop("list name")
+        if list_name in d:
+            d[list_name].append(c)
+        else:
+            d[list_name] = [c]
+    return d
+
 
 def write_xforms(xls_file_path):
-    """## Convert a properly formatted excel file into XForms for use with Open Data Kit.
+    """Convert a properly formatted excel file into XForms for use with
+    Open Data Kit. Return a list of all the XForms created.
 
-### How to format the excel file:
+    begin_command ::= begin (survey|group|repeat)
+    end_command ::= end (survey|group|repeat)
+    q_command ::= q (string|int|geopoint|decimal|date|picture|note|select_choices)
+    select_choices ::= (select|select1) list_name
 
-**Supported Commands:**
-
-* (begin|end) (survey|group|repeat)
-* q (string|int|geopoint|decimal|date|picture|note)
-* q (select|select1) list-name
-
-Labels are interpreted as XML, this is great for doing things with
-the output tag. We want to make referencing variables easier,
-maybe $varname.
-
-We do not support multiple languages yet, but we will.
-"""
-    # this function returns a list of the surveys written
-    surveys = []
-
-    if not re.search(r"\.xls$", xls_file_path):
-        return surveys
+    We do not support multiple languages yet, but we will."""
+    xforms = []
 
     workbook = open_workbook(xls_file_path)
     folder = os.path.dirname(xls_file_path)
 
-    # set up dictionary of multiple choice lists
-    # the first row has the column headers
-    # choices[list_name] is a list of choice dictionaries
-    s = workbook.sheet_by_name('Select Choices')
-    choices = {}
-    for row in range(1,s.nrows):
-        c = {}
-        for col in range(0,s.ncols):
-            c[s.cell(0,col).value] = s.cell(row,col).value
-        list_name = c.pop("list name")
-        if list_name in choices:
-            choices[list_name].append(c)
-        else:
-            choices[list_name] = [c]
+    choice_sheet = "Select Choices"
+    choices = construct_choice_lists( workbook.sheet_by_name(choice_sheet) )
 
     for sheet in workbook.sheets():
-        if sheet.name != 'Select Choices':
+        if sheet.name != choice_sheet:
 
             doc = Document()
 
@@ -121,7 +131,7 @@ We do not support multiple languages yet, but we will.
                         raise Exception("Instance tags may not contain white space: " + tag)
                     inode = doc.createElement(tag)
                     ihead.appendChild( inode )
-                    ipath = path(instance,inode)
+                    ixpath = xpath(instance,inode)
 
                 m = re.search(r"(begin|end) (survey|group|repeat)", command)
                 if m:
@@ -130,11 +140,11 @@ We do not support multiple languages yet, but we will.
                         ihead = inode
                         if w[1] in ["group", "repeat"]:
                             bhead = bhead.appendChild(doc.createElement("group"))
-                            # bhead.setAttribute("ref", ipath)
-                            addLabel(bhead, q["label"])
+                            # bhead.setAttribute("ref", ixpath)
+                            add_label(q["label"], bhead)
                             if w[1]=="repeat":
                                 bhead = bhead.appendChild(doc.createElement("repeat"))
-                                bhead.setAttribute("nodeset", ipath)
+                                bhead.setAttribute("nodeset", ixpath)
                     if w[0]=="end":
                         ihead = ihead.parentNode
                         if w[1]=="group":
@@ -158,7 +168,7 @@ We do not support multiple languages yet, but we will.
                         bind.setAttribute("type", w[0])
                     for attribute in q.keys():
                         bind.setAttribute(attribute, q[attribute])
-                    bind.setAttribute("nodeset", ipath)
+                    bind.setAttribute("nodeset", ixpath)
                     model.appendChild(bind)
 
                     control_type = {"string"   : "input",
@@ -173,15 +183,15 @@ We do not support multiple languages yet, but we will.
                     bnode = doc.createElement(control_type[w[0]])
                     if w[0]=="picture":
                         bnode.setAttribute("mediatype", "image/*")
-                    bnode.setAttribute("ref", ipath)
-                    addLabel(bnode, label)
+                    bnode.setAttribute("ref", ixpath)
+                    add_label(label, bnode)
                     bhead.appendChild(bnode)
 
                     if w[0] in ["select", "select1"]:
                         for c in choices[w[2]]:
                             v = str(c["value"])
                             item = doc.createElement("item")
-                            addLabel(item, c["label"])
+                            add_label(c["label"], item)
                             if re.search("\s", v):
                                 raise Exception("Multiple choice values are not allowed to have spaces: " + v)
                             item.appendChild(doc.createElement("value")).appendChild(doc.createTextNode(v))
@@ -190,19 +200,24 @@ We do not support multiple languages yet, but we will.
 
             # id attribute required http://code.google.com/p/opendatakit/wiki/ODKAggregate
             if instance.firstChild:
-                instance.firstChild.setAttribute( 'id', sheet.name )
+                instance.firstChild.setAttribute( "id", sheet.name )
             else:
                 raise Exception("The %s worksheet never called the begin survey command." % sheet.name)
 
             outfile = os.path.join(folder, re.sub(r"\s+", "_", sheet.name) + ".xml")
             f = open(outfile, "w")
-            # f.write( doc.toprettyxml(indent="  ").encode('utf-8') )
-            f.write( doc.toxml().encode('utf-8') )
+            # f.write( doc.toprettyxml(indent="  ").encode("utf-8") )
+            f.write( doc.toxml().encode("utf-8") )
             f.close()
-            surveys.append(outfile)
-    return surveys
+            xforms.append(outfile)
+    return xforms
 
 # call write_xforms on the absolute path of the excel file passed as
 # an argument
 if len(sys.argv)==2 and sys.argv[0]=="xls2xform.py":
     write_xforms(os.path.join(os.getcwd(), sys.argv[1]))
+
+
+# NOTES:
+# useful piece on adding functions to xforms:
+# http://groups.google.com/group/open-data-kit/browse_thread/thread/325a81f8016d618f
