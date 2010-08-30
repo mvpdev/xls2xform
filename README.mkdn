@@ -1,3 +1,5 @@
+License: BSD
+
 `xls2xform` is a Python script designed to make writing surveys for
 Open Data Kit a snap. To start, check out some files in `example_xls`
 to get an idea of the survey language accepted by the script.
@@ -13,6 +15,8 @@ options).
 
 How to use `xls2xform` with Open Data Kit
 -----------------------------------------
+I need to get surveys up and running on the phones.
+
 0. Design survey. What questions does this survey intend to answer?
    What survey data is needed to answer these questions?
 1. Write survey in Excel survey language described on
@@ -44,3 +48,13 @@ urls.py:
         (r'^', include('project-name.xls2xform.urls')),
     )
 
+Note on using Android Emulator
+------------------------------
+#!/bin/bash
+# copy all forms in this folder over to emulator and start emulator
+sudo mount -o loop ~/.android/avd/my_avd.avd/sdcard.img /media/sdcard
+sudo cp *.xml /media/sdcard/odk/forms/
+sudo umount /media/sdcard/
+/files/work/ODK/android-sdk-linux_86/tools/emulator -avd my_avd &
+
+-# http://blog.jayway.com/2009/04/22/working-with-sd-cards-in-the-android-emulator/
