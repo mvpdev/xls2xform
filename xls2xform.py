@@ -9,9 +9,7 @@
 # xls2xform.py by Andrew Marder 6/22/2010
 # a python program for translating a spreadsheet into an xform
 
-import re
-import os
-import sys
+import os, re, sys
 from xlrd import open_workbook
 from xml.dom.minidom import Document, parseString
 
@@ -44,11 +42,14 @@ maybe $varname.
 
 We do not support multiple languages yet, but we will.
 """
-    workbook = open_workbook(xls_file_path)
-    folder = os.path.dirname(xls_file_path)
-
     # this function returns a list of the surveys written
     surveys = []
+
+    if not re.search(r"\.xls$", xls_file_path):
+        return surveys
+
+    workbook = open_workbook(xls_file_path)
+    folder = os.path.dirname(xls_file_path)
 
     # set up dictionary of multiple choice lists
     # the first row has the column headers
@@ -108,7 +109,7 @@ We do not support multiple languages yet, but we will.
                     if value:
                         q[label] = value
 
-                command = q.pop("command")
+                command = q.pop("command", "")
 
                 # skip blank commands
                 if not command:
