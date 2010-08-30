@@ -204,4 +204,5 @@ We do not support multiple languages yet, but we will.
 
 # call write_xforms on the absolute path of the excel file passed as
 # an argument
-write_xforms(os.path.join(os.getcwd(), sys.argv[1]))
+if len(sys.argv)==2 and sys.argv[0]=="xls2xform.py":
+    write_xforms(os.path.join(os.getcwd(), sys.argv[1]))
