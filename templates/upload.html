@@ -63,7 +63,7 @@
 			<p class="error">{{ msg }}</p>
 {% endif %}
 {% if form %}
-	<p class="advice">Use the Uploader to turn properly formatted XLS files into XForms. See the documentation tab to read how to fill out the <a href="/example_xls/{{ most_recent_survey }}">XLS template</a>.</p>
+	<p class="advice">Use the Uploader to turn properly formatted XLS files into XForms for use with Open Data Kit. See the documentation tab to learn how to fill out the <a href="/example_xls/{{ most_recent_survey }}">XLS template</a>.</p>
 	<table style="width:100%">
 		<tr>
 			<td>
@@ -101,11 +101,11 @@
 		</div>
 
 	<h1>Privacy Policy</h1>
-	<p class="info">With the user's permission, the information uploaded through this tool will only be used to help improve the system.</p>
+	<p class="info">With the user's permission, the information uploaded through this tool will only be used to improve the system.</p>
 
-  	<h1>Support</h1>
+  	<h1>Technical Support</h1>
   	<p class="info">
-		Check out the <a href="http://groups.google.com/group/xls2xform">Google Groups</a> page if you want clarification on how to use this tool.
+		Join our <a href="http://groups.google.com/group/xls2xform">Google Group</a> for clarification on how to use this service.
   	</p>
 
 	<h1>Source Code</h1>
@@ -114,13 +114,15 @@
 <div class="content-box" id="instructions">
 
 	<h1>XLS Template</h1>
-	<p class="info">This custom designed XLS template can be filled with XForm field information and converted to XForm.</p>
-	<a href="/example_xls/{{ most_recent_survey }}" class="bigbutton">Download XLS Template</a>
+	<p class="info">This <a href="/example_xls/{{ most_recent_survey }}">XLS template</a> demonstrates some of the features currently supported by XLS2XForm.</p>
 
-	<h1>Documentation</h1>
+	<h1>Introduction</h1>
 	<div class="docs">
 		{{ documentation|safe }}
 	</div>
+
+	<h1>API</h1>
+	<pre>{{ api }}</pre>
 </div>
 <script type="text/javascript">
 //<![CDATA[
