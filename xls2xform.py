@@ -8,10 +8,13 @@ import os, re, sys
 from xlrd import open_workbook
 from xml.dom.minidom import Document, parseString
 
-class ParseError(Exception):
+class ConversionError(Exception):
     def __init__(self, type, info):
         self.type = type
         self.info = info
+
+    def __str__(self):
+        return u"%(type)s: %(info)s" % self.__dict__
 
 def xpath(a, b):
     """Return the XPath from node a to node b, assumes b is a descendant
@@ -27,9 +30,8 @@ def add_label(xml_str, node):
     We want to make referencing variables easier, maybe using
     $varname."""
     if xml_str:
-        I THINK I NEED TO USE UNICODE STRINGS HERE
-        s = '<?xml version="1.0" ?><label>' + xml_str + "</label>"
-        node.appendChild( parseString(s).documentElement )
+        s = u'<?xml version="1.0" ?><label>' + xml_str + u"</label>"
+        node.appendChild( parseString(s.encode("utf-8")).documentElement )
 
 def construct_choice_lists(sheet):
     """Return a dictionary of multiple choice lists from the Excel
@@ -128,7 +130,7 @@ def write_xforms(xls_file_path):
                 if "tag" in q:
                     tag = q.pop("tag")
                     if re.search(r"\s", tag):
-                        raise Exception("Instance tags may not contain white space: " + tag)
+                        raise ConversionError(u"Tags may not contain white space", tag)
                     inode = doc.createElement(tag)
                     ihead.appendChild( inode )
                     ixpath = xpath(instance,inode)
@@ -154,7 +156,7 @@ def write_xforms(xls_file_path):
                 else:
                     m = re.search(r"^q (string|select|select1|int|geopoint|decimal|date|picture|note)( (.*))?$", command)
                     if not m:
-                        raise Exception("Unrecognized command: " + command)
+                        raise ConversionError(u"Unrecognized command", command)
                     w = m.groups()
                     label = q.pop("label")
 
@@ -193,7 +195,7 @@ def write_xforms(xls_file_path):
                             item = doc.createElement("item")
                             add_label(c["label"], item)
                             if re.search("\s", v):
-                                raise Exception("Multiple choice values are not allowed to have spaces: " + v)
+                                raise ConversionError(u"Multiple choice values are not allowed to have spaces", v)
                             item.appendChild(doc.createElement("value")).appendChild(doc.createTextNode(v))
                             bnode.appendChild(item)
 
@@ -202,7 +204,7 @@ def write_xforms(xls_file_path):
             if instance.firstChild:
                 instance.firstChild.setAttribute( "id", sheet.name )
             else:
-                raise Exception("The %s worksheet never called the begin survey command." % sheet.name)
+                raise ConversionError(u"Worksheet never called the begin survey command", sheet.name)
 
             outfile = os.path.join(folder, re.sub(r"\s+", "_", sheet.name) + ".xml")
             f = open(outfile, "w")

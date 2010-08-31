@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from forms import SubmissionForm
 from models import Submission, XForm
-from xls2xform import write_xforms, ParseError
+from xls2xform import write_xforms, ConversionError
 from django.conf import settings
 import markdown
 import os
@@ -30,7 +30,7 @@ def convert_file(request):
                     x.save()
                 # list the files created
                 return render_to_response("list.html", {"list": XForm.objects.filter(submission=s)})
-            except ParseError, e:
+            except ConversionError, e:
                 # record and display any error messages
                 s.error_msg = e.__str__()
                 s.save()
