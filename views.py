@@ -12,6 +12,7 @@ from django.conf import settings
 import markdown
 import os
 import codecs, pydoc, sys
+from xlrd import XLRDError
 
 def convert_file(request):
     kwargs = {"most_recent_survey" : "surveys-v0.1.xls"}
@@ -49,6 +50,14 @@ def convert_file(request):
                 s.save()
                 kwargs["msg"] = s.error_msg
                 return render_to_response("upload.html", kwargs)
+            except XLRDError, e:
+                if e.__str__().startswith("Unsupported format, or corrupt file"):
+                    s.error_msg = "xls2xform only accepts Excel 97 - 2004 Workbooks (.xls)"
+                    s.save()
+                    kwargs["msg"] = s.error_msg
+                    return render_to_response("upload.html", kwargs)
+                else:
+                    raise e                    
         else:
             # invalid forms should try uploading again
             kwargs["form"] = populated_form
