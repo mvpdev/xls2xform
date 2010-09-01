@@ -11,13 +11,15 @@ from xls2xform import write_xforms, ConversionError
 from django.conf import settings
 import markdown
 import os
-import codecs, pydoc
+import codecs, pydoc, sys
 
 def convert_file(request):
     kwargs = {"most_recent_survey" : "surveys-v0.1.xls"}
 
-    input_file = codecs.open("xls2xform/README.mkdn", mode="r", encoding="utf8")
-    text = input_file.read()
+    # here's a hack to avoid dealing with serving static files
+    # I've passed the responsibility to settings.py
+    readme = codecs.open(settings.PATH_TO_XLS2XFORM + "README.mkdn", mode="r", encoding="utf8")
+    text = readme.read()
     kwargs["documentation"] = markdown.markdown(text)
 
     textdoc = pydoc.TextDoc()
