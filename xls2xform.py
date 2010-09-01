@@ -129,8 +129,12 @@ def write_xforms(xls_file_path):
 
                 if "tag" in q:
                     tag = q.pop("tag")
-                    if re.search(r"\s", tag):
-                        raise ConversionError(u"Tags may not contain white space", tag)
+                    name_start_char = r"[a-zA-Z:_]"
+                    name_char = name_start_char + r"|[0-9\-\.]"
+                    name = "^%(start)s(%(char)s)*$" % {"start" : name_start_char, "char" : name_char}
+                    m = re.search(name, tag)
+                    if not m:
+                        raise ConversionError(u"Invalid tag. Tags may contain upper and lowercase letters, colons, and underscores. After the first character, numbers, dashes, and periods are also accepted", tag)
                     inode = doc.createElement(tag)
                     ihead.appendChild( inode )
                     ixpath = xpath(instance,inode)
