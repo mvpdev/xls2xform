@@ -112,6 +112,9 @@ def write_xforms(xls_file_path):
             ihead = instance
             bhead = body
 
+            control_stack = []
+            tag_xpath = {}
+
             # go through each question of the survey updating the xform
             for row in range(1,sheet.nrows):
                 q = {}
@@ -129,6 +132,8 @@ def write_xforms(xls_file_path):
 
                 if "tag" in q:
                     tag = q.pop("tag")
+                    if tag in tag_xpath:
+                        raise ConversionError("Tags are used to uniquely identify survey elements. Duplicate tag", tag)
                     name_start_char = r"[a-zA-Z:_]"
                     name_char = name_start_char + r"|[0-9\-\.]"
                     name = "^%(start)s(%(char)s)*$" % {"start" : name_start_char, "char" : name_char}
@@ -138,20 +143,25 @@ def write_xforms(xls_file_path):
                     inode = doc.createElement(tag)
                     ihead.appendChild( inode )
                     ixpath = xpath(instance,inode)
+                    tag_xpath[tag] = ixpath
 
                 m = re.search(r"(begin|end) (survey|group|repeat)", command)
                 if m:
                     w = m.groups()
                     if w[0]=="begin":
+                        control_stack.append(w[1])
                         ihead = inode
                         if w[1] in ["group", "repeat"]:
                             bhead = bhead.appendChild(doc.createElement("group"))
-                            # bhead.setAttribute("ref", ixpath)
+                            bhead.setAttribute("ref", ixpath)
                             add_label(q["label"], bhead)
                             if w[1]=="repeat":
                                 bhead = bhead.appendChild(doc.createElement("repeat"))
                                 bhead.setAttribute("nodeset", ixpath)
                     if w[0]=="end":
+                        control_top = control_stack.pop()
+                        if w[1]!=control_top:
+                            raise ConversionError("begin " + control_top + " ended with " + w[1], ihead.localName)
                         ihead = ihead.parentNode
                         if w[1]=="group":
                             bhead = bhead.parentNode
@@ -173,7 +183,10 @@ def write_xforms(xls_file_path):
                     else:
                         bind.setAttribute("type", w[0])
                     for attribute in q.keys():
-                        bind.setAttribute(attribute, q[attribute])
+                        # right now we're not supporting any binding attributes
+                        supported_attributes = []
+                        if attribute in supported_attributes:
+                            bind.setAttribute(attribute, q[attribute])
                     bind.setAttribute("nodeset", ixpath)
                     model.appendChild(bind)
 
