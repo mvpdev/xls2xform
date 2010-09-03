@@ -5,6 +5,32 @@ body {
 	background-image: url('../images/bg-greyrepeat.png');
 	line-height: 1em;
 }
+#title {
+	text-align: center;
+	width:640px;margin:0px auto;
+	font-family: 'Droid Serif', serif;
+	font-size: 27px;
+	line-height: 27px;
+	font-style: normal;
+	font-weight: 400;
+	text-shadow: 3px 3px 3px #cdcdcd;
+	text-decoration: none;
+	text-transform: none;
+	letter-spacing: 0em;
+	word-spacing: 0em;
+	line-height: 30px;
+	padding: 3px 4px;
+	border: 1px solid #999;
+	border-width: 0 1px 2px;
+	background-color: rgba(0,0,0,0.02);
+	-moz-border-radius-bottomleft: 4px;
+	-moz-border-radius-bottomright: 4px;
+	-webkit-border-bottom-left-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+}
+#title  span {
+	font-size: smaller;
+}
 
 .ui-tabs {
 	background-color: transparent;
