@@ -17,15 +17,22 @@ How to use `xls2xform` with Open Data Kit
 -----------------------------------------
 I need to get surveys up and running on the phones.
 
-0. Design survey. What questions does this survey intend to answer?
+1. Design survey. What questions does this survey intend to answer?
    What survey data is needed to answer these questions?
-1. Write survey in Excel survey language described on
+2. Write survey in Excel survey language described on
    http://xform.childcount.com
-2. Convert the Excel file into XForms for Open Data Kit on
+3. Convert the Excel file into XForms for Open Data Kit on
    http://xform.childcount.com
-3. Upload the XForms to http://childcount.appspot.com
-4. Download the XForms to the phone from http://childcount.appspot.com
-5. Enter data on the phone
+4. Log in to [an ODK Aggregate server](http://childcount.appspot.com)
+   and upload your XForms. There are two options if you receive an
+   "Error: Form Already Exists for this Namespace/Id attribute". You
+   can delete the form that already exists on the server and try
+   uploading your form again (deleting the form deletes all data that
+   has been collected for this form). Or you can give your form a new
+   name, change the name of the corresponding excel worksheet and go
+   back to step 3.
+5. Download the XForms to the phone from http://childcount.appspot.com
+6. Enter data on the phone
 
 Document all features
 ---------------------
@@ -61,4 +68,3 @@ Thanks to [Mårten Österberg](http://blog.jayway.com/2009/04/22/working-with-sd
     sudo cp *.xml /media/sdcard/odk/forms/
     sudo umount /media/sdcard/
     ~/android-sdk-linux_86/tools/emulator -avd my_avd &
-
