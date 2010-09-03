@@ -134,6 +134,7 @@ def write_xforms(xls_file_path):
                     tag = q.pop("tag")
                     if tag in tag_xpath:
                         raise ConversionError("Tags are used to uniquely identify survey elements. Duplicate tag", tag)
+                    # http://www.w3.org/TR/REC-xml/
                     name_start_char = r"[a-zA-Z:_]"
                     name_char = name_start_char + r"|[0-9\-\.]"
                     name = "^%(start)s(%(char)s)*$" % {"start" : name_start_char, "char" : name_char}
