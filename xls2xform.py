@@ -183,6 +183,11 @@ def write_xforms(xls_file_path):
                         bind.setAttribute("type", "binary")
                     else:
                         bind.setAttribute("type", w[0])
+
+                    skippable = q.pop("skippable", None)
+                    if not skippable:
+                        bind.setAttribute("required", "true()")
+
                     for attribute in q.keys():
                         # right now we're not supporting any binding attributes
                         supported_attributes = []
