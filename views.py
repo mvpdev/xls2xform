@@ -15,7 +15,7 @@ import codecs, pydoc, sys
 from xlrd import XLRDError
 
 def convert_file(request):
-    kwargs = {"most_recent_survey" : "surveys-v0.1.xls"}
+    kwargs = {"most_recent_survey" : "surveys-v0.2.xls"}
 
     # here's a hack to avoid dealing with serving static files
     # I've passed the responsibility to settings.py
