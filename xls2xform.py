@@ -119,11 +119,10 @@ def write_xforms(xls_file_path):
             for row in range(1,sheet.nrows):
                 q = {}
                 for col in range(0,sheet.ncols):
-                    label = sheet.cell(0,col).value
+                    label = sheet.cell(0,col).value.lower()
                     value = sheet.cell(row,col).value
                     if value:
                         q[label] = value
-
                 command = q.pop("command", "")
 
                 # skip blank commands
