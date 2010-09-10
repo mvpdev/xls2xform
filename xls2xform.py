@@ -212,6 +212,8 @@ def write_xforms(xls_file_path):
                     bhead.appendChild(bnode)
 
                     if w[0] in ["select", "select1"]:
+                        if w[2] not in choices:
+                            raise ConversionError("No multiple choice list named", "'%(name)s'" % {"name" : w[2]})
                         for c in choices[w[2]]:
                             v = str(c["value"])
                             item = doc.createElement("item")
