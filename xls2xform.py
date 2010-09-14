@@ -150,7 +150,11 @@ def write_xforms(xls_file_path):
                     w = m.groups()
                     if w[0]=="begin":
                         control_stack.append(w[1])
-                        ihead = inode
+                        try:
+                            ihead = inode
+                        except UnboundLocalError:
+                            raise ConversionError("Missing tag", {"sheet" : sheet.name, "row" : row })
+
                         if w[1] in ["group", "repeat"]:
                             bhead = bhead.appendChild(doc.createElement("group"))
                             bhead.setAttribute("ref", ixpath)
