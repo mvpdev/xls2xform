@@ -127,6 +127,8 @@ def write_xforms(xls_file_path):
                 if m:
                     tag = m.group(1)
                     tag = tag[2:len(tag)-1]
+                    if tag not in tag_xpath:
+                        raise ConversionError("Undefined tag in ${} substitution", tag)
                     single_replace = str[:m.start()] + tag_xpath[tag] + str[m.end():]
                     return sub_tag(single_replace)
                 else:
