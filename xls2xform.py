@@ -33,6 +33,11 @@ def add_label(xml_str, node):
         s = u'<?xml version="1.0" ?><label>' + xml_str + u"</label>"
         node.appendChild( parseString(s.encode("utf-8")).documentElement )
 
+# http://www.w3.org/TR/REC-xml/
+tag_start_char = r"[a-zA-Z:_]"
+tag_char = tag_start_char + r"|[0-9\-\.]"
+xform_tag_regexp = "^%(start)s(%(char)s)*$" % {"start" : tag_start_char, "char" : tag_char}
+
 def construct_choice_lists(sheet):
     """Return a dictionary of multiple choice lists from the Excel
     Worksheet 'sheet'.
@@ -115,6 +120,18 @@ def write_xforms(xls_file_path):
             control_stack = []
             tag_xpath = {}
 
+            def sub_tag(str):
+                """Replace all instances of '${tag}' with the XPath corresponding with tag."""
+                bracketed_tag = r"(\${" + xform_tag_regexp + r"})"
+                m = re.search(bracketed_tag, str)
+                if m:
+                    tag = m.group(1)
+                    tag = tag[2:len(tag)-1]
+                    single_replace = str[:m.start()] + tag_xpath[tag] + str[m.end():]
+                    return sub_tag(single_replace)
+                else:
+                    return str
+
             # go through each question of the survey updating the xform
             for row in range(1,sheet.nrows):
                 q = {}
@@ -133,11 +150,7 @@ def write_xforms(xls_file_path):
                     tag = q.pop("tag")
                     if tag in tag_xpath:
                         raise ConversionError("Tags are used to uniquely identify survey elements. Duplicate tag", tag)
-                    # http://www.w3.org/TR/REC-xml/
-                    name_start_char = r"[a-zA-Z:_]"
-                    name_char = name_start_char + r"|[0-9\-\.]"
-                    name = "^%(start)s(%(char)s)*$" % {"start" : name_start_char, "char" : name_char}
-                    m = re.search(name, tag)
+                    m = re.search(xform_tag_regexp, tag)
                     if not m:
                         raise ConversionError(u"Invalid tag. Tags may contain upper and lowercase letters, colons, and underscores. After the first character, numbers, dashes, and periods are also accepted", tag)
                     inode = doc.createElement(tag)
@@ -193,9 +206,9 @@ def write_xforms(xls_file_path):
 
                     for attribute in q.keys():
                         # right now we're not supporting any binding attributes
-                        supported_attributes = []
+                        supported_attributes = ["relevant"]
                         if attribute in supported_attributes:
-                            bind.setAttribute(attribute, q[attribute])
+                            bind.setAttribute(attribute, sub_tag(q[attribute]))
                     bind.setAttribute("nodeset", ixpath)
                     model.appendChild(bind)
 
