@@ -35,8 +35,8 @@ def add_label(xml_str, node):
 
 # http://www.w3.org/TR/REC-xml/
 tag_start_char = r"[a-zA-Z:_]"
-tag_char = tag_start_char + r"|[0-9\-\.]"
-xform_tag_regexp = "^%(start)s(%(char)s)*$" % {"start" : tag_start_char, "char" : tag_char}
+tag_char = r"[a-zA-Z:_0-9\-\.]"
+xform_tag_regexp = "^%(start)s%(char)s*$" % {"start" : tag_start_char, "char" : tag_char}
 
 def construct_choice_lists(sheet):
     """Return a dictionary of multiple choice lists from the Excel
@@ -121,8 +121,8 @@ def write_xforms(xls_file_path):
             tag_xpath = {}
 
             def sub_tag(str):
-                """Replace all instances of '${tag}' with the XPath corresponding with tag."""
-                bracketed_tag = r"(\${" + xform_tag_regexp + r"})"
+                """Replace all instances of '${tag}' with the XPath corresponding to the tag."""
+                bracketed_tag = r"(\${" + tag_start_char + tag_char + r"*})"
                 m = re.search(bracketed_tag, str)
                 if m:
                     tag = m.group(1)
