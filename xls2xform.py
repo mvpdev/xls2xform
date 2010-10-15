@@ -205,6 +205,9 @@ def write_xforms(xls_file_path):
                     skippable = q.pop("skippable", None)
                     if not skippable:
                         bind.setAttribute("required", "true()")
+                    if w[0]=="note":
+                        # notes are always skippable
+                        bind.removeAttribute("required")
 
                     for attribute in q.keys():
                         # right now we're not supporting any binding attributes
