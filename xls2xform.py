@@ -4,7 +4,7 @@
 """A Python script to convert properly formatted excel files into
 XForms for use with Open Data Kit."""
 
-import os, re, sys
+import os, re, sys, datetime
 from xlrd import open_workbook
 from xml.dom.minidom import Document, parseString
 
@@ -248,7 +248,10 @@ def write_xforms(xls_file_path):
 
             # id attribute required http://code.google.com/p/opendatakit/wiki/ODKAggregate
             if instance.firstChild:
-                instance.firstChild.setAttribute( "id", sheet.name )
+                # form id = sheet name + time stamp
+                ODK_DATE_FORMAT = "%Y-%m-%d_%H-%M-%S"
+                time_stamp = datetime.datetime.now().strftime(ODK_DATE_FORMAT)
+                instance.firstChild.setAttribute("id", " ".join([sheet.name, time_stamp]))
             else:
                 raise ConversionError(u"Worksheet never called the begin survey command", sheet.name)
 
