@@ -187,7 +187,7 @@ def write_xforms(xls_file_path):
                         if w[1]=="repeat":
                             bhead = bhead.parentNode.parentNode
                 else:
-                    m = re.search(r"^q (string|select|select1|int|geopoint|decimal|date|picture|note)( (.*))?$", command)
+                    m = re.search(r"^q (string|select|select1|int|geopoint|decimal|date|picture|note|barcode)( (.*))?$", command)
                     if not m:
                         raise ConversionError(u"Unrecognized command", command)
                     w = m.groups()
@@ -223,6 +223,7 @@ def write_xforms(xls_file_path):
                                     "decimal"  : "input",
                                     "date"     : "input",
                                     "note"     : "input",
+                                    "barcode"  : "input",
                                     "select"   : "select",
                                     "select1"  : "select1",
                                     "picture"  : "upload",}
