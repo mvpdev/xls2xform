@@ -138,7 +138,7 @@ def write_xforms(xls_file_path):
             for row in range(1,sheet.nrows):
                 q = {}
                 for col in range(0,sheet.ncols):
-                    label = sheet.cell(0,col).value.lower()
+                    label = sheet.cell(0,col).value
                     value = sheet.cell(row,col).value
                     if value:
                         q[label] = value
@@ -187,11 +187,10 @@ def write_xforms(xls_file_path):
                         if w[1]=="repeat":
                             bhead = bhead.parentNode.parentNode
                 else:
-                    m = re.search(r"^q (string|select|select1|int|geopoint|decimal|date|picture|note|barcode)( (.*))?$", command)
+                    m = re.search(r"^q (string|select|select1|int|geopoint|decimal|date|picture|note|barcode|dateTime)( (.*))?$", command)
                     if not m:
                         raise ConversionError(u"Unrecognized command", command)
                     w = m.groups()
-                    label = q.pop("label")
 
                     bind = doc.createElement("bind")
                     if w[0]=="note":
@@ -202,49 +201,52 @@ def write_xforms(xls_file_path):
                     else:
                         bind.setAttribute("type", w[0])
 
-                    skippable = q.pop("skippable", None)
-                    if not skippable:
+                    optional = q.pop("optional", None)
+                    if not optional:
                         bind.setAttribute("required", "true()")
-                    if w[0]=="note":
-                        # notes are always skippable
+                    if w[0]=="note" or w[0]=="select":
+                        # notes are always optional
                         bind.removeAttribute("required")
 
                     for attribute in q.keys():
                         # right now we're not supporting any binding attributes
-                        supported_attributes = ["relevant"]
+                        supported_attributes = ["relevant", "constraint", "jr:constraintMsg","jr:preload","jr:preloadParams"]
+
                         if attribute in supported_attributes:
                             bind.setAttribute(attribute, sub_tag(q[attribute]))
                     bind.setAttribute("nodeset", ixpath)
                     model.appendChild(bind)
 
-                    control_type = {"string"   : "input",
-                                    "int"      : "input",
-                                    "geopoint" : "input",
-                                    "decimal"  : "input",
-                                    "date"     : "input",
-                                    "note"     : "input",
-                                    "barcode"  : "input",
-                                    "select"   : "select",
-                                    "select1"  : "select1",
-                                    "picture"  : "upload",}
-                    bnode = doc.createElement(control_type[w[0]])
-                    if w[0]=="picture":
-                        bnode.setAttribute("mediatype", "image/*")
-                    bnode.setAttribute("ref", ixpath)
-                    add_label(label, bnode)
-                    bhead.appendChild(bnode)
+                    if "jr:preload" not in q:
+                        control_type = {"string"   : "input",
+                                        "int"      : "input",
+                                        "geopoint" : "input",
+                                        "decimal"  : "input",
+                                        "date"     : "input",
+                                        "note"     : "input",
+                                        "barcode"  : "input",
+                                        "select"   : "select",
+                                        "select1"  : "select1",
+                                        "picture"  : "upload",}
+                        bnode = doc.createElement(control_type[w[0]])
+                        if w[0]=="picture":
+                            bnode.setAttribute("mediatype", "image/*")
+                        bnode.setAttribute("ref", ixpath)
+                        label = sub_tag(q.pop("label"))
+                        add_label(label, bnode)
+                        bhead.appendChild(bnode)
 
-                    if w[0] in ["select", "select1"]:
-                        if w[2] not in choices:
-                            raise ConversionError("No multiple choice list with this name", {"name" : w[2], "sheet" : sheet.name, "row" : row })
-                        for c in choices[w[2]]:
-                            v = str(c["value"])
-                            item = doc.createElement("item")
-                            add_label(c["label"], item)
-                            if re.search("\s", v):
-                                raise ConversionError(u"Multiple choice values are not allowed to have spaces", v)
-                            item.appendChild(doc.createElement("value")).appendChild(doc.createTextNode(v))
-                            bnode.appendChild(item)
+                        if w[0] in ["select", "select1"]:
+                            if w[2] not in choices:
+                                raise ConversionError("No multiple choice list with this name", {"name" : w[2], "sheet" : sheet.name, "row" : row })
+                            for c in choices[w[2]]:
+                                v = str(c["value"])
+                                item = doc.createElement("item")
+                                add_label(c["label"], item)
+                                if re.search("\s", v):
+                                    raise ConversionError(u"Multiple choice values are not allowed to have spaces", v)
+                                item.appendChild(doc.createElement("value")).appendChild(doc.createTextNode(v))
+                                bnode.appendChild(item)
 
 
             # id attribute required http://code.google.com/p/opendatakit/wiki/ODKAggregate
