@@ -4,6 +4,9 @@
 """A Python script to convert properly formatted excel files into
 XForms for use with Open Data Kit."""
 
+# printing integers ends up adding a .0 at the end of the integer, this is a problem for skip logic.
+# group's should have bindings, I want to set the relevant attribute to skip a whole group
+
 import os, re, sys, datetime
 from xlrd import open_workbook
 from xml.dom.minidom import Document, parseString
@@ -148,6 +151,10 @@ def write_xforms(xls_file_path):
                 if not command:
                     continue
 
+                # skip comments
+                if "#" in q:
+                    continue
+
                 if "tag" in q:
                     tag = q.pop("tag")
                     if tag in tag_xpath:
@@ -232,7 +239,12 @@ def write_xforms(xls_file_path):
                         if w[0]=="picture":
                             bnode.setAttribute("mediatype", "image/*")
                         bnode.setAttribute("ref", ixpath)
-                        label = sub_tag(q.pop("label"))
+
+                        def tag_replace(matchobj):
+                            return '<output value="%s"/>' % matchobj.group(0)
+                        def add_output_tags(label):
+                            return re.sub(r"\$\{[^\{\}]*\}", tag_replace, label)
+                        label = sub_tag(add_output_tags(q.pop("label")))
                         add_label(label, bnode)
                         bhead.appendChild(bnode)
 
@@ -261,7 +273,8 @@ def write_xforms(xls_file_path):
             outfile = os.path.join(folder, re.sub(r"\s+", "_", sheet.name) + ".xml")
             f = open(outfile, "w")
             # f.write( doc.toprettyxml(indent="  ").encode("utf-8") )
-            f.write( doc.toxml().encode("utf-8") )
+            xml_str = doc.toxml().encode("utf-8")
+            f.write(xml_str)
             f.close()
             xforms.append(outfile)
     return xforms
