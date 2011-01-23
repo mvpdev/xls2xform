@@ -13,6 +13,9 @@
 			}
 			function submitForm() {
 				j$('form').submit();
+				if('undefined'!==typeof xformer) {
+					xformer.pulse();
+				}
 			}
 			function checkSubmittable() {
 				this.submittable(j$('#id_file').val()!=="");
@@ -59,7 +62,7 @@
 </form>
 			</td>
 			<td>
-<a href="javascript:xlsf.submitForm()" class="bigbutton disabled" id="convert_button"><img src="/sm/images/xls2xform.jpg" alt="convert xls to xform"></a>
+<a href="javascript:xlsf.submitForm()" class="bigbutton disabled" id="convert_button">Convert to XForm</a>
 			</td>
 		</tr>
 	</table>
