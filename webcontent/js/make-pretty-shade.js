@@ -8,9 +8,9 @@ var xformer = (function(options){
 	opts = $.extend(defaultOpts, options);
 
 	div = $("<div />", {'style': 'position:fixed;right:75px;width:114px;height:127px;top:7px;z-index:-1'});
+	img = $("<img />");
 	div.append(img);
 	function loadXformer() {
-		img = $("<img />");
 		img.css({'opacity':0});
 		img.load(function(){
 		  div.appendTo('body');
