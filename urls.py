@@ -7,7 +7,7 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'xls2xform.views.home', name='home'),
-    # url(r'^xls2xform/', include('xls2xform.foo.urls')),
+    url(r'^$', include('xls2xform.main.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
