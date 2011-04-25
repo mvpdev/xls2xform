@@ -61,3 +61,4 @@ localsettings.py
 local_settings.py
 
 pyxform
+db.sqlite3
