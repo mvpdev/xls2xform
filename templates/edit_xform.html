@@ -1,5 +1,60 @@
 {% extends 'base.html' %}
 {% block content %}
+<style type="text/css" media="screen">
+	#available-sections {
+		border: 1px solid #394367;
+		padding: 8px 10px;
+		width: 400px;
+		float: right;
+	}
+	#available-sections h3 {
+		font-size: 14px;
+	}
+	#available-sections h5 {
+		font-size: 12px;
+		font-weight: normal;
+		font-style: italic;
+	}
+	#available-sections ul {
+		list-style-type: none; margin: 0; padding: 0;
+	}
+	#available-sections ul li {
+		position: relative;
+		background-color: #eee;
+		border-bottom: 1px solid #bbb;
+		padding: 3px 8px 3px 16px;
+	}
+	#available-sections ul li div.left-bar {
+		width: 6px;
+		height: 100%;
+		background-color: #f00;
+		position: absolute;
+		top: 0; left:1px;
+	}
+	#available-sections ul li div.left-bar.lb-a {
+		background-color: #96C6A8;
+	}
+	#available-sections ul li div.left-bar.lb-a.active {
+		background-color: #01A42F;
+	}
+	#available-sections ul li p {
+		margin: 0;
+	}
+	#available-sections ul li p.title {
+		font-weight: bold;
+	}
+	#available-sections ul li p.title span.sub-sections {
+		font-weight: normal;
+	}
+	#available-sections ul li p.title span.sub-sections span.ss {
+		margin: 1px 4px;
+		font-size: smaller;
+	}
+	#available-sections ul li p.section-buttons a {
+		display: inline-block; width: 100px;
+	}
+	
+</style>
 
 <h2>
 	{{xform.id_string}}
@@ -16,12 +71,19 @@
 	<ul>
 		{% for section in available_sections %}
 		<li data-section-slug="{{section.slug}}">
-			{% if section.is_marked_included %}
-			<span class="included-marker">*</span>
-			{% endif %}
-			<span class="section-slug">{{section.slug}}</span>
-			<br />
-			<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">Make active</a> | <a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[Delete]</a>
+			<div class="active-bar left-bar lb-a {% if section.is_marked_included %}active{% else %}inactive{% endif %}"></div>
+<!--			<div class="included-bar left-bar lb-b"></div> -->
+			<p class="title">
+				<span class="section-slug">{{section.slug}}</span> <span class="sub-sections">{% for ss in section.sub_sections %}<span class="ss">{{ss}}</span>{% endfor %}</span>
+			</p>
+			<p class="section-buttons">
+				{% if section.is_marked_included %}
+				<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Deactivate ]</a>
+				{% else %}
+				<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Activate ]</a>
+				{% endif %}
+				<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[ Delete ]</a>
+			</p>
 		</li>
 		{% endfor %}
 	</ul>
