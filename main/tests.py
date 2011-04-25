@@ -42,6 +42,12 @@ class XFormCreationTest(TestCase):
         
         #the latest version should have 1 section still
         self.assertEqual(self.xform.latest_version.sections.count(), 1)
+        
+        #we should be able to remove that section
+        self.xform.remove_section(slug="first_section")
+        self.assertEqual(self.xform.latest_version.sections.count(), 0)
+        #removing a section creates a new version
+        self.assertEqual(self.xform.versions.count(), 4)
     
     def tearDown(self):
         self.user.delete()
@@ -51,6 +57,12 @@ class SectionOrderingViaBaseSection(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="TestUser")
         self.xform = XForm.objects.create(user=self.user, id_string="SimpleId")
+        
+        sd1 = [{u'type':u'text', u'name':u'color'}]
+        self.xform.add_or_update_section(section_dict=sd1, slug="first_section")
+        
+        sd2 = [{u'type':u'text', u'name':u'feeling'}]
+        self.xform.add_or_update_section(section_dict=sd2, slug="second_section")
     
     def test_empty_form_has_empty_base_section(self):
         version = self.xform.latest_version
@@ -59,13 +71,7 @@ class SectionOrderingViaBaseSection(TestCase):
     def test_new_section_is_not_yet_added(self):
         """
         Adding a section to an xform shouldn't add it to the base section.
-        That is done in the UI.
         """
-        sd1 = [{u'type':u'text', u'name':u'color'}]
-        self.xform.add_or_update_section(section_dict=sd1, slug="first_section")
-        
-        sd2 = [{u'type':u'text', u'name':u'feeling'}]
-        self.xform.add_or_update_section(section_dict=sd2, slug="second_section")
         
         version = self.xform.latest_version
         self.assertEqual([], version.base_section._questions_list())
@@ -77,7 +83,40 @@ class SectionOrderingViaBaseSection(TestCase):
         self.assertEqual(4, self.xform.versions.count())
         
         included_slugs = self.xform.latest_version.base_section._questions_list()
-        self.assertEqual(included_slugs, [{u'include':u'first_section'}, {u'include':u'second_section'}])
+        expected_dict = [{u'type':u'include', 'name':u'first_section'}, {u'type':u'include', u'name': u'second_section'}]
+        self.assertEqual(included_slugs, expected_dict)
+    
+    def test_activation_of_section(self):
+        section_portfolio, included_base_sections = self.xform.latest_version.all_sections()
+        #by default, no sections are included
+        self.assertEqual(len(included_base_sections), 0)
+        version_count = self.xform.versions.count()
+        
+        #'activating' one section adds it to the base sections.
+        self.xform.activate_section(section_portfolio[0])
+        included_base_sections2 = self.xform.latest_version.included_base_sections()
+        self.assertEqual(len(included_base_sections2), 1)
+        self.assertEqual(self.xform.versions.count(), version_count+1)
+        
+        #'deactivating' will return the list to the original length.
+        self.xform.deactivate_section(section_portfolio[0])
+        included_base_sections3 = self.xform.latest_version.included_base_sections()
+        self.assertEqual(len(included_base_sections3), 0)
+        self.assertEqual(self.xform.versions.count(), version_count+2)
+    
+    def test_sub_sections_are_recognized(self):
+        #a bottom-level include (simple case)
+        sd3 = [{u'type':u'include', u'name':u'location'}]
+        nv = self.xform.add_or_update_section(section_dict=sd3, slug="some_include")
+        incl = nv.sections.get(slug="some_include")
+        self.assertEqual(incl.sub_sections(), ['location'])
+        
+        #a section with an include in a repeat (slightly more complex)
+        sd4 = [{u'type':u'loop', u'children':[{u'type': u'include', u'name': u'include2'}]}]
+        nv = self.xform.add_or_update_section(section_dict=sd4, slug="some_include2")
+        incl = nv.sections.get(slug="some_include2")
+        self.assertEqual(incl.sub_sections(), ['include2'])
+        #todo: deeper levels of include-ability?
 
 class ExportingFormViaPyxform(TestCase):
     def setUp(self):

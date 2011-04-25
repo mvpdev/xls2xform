@@ -7,19 +7,33 @@
 <p>
 	Version Number {{xform.versions.count}}
 </p>
-<table id="available-sections">
-	<tbody>
-		{% for section in available_sections %}
-		<tr>
-			<td>
-				{{section.slug}}
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
-<div id="sections">
+<div id="available-sections">
+	<h3>Portfolio</h3>
+	{% if available_sections_empty %}
+	<h5>No sections have been added to the portfolio for this XForm.</h5>
+	{% else %}
+	<h5>These are the sections that you have made available for the survey.</h5>
 	<ul>
+		{% for section in available_sections %}
+		<li data-section-slug="{{section.slug}}">
+			{% if section.is_marked_included %}
+			<span class="included-marker">*</span>
+			{% endif %}
+			<span class="section-slug">{{section.slug}}</span>
+			<br />
+			<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">Make active</a> | <a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[Delete]</a>
+		</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+</div>
+<div id="sections">
+	<h3>Active Sections</h3>
+	{% if base_sections_empty %}
+	<h5>No sections have been marked as active.</h5>
+	{% else %}
+	<h5>These are the main sections that will be included in this version of the survey.</h5>
+	<ol>
 		{% for section in base_sections %}
 		<li class="section-{{section.slug}}" data-section-slug="{{section.slug}}">
 			<p>
@@ -27,13 +41,14 @@
 			</p>
 			<p class="status" style="display:none"></p>
 			<p class="buttons">
-				<a class="move-up" href="#">[Up]</a>
-				<br />
-				<a class="move-down" href="#">[Down]</a>
+				<a class="move-up" href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/up">[Up]</a>
+				<a class="move-down" href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/down">[Down]</a>
+				<a class="deactivate" href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/deactivate">[x]</a>
 			</p>
 		</li>
 		{% endfor %}
-	</ul>
+	</ol>
+	{% endif %}
 </div>
 <fieldset>
 	<legend>
@@ -49,23 +64,26 @@
 		</p>
 		<p>
 			{% csrf_token %}
-			<input type="file" name="new_section" >
+			<input type="file" name="section_file" >
 			<input type="submit" value="Submit">
 		</p>
 	</form>
 </fieldset>
 <p class="survey-status" style="display:none">
 </p>
-<p>
-	<a href="/edit_xform/{{xform.id_string}}/validate" id="validate">Validate XForm</a>
+<p class="xform-buttons">
+	<!--
+	<a href="/edit_xform/{{xform.id_string}}/validate/" id="validate">Validate XForm</a>
 	<br>
-	<a href="/edit_xform/{{xform.id_string}}/download" id="download">Download XForm</a>
+	<a href="/edit_xform/{{xform.id_string}}/download/" id="download">Download XForm</a>
+	-->
 </p>
 {% endblock %}
 
 {% block js %}
 <script type="text/javascript" charset="utf-8">
 <!--
+/*--
 function markOrderChanged() {
 	//when the order has been changed. it needs to be synced with the server.
 	//a button should be displayed to allow this.
@@ -86,6 +104,7 @@ $('#sections').delegate('a', 'click', function(evt){
 	}
 	evt.preventDefault();
 })
+--*/
 $('#validate').click(function(evt){
 	$.getJSON('/edit_xform/{{xform.id_string}}/validate').done(function(data){
 		console.log(data);
@@ -105,6 +124,19 @@ $('#validate').click(function(evt){
 	});
 	evt.preventDefault();
 });
+
+var debugJson = $("<a />", {'href':'#'}).text("Debug XForm Output").click(function(evt){
+	var ta = $('textarea#t');
+	if(ta.length===0) {
+		ta = $('<textarea />').css({'width':'80%','height':'200px'});
+		$('footer').html(ta);
+	}
+	$.getJSON("/edit_xform/{{xform.id_string}}/debug_json").done(function(data){
+		ta.text(JSON.stringify(data));
+	});
+	evt.preventDefault();
+}).appendTo($('p.xform-buttons'));
+
 -->
 </script>
 {% endblock %}
