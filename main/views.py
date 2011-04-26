@@ -68,11 +68,11 @@ def download_xform(request, survey_id, version_number=None, xform_file_name=None
     if version_number is None:
         version_number = xform.latest_version.version_number
         survey_object = xform.export_survey()
-        xf_filename = "%s.xml" % survey_object.id_string
+        xf_filename = "%s.xml" % survey_object.id_string()
         return HttpResponseRedirect("/edit/%s/download/%s/%s" % (survey_id, version_number, xf_filename))
     else:
         survey_object = xform.export_survey()
-        xf_filename = "%s.xml" % survey_object.id_string
+        xf_filename = "%s.xml" % survey_object.id_string()
         xform_str = survey_object.to_xml()
         return HttpResponse(xform_str, mimetype="application/download")
 
