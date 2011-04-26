@@ -22,14 +22,20 @@
 <body>
   <div id="container">
     <header>
-		Header
+	{% block header %}
+	{% if user.is_authenticated %}
+	<a href="/accounts/logout/">Log out</a>
+	{% else %}
+	<a href="/accounts/login/">Log in</a>
+	{% endif %}
+	{% endblock %}
     </header>
     <div id="main" role="main">
 		{% block content %}
 		{% endblock %}
     </div>
     <footer>
-		Footer
+		{% block footer %}{% endblock %}
     </footer>
   </div> <!-- eo #container -->
 

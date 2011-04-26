@@ -3,9 +3,25 @@ from django.db import models
 from django.contrib.auth.models import User
 
 import pyxform
-import json
+import json, copy
+
+class SectionIncludeError(Exception):
+    def __init__(self, container, include_slug):
+        self.container = container
+        self.include_slug = include_slug
+
+class IncludeNotFound(SectionIncludeError):
+    def __repr__(self):
+        return "The section '%s' was not able to include the section '%s'" % \
+                    (self.container, self.include_slug)
+    
+class CircularInclude(SectionIncludeError):
+    def __repr__(self):
+        return "The section '%s' detected a circular include of section '%s'" % \
+                    (self.container, self.include_slug)
 
 class XForm(models.Model):
+    #id_string should definitely be changed to "name".
     id_string = models.CharField(max_length=32)
     latest_version = models.ForeignKey('XFormVersion', null=True, related_name="active_xform")
     user = models.ForeignKey(User, related_name="xforms")
@@ -19,40 +35,33 @@ class XForm(models.Model):
     def save(self, *args, **kwargs):
         super(XForm, self).save(*args, **kwargs)
         if self.latest_version is None:
-            self.latest_version = XFormVersion.objects.create(xform=self)
+            self.latest_version = XFormVersion.objects.create(xform=self, version_number=0)
             self.save()
     
-    def export_survey(self):
-        latest_version = self.latest_version
-        survey = pyxform.Survey(name=unicode(self.id_string))
-        for s in latest_version.sections.all():
-            section_json = s.section_json
-            section_array = json.loads(section_json)
-            for section_dict in section_array:
-                survey_elem = pyxform.create_survey_element_from_dict(section_dict)
-                survey.add_child(survey_elem)
-        return survey
-    
-    def _export_survey_sections(self):
-        lv = self.latest_version
-        _base = json.loads(lv.base_section.section_json)
-        sj = {u'_base': _base}
-        sections = self.latest_version.sections.all()
-        for s in sections: sj[s.slug] = json.loads(s.section_json)
-        return sj
-    
-    def _export_survey_package(self):
-        lv = self.latest_version
-        base_section = lv.base_section
-        try:
-            surv_json = {'name': self.id_string, 'question_types':[], 'survey': \
-                    base_section.gather_includes([], lv.sections_by_slug())}
-        except IncludeNotFound, e:
-            surv_json = {'error': e.__repr__()}
-        return surv_json
-    
-    def validate(self):
-        pass
+    def export_survey(self, finalize=True, debug=False):
+        """
+        the first way of exporting surveys didn't allow imports
+        (without writing temp files, which is hacky.)
+
+        so i think it's best to go a different route--
+        
+        1. have this django app gather all the includes (from the portfolio)
+            -- this allows us to display what includes are missing and prompt
+               for them before creating the survey
+        2. this django app will then send a "packaged" dict to pyxform which
+           can be used to render the survey.
+            -- the packaged dict contains 4 things
+                * name (the survey name, no datestamp)
+                * id_string (for possible later reference)
+                * questions_list (with hierarchy of groups, etc.)
+                * question_types (for maximum customizability, language compaitibility, etc.)
+        """
+        question_types, survey_data, version_stamp = self.latest_version.gather_sections(finalize=finalize)
+        
+        survey_package = {'name': self.id_string, 'question_types':question_types, \
+                            'survey': survey_data, 'id_string': version_stamp}
+        if debug: return survey_package
+        return pyxform.render_survey_package(survey_package)
     
     def add_or_update_section(self, *args, **kwargs):
         """
@@ -89,6 +98,8 @@ class XForm(models.Model):
         
         slugs = lv.base_section_slugs()
         if slug in slugs:
+            #when the slug is active, we need to
+            #remove it from 2 lists
             slugs.remove(slug)
             nv = self.order_base_sections(slugs)
             nv.sections.remove(matching_section)
@@ -138,20 +149,56 @@ class XForm(models.Model):
 class XFormVersion(models.Model):
     xform = models.ForeignKey(XForm, related_name="versions")
     date_created = models.DateTimeField(auto_now_add=True)
-    base_section = models.ForeignKey('XFormSection', null=True)
+    
+    base_section = models.ForeignKey('XFormSection', null=True, related_name="bversions")
+    qtypes_section = models.ForeignKey('XFormSection', null=True, related_name="qversions")
+    id_stamp = models.CharField(max_length=24)
+    
+    version_number = models.IntegerField()
+    
     _included_sections = None
     
     def __init__(self, *args, **kwargs):
+        #this even creates a new base_section when the value doesn't change.
         base_section_json = kwargs.pop(u'base_section_json', u'[]')
         base_section = XFormSection.objects.create(section_json=base_section_json, slug="_base")
         kwargs[u'base_section'] = base_section
+        
+        #not sure if this is the best way to do this... but it works for now.
+        qtypes_json = kwargs.pop(u'qtypes_section_json', u'null')
+        qtypes_section = XFormSection.objects.create(section_json=qtypes_json, slug="_qtypes")
+        kwargs[u'qtypes_section'] = qtypes_section
+        
         super(XFormVersion, self).__init__(*args, **kwargs)
     
     def _clone(self):
         bsj = self.base_section.section_json
-        new_version = XFormVersion.objects.create(base_section_json=bsj, xform=self.xform)
+        vn = self.version_number
+        new_version = XFormVersion.objects.create(base_section_json=bsj, xform=self.xform, version_number=vn+1)
         for s in self.sections.all(): new_version.sections.add(s)
         return new_version
+    
+    def gather_sections(self, finalize=False):
+        """
+        If this function passes without errors,
+        then all the includes should be available.
+        """
+        qtypes = self.qtypes_section._questions_list()
+        survey_data = self.base_section.gather_includes([], self.sections_by_slug())
+        if finalize: stamp = self._generate_unique_id_stamp()
+        else: stamp = None
+        return (qtypes, survey_data, stamp)
+    
+    def _generate_unique_id_stamp(self):
+        """
+        it would be awesome to have the ability to look up surveys
+        by their unique id stamps.
+        
+        also, a null id_stamp is a good indication that the version
+        can be purged.
+        """
+        #todo --make a nice timestamp. consistent format?
+        self.id_stamp = "15_05_2011_xyzabc"
     
     def sections_by_slug(self):
         sections = {}
@@ -172,11 +219,8 @@ class XFormVersion(models.Model):
         if self._included_sections is None:
             section_includes = json.loads(self.base_section.section_json)
             sections = []
-            for incl in section_includes:
-                itype = incl.get(u'type', None)
-                if itype == 'include':
-                    sect_slug = incl.get(u'name', None)
-                    if sect_slug is not None: sections.append(self.sections.get(slug=sect_slug))
+            for incl in self.base_section_slugs():
+                sections.append(self.sections.get(slug=incl))
             self._included_sections = sections
         return self._included_sections
     
@@ -185,23 +229,6 @@ class XFormVersion(models.Model):
         available_section_list = list(self.sections.all())
         for s in available_section_list: s.is_marked_included = s in self._included_sections
         return (available_section_list, self._included_sections)
-        
-class SectionIncludeError(Exception):
-    def __init__(self, container, include_slug):
-        self.container = container
-        self.include_slug = include_slug
-
-class IncludeNotFound(SectionIncludeError):
-    def __repr__(self):
-        return "The section '%s' was not able to include the section '%s'" % \
-                    (self.container, self.include_slug)
-    
-class CircularInclude(SectionIncludeError):
-    def __repr__(self):
-        return "The section '%s' detected a circular include of section '%s'" % \
-                    (self.container, self.include_slug)
-
-import copy
 
 class XFormSection(models.Model):
     slug = models.CharField(max_length=32)
@@ -231,8 +258,7 @@ class XFormSection(models.Model):
     
     def gather_includes(self, oput, portfolio, include_stack=[]):
         """
-        This will ideally just add included sections to a list rather than
-        nesting an array that gets returned...
+        This only goes 1 layer deep.
         """
         section_list = json.loads(self.section_json)
         for qqq in section_list:
@@ -255,11 +281,12 @@ class XFormSection(models.Model):
     def _questions_list(self):
         return json.loads(self.section_json)
 
-    def validate(self):
-        survey = pyxform.Survey(name="section_test")
-        section_array = json.loads(self.section_json)
-        for section_dict in section_array:
-            survey_elem = pyxform.create_survey_element_from_dict(section_dict)
-            survey.add_child(survey_elem)
-        xml = survey.to_xml()
-        raise Exception("THERE WAS A PROBLEM!!!! (maybe)")
+    def validate(self, version):
+        """
+        I think the section.validate() should only check to make sure that
+        the necessary includes are available.
+        
+        #not sure if this is used anywhere at the moment... but it could be useful to keep around.
+        """
+        section_array = self.gather_includes([self.slug], version.sections_by_slug())
+        return True

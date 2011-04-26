@@ -1,4 +1,5 @@
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from main.models import XForm
@@ -13,9 +14,9 @@ def index(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/admin/")
     context.xforms = request.user.xforms.all()
+    context.title = "XLS2XForm v2.0-beta1"
     return render_to_response("index.html", context_instance=context)
 
-@csrf_exempt
 def validate_xform(request, survey_id):
     """
     This will validate the xform and save it 
@@ -59,7 +60,6 @@ def validate_xform(request, survey_id):
         response_dict['message'] = 'There were errors in the sections.'
     return HttpResponse(json.dumps(response_dict))
 
-@csrf_exempt
 def download_xform(request, survey_id, xform_file_name):
     context = RequestContext(request)
     user = request.user
@@ -68,10 +68,11 @@ def download_xform(request, survey_id, xform_file_name):
     survey_object = xform.export_survey()
     xf_filename = "%s.xml" % survey_object.id_string
     if xform_file_name == "":
-        return HttpResponseRedirect("/edit_xform/%s/download/%s" % (survey_id, xf_filename))
+        return HttpResponseRedirect("/edit/%s/download/%s" % (survey_id, xf_filename))
     xform_str = survey_object.to_xml()
     return HttpResponse(xform_str, mimetype="application/download")
 
+@login_required()
 def create_xform(request):
     """
     Starts a new, empty xform.
@@ -79,7 +80,7 @@ def create_xform(request):
     form_id_string = request.GET[u'id_string']
     user = request.user
     xform = XForm.objects.create(id_string=form_id_string, user=user)
-    return HttpResponseRedirect("/edit_xform/%s" % form_id_string)
+    return HttpResponseRedirect("/edit/%s" % form_id_string)
 
 def process_xls_io_to_section_json(file_io):
     file_name = file_io.name
@@ -102,11 +103,13 @@ def process_xls_io_to_section_json(file_io):
     os.remove(tmp_xls_file)
     return (slug, qjson)
 
+@login_required()
 def edit_xform(request, survey_id):
     context = RequestContext(request)
     user = request.user
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
+    context.title = "Edit XForm - %s" % xform.id_string
     if request.method == 'POST':
         #file has been posted
         section_file = request.FILES[u'section_file']
@@ -137,6 +140,7 @@ def edit_xform(request, survey_id):
     
     return render_to_response("edit_xform.html", context_instance=context)
 
+@login_required()
 def edit_section(request, survey_id, section_slug, action):
     user = request.user
     xform = user.xforms.get(id_string=survey_id)
@@ -165,8 +169,9 @@ def edit_section(request, survey_id, section_slug, action):
             active_slugs.remove(section_slug)
             active_slugs.insert(ii+1, section_slug)
             xform.order_base_sections(active_slugs)
-    return HttpResponseRedirect("/edit_xform/%s" % xform.id_string)
+    return HttpResponseRedirect("/edit/%s" % xform.id_string)
 
+@login_required()
 def debug_json(request, survey_id):
     """
     This is for testing in early development. This returns a JSON string
@@ -174,5 +179,9 @@ def debug_json(request, survey_id):
     """
     user = request.user
     xform = user.xforms.get(id_string=survey_id)
-    j = xform._export_survey_package()
-    return HttpResponse(json.dumps(j))
+#    j = xform._export_survey_package()
+    try:
+        j = xform.export_survey(finalize=False, debug=True)
+        return HttpResponse(json.dumps(j))
+    except Exception, e:
+        return HttpResponse(json.dumps({'error': e.__repr__()}))

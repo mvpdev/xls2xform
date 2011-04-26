@@ -1,67 +1,15 @@
 {% extends 'base.html' %}
-{% block content %}
-<style type="text/css" media="screen">
-	#available-sections {
-		border: 1px solid #394367;
-		padding: 8px 10px;
-		width: 400px;
-		float: right;
-	}
-	#available-sections h3 {
-		font-size: 14px;
-	}
-	#available-sections h5 {
-		font-size: 12px;
-		font-weight: normal;
-		font-style: italic;
-	}
-	#available-sections ul {
-		list-style-type: none; margin: 0; padding: 0;
-	}
-	#available-sections ul li {
-		position: relative;
-		background-color: #eee;
-		border-bottom: 1px solid #bbb;
-		padding: 3px 8px 3px 16px;
-	}
-	#available-sections ul li div.left-bar {
-		width: 6px;
-		height: 100%;
-		background-color: #f00;
-		position: absolute;
-		top: 0; left:1px;
-	}
-	#available-sections ul li div.left-bar.lb-a {
-		background-color: #96C6A8;
-	}
-	#available-sections ul li div.left-bar.lb-a.active {
-		background-color: #01A42F;
-	}
-	#available-sections ul li p {
-		margin: 0;
-	}
-	#available-sections ul li p.title {
-		font-weight: bold;
-	}
-	#available-sections ul li p.title span.sub-sections {
-		font-weight: normal;
-	}
-	#available-sections ul li p.title span.sub-sections span.ss {
-		margin: 1px 4px;
-		font-size: smaller;
-	}
-	#available-sections ul li p.section-buttons a {
-		display: inline-block; width: 100px;
-	}
-	
-</style>
-
+{% block header %}
+<div>
 <h2>
-	{{xform.id_string}}
+	<a href="/">
+		[ Home ]
+	</a>
+	{{xform.id_string}} <em>r{{xform.latest_version.version_number}}</em>
 </h2>
-<p>
-	Version Number {{xform.versions.count}}
-</p>
+</div>
+{% endblock %}
+{% block content %}
 <div id="available-sections">
 	<h3>Portfolio</h3>
 	{% if available_sections_empty %}
@@ -78,16 +26,33 @@
 			</p>
 			<p class="section-buttons">
 				{% if section.is_marked_included %}
-				<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Deactivate ]</a>
+				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Deactivate ]</a>
 				{% else %}
-				<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Activate ]</a>
+				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Activate ]</a>
 				{% endif %}
-				<a href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[ Delete ]</a>
+				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[ X ]</a>
 			</p>
 		</li>
 		{% endfor %}
 	</ul>
 	{% endif %}
+	<div id="upload-section">
+	<form action="." method="post" enctype="multipart/form-data">
+		<h4>
+			Add a section in either XLS or JSON.
+		</h4>
+		<p>
+			Your file will pull the section id from the name of the file.
+			<br>
+			<em>Example: location_questions.xls will have the section id: location_questions</em>
+		</p>
+		<p>
+			{% csrf_token %}
+			<input type="file" name="section_file" >
+			<input type="submit" value="Submit">
+		</p>
+	</form>
+	</div>
 </div>
 <div id="sections">
 	<h3>Active Sections</h3>
@@ -100,46 +65,37 @@
 		<li class="section-{{section.slug}}" data-section-slug="{{section.slug}}">
 			<p>
 				{{section.slug}}
+				<span class="buttons">
+					<a class="move-up" href="/edit/{{xform.id_string}}/section/{{section.slug}}/up">[Up]</a>
+					<a class="move-down" href="/edit/{{xform.id_string}}/section/{{section.slug}}/down">[Down]</a>
+					<a class="deactivate" href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate">[x]</a>
+				</span>
 			</p>
 			<p class="status" style="display:none"></p>
-			<p class="buttons">
-				<a class="move-up" href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/up">[Up]</a>
-				<a class="move-down" href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/down">[Down]</a>
-				<a class="deactivate" href="/edit_xform/{{xform.id_string}}/section/{{section.slug}}/deactivate">[x]</a>
-			</p>
+			<ul class="sub-sections">
+				{% for ss in section.sub_sections %}
+				<li>
+					{{ss}}
+				</li>
+				{% endfor %}
+			</ul>
 		</li>
 		{% endfor %}
 	</ol>
 	{% endif %}
+	<div id="actions">
+		<!-- this could be status bar or something -->
+		<p class="survey-status" style="display:none">
+		</p>
+		<p class="xform-buttons">
+			<!--
+			<a href="/edit/{{xform.id_string}}/validate/" id="validate">Validate XForm</a>
+			<br>
+			<a href="/edit/{{xform.id_string}}/download/" id="download">Download XForm</a>
+			-->
+		</p>
+	</div>
 </div>
-<fieldset>
-	<legend>
-		Add or update a section.
-	</legend>
-	<form action="." method="post" enctype="multipart/form-data">
-		<p>
-			Add a section in either XLS or JSON.
-		</p>
-		<p>
-			Your file will pull the section id from the name of the file.
-			<em>Example: location_questions.xls will have the section id: location_questions</em>
-		</p>
-		<p>
-			{% csrf_token %}
-			<input type="file" name="section_file" >
-			<input type="submit" value="Submit">
-		</p>
-	</form>
-</fieldset>
-<p class="survey-status" style="display:none">
-</p>
-<p class="xform-buttons">
-	<!--
-	<a href="/edit_xform/{{xform.id_string}}/validate/" id="validate">Validate XForm</a>
-	<br>
-	<a href="/edit_xform/{{xform.id_string}}/download/" id="download">Download XForm</a>
-	-->
-</p>
 {% endblock %}
 
 {% block js %}
@@ -168,7 +124,7 @@ $('#sections').delegate('a', 'click', function(evt){
 })
 --*/
 $('#validate').click(function(evt){
-	$.getJSON('/edit_xform/{{xform.id_string}}/validate').done(function(data){
+	$.getJSON('/edit/{{xform.id_string}}/validate').done(function(data){
 		console.log(data);
 		if(data.section_stats) {
 			$.each(data.section_stats, function(sectionSlug, stat){
@@ -187,13 +143,13 @@ $('#validate').click(function(evt){
 	evt.preventDefault();
 });
 
-var debugJson = $("<a />", {'href':'#'}).text("Debug XForm Output").click(function(evt){
+var debugJson = $("<a />", {'href':'#'}).text("View Compiled JSON").click(function(evt){
 	var ta = $('textarea#t');
 	if(ta.length===0) {
-		ta = $('<textarea />').css({'width':'80%','height':'200px'});
-		$('footer').html(ta);
+		ta = $('<textarea />', {'id':'t'}).css({'width':'96%','height':'200px'});
+		$('#actions').append(ta);
 	}
-	$.getJSON("/edit_xform/{{xform.id_string}}/debug_json").done(function(data){
+	$.getJSON("/edit/{{xform.id_string}}/debug_json").done(function(data){
 		ta.text(JSON.stringify(data));
 	});
 	evt.preventDefault();

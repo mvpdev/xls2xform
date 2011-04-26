@@ -58,6 +58,9 @@ MEDIA_URL = ''
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(CURRENT_DIR, 'static')
 
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
+
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'

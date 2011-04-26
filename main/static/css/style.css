@@ -63,8 +63,8 @@ input:invalid, textarea:invalid { border-radius: 1px; -moz-box-shadow: 0px 0px 5
 .no-boxshadow input:invalid, .no-boxshadow textarea:invalid { background-color: #f0dddd; }
 
 
-::-moz-selection{ background: #FF5E99; color:#fff; text-shadow: none; }
-::selection { background:#FF5E99; color:#fff; text-shadow: none; }
+::-moz-selection{ background: #3270b5; color:#fff; text-shadow: none; }
+::selection { background:#3270b5; color:#fff; text-shadow: none; }
 a:link { -webkit-tap-highlight-color: #FF5E99; }
 button {  width: auto; overflow: visible; }
 .ie7 img { -ms-interpolation-mode: bicubic; }
@@ -134,3 +134,93 @@ a:hover { color: #036; }
   h2, h3{ page-break-after: avoid; }
 }
 
+
+div#container {
+    width: 1100px;
+    margin: 4px auto;
+}
+
+#available-sections {
+	border: 1px solid #394367;
+	padding: 8px 10px;
+	width: 400px;
+	float: left;
+}
+#sections h3, #available-sections h3 {
+	font-size: 14px;
+}
+#sections h5, #available-sections h5 {
+	font-size: 12px;
+	font-weight: normal;
+	font-style: italic;
+}
+#available-sections h4 {
+	font-size: 12px;
+	font-weight: bold;
+}
+#available-sections ul {
+	list-style-type: none; margin: 0; padding: 0;
+}
+#available-sections ul li {
+	position: relative;
+	background-color: #eee;
+	border-bottom: 1px solid #bbb;
+	padding: 3px 8px 3px 16px;
+}
+#available-sections ul li div.left-bar {
+	width: 6px;
+	height: 100%;
+	position: absolute;
+	top: 0; left:1px;
+}
+#available-sections ul li div.left-bar.lb-a {
+	background-color: #96C6A8;
+}
+#available-sections ul li div.left-bar.lb-a.active {
+	background-color: #01A42F;
+}
+#available-sections ul li p {
+	margin: 0;
+}
+#available-sections ul li p.title {
+	font-weight: bold;
+}
+#available-sections ul li p.title span.sub-sections {
+	font-weight: normal;
+}
+#available-sections ul li p.title span.sub-sections span.ss {
+	margin: 1px 4px;
+	font-size: smaller;
+}
+#available-sections ul li p.section-buttons a {
+	display: inline-block; width: 100px;
+}
+#sections, #extra {
+    width: 620px;
+    padding: 8px 10px;
+    border: 1px solid #394367;
+    float: right;
+    margin: 0 0 12px;
+}
+#sections #actions {
+    border: 1px solid #394367;
+    padding: 3px 6px;
+}
+#upload-section {
+    padding: 2px 6px;
+}
+header h2 {
+    margin: 4px 0;
+}
+header h2 em {
+    color: #777;
+    font-weight: normal;
+    font-size: 11px;
+}
+header h2 em:before {
+    color: #777;
+    content: '– ';
+}
+#sections ol {
+    padding: 12px 0;
+}
