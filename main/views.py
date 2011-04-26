@@ -60,17 +60,21 @@ def validate_xform(request, survey_id):
         response_dict['message'] = 'There were errors in the sections.'
     return HttpResponse(json.dumps(response_dict))
 
-def download_xform(request, survey_id, xform_file_name):
+def download_xform(request, survey_id, version_number=None, xform_file_name=None):
     context = RequestContext(request)
     user = request.user
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
-    survey_object = xform.export_survey()
-    xf_filename = "%s.xml" % survey_object.id_string
-    if xform_file_name == "":
-        return HttpResponseRedirect("/edit/%s/download/%s" % (survey_id, xf_filename))
-    xform_str = survey_object.to_xml()
-    return HttpResponse(xform_str, mimetype="application/download")
+    if version_number is None:
+        version_number = xform.latest_version.version_number
+        survey_object = xform.export_survey()
+        xf_filename = "%s.xml" % survey_object.id_string
+        return HttpResponseRedirect("/edit/%s/download/%s/%s" % (survey_id, version_number, xf_filename))
+    else:
+        survey_object = xform.export_survey()
+        xf_filename = "%s.xml" % survey_object.id_string
+        xform_str = survey_object.to_xml()
+        return HttpResponse(xform_str, mimetype="application/download")
 
 @login_required()
 def create_xform(request):
