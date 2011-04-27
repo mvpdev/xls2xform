@@ -101,8 +101,7 @@ def process_xls_io_to_section_json(file_io):
     
     xlr = SurveyReader(tmp_xls_file)
     xls_vals = xlr.to_dict()
-    question_list = xls_vals.get(u'children')
-    qjson = json.dumps(question_list)
+    qjson = json.dumps(xls_vals)
     
     os.remove(tmp_xls_file)
     return (slug, qjson)
