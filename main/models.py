@@ -244,16 +244,22 @@ class XFormSection(models.Model):
         d = kwargs.pop(u'section_dict', kwargs.pop('section_dict', None))
         if d is not None: kwargs[u'section_json'] = json.dumps(d)
         return super(XFormSection, self).__init__(*args, **kwargs)
-    
+
     def sub_sections(self):
+        def traverse_pyobj(pyobj):
+            if type(pyobj)==dict:
+                if pyobj.get(u'type')==u'include':
+                    yield pyobj[u'name']
+                for include in traverse_pyobj(pyobj.get(u'children')):
+                    yield include
+            if type(pyobj)==list:
+                for element in pyobj:
+                    for include in traverse_pyobj(element):
+                        yield include
+        
         if self._sub_sections is None:
-            self._sub_sections = []
             sd = json.loads(self.section_json)
-            for d in sd:
-                if d.get(u'type')=='include': self._sub_sections.append(d.get(u'name'))
-                if d.get(u'type') in ['repeat', 'loop', 'group']:
-                    for aa in d.get(u'children'):
-                        if aa.get(u'type')=='include': self._sub_sections.append(aa.get(u'name'))
+            self._sub_sections = list(traverse_pyobj(sd))
         return self._sub_sections
     
     def gather_includes(self, oput, portfolio, include_stack=[]):
