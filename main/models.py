@@ -1,9 +1,7 @@
 from django.db import models
-
 from django.contrib.auth.models import User
-
+import json, copy, os
 import pyxform
-import json, copy
 
 class SectionIncludeError(Exception):
     def __init__(self, container, include_slug):
@@ -66,10 +64,31 @@ class XForm(models.Model):
             }
         if debug: return survey_package
         return pyxform.create_survey(**survey_package)
+
+    # todo: I think it would be good to move completely over to adding
+    # sections from files. As this is how everything will be submitted
+    # through the web, and I think it's the best user experience.
+    def add_or_update_section_from_file(self, section_file):
+        """
+        Automatically creates a new version whenever updating one of
+        the sections.
+        """
+        new_section = XFormSection.create_from_file(section_file)
+        sections_by_slug = self.latest_version.sections_by_slug()
+        remove_section = sections_by_slug.get(new_section.slug)
+        #TODO: check to see if the new section contains changes
+        #assuming not--
+        new_version = self.latest_version._clone()
+        new_version.sections.remove(remove_section)
+        new_version.sections.add(new_section)
+        self.latest_version = new_version
+        self.save()
+        return new_version
     
     def add_or_update_section(self, *args, **kwargs):
         """
-        Automatically creates a new version whenever updating one of the sections.
+        Automatically creates a new version whenever updating one of
+        the sections.
         """
         slug = kwargs.get(u'slug')
         
@@ -247,12 +266,22 @@ class XFormVersion(models.Model):
         for s in available_section_list: s.is_marked_included = s in self._included_sections
         return (available_section_list, self._included_sections)
 
+
+from django.core.files.storage import default_storage
+
+file_options = { "upload_to" : "uploaded_files/%Y%m%d%H%M%S",
+                 "storage" : default_storage, }
+
 class XFormSection(models.Model):
     slug = models.CharField(max_length=32)
     section_json = models.TextField()
     versions = models.ManyToManyField("XFormVersion", related_name="sections")
     is_marked_included = False
     _sub_sections = None
+
+    # I'm saving the uploaded file in case a user loses the original
+    # and wants to edit it.
+    uploaded_file = models.FileField(null=True, default=None, **file_options)
     
     def __init__(self, *args, **kwargs):
         """
@@ -261,6 +290,31 @@ class XFormSection(models.Model):
         d = kwargs.pop(u'section_dict', kwargs.pop('section_dict', None))
         if d is not None: kwargs[u'section_json'] = json.dumps(d)
         return super(XFormSection, self).__init__(*args, **kwargs)
+
+    def _set_section_json_from_uploaded_file(self):
+        if self.uploaded_file.name.endswith('.json'):
+            section_json = self.uploaded_file.read()
+        elif self.uploaded_file.name.endswith('.xls'):
+            survey_reader = pyxform.ExcelSurveyReader(self.uploaded_file.path)
+            survey_dict = survey_reader.to_dict()
+            section_json = json.dumps(survey_dict)
+        else:
+            raise Exception("This file is not understood: %s" % file_name)
+        self.section_json = section_json
+
+    @classmethod
+    def create_from_file(cls, section_file):
+        file_name = section_file.name
+        slug, extension = os.path.splitext(file_name)
+        kwargs = {
+            'slug' : slug,
+            'section_json' : '',
+            'uploaded_file' : section_file,
+            }
+        section = cls.objects.create(**kwargs)
+        section._set_section_json_from_uploaded_file()
+        section.save()
+        return section
 
     def sub_sections(self):
         def traverse_pyobj(pyobj):
