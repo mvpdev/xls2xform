@@ -56,12 +56,16 @@ class XForm(models.Model):
                 * questions_list (with hierarchy of groups, etc.)
                 * question_types (for maximum customizability, language compaitibility, etc.)
         """
-        question_types, survey_data, version_stamp = self.latest_version.gather_sections(finalize=finalize)
-        
-        survey_package = {'name': self.id_string, 'question_types':question_types, \
-                            'survey': survey_data, 'id_string': version_stamp}
+        survey_package = {
+            'name_of_main_section':
+            self.latest_version.get_base_section_name(),
+            'sections':
+            self.latest_version.section_pyobjs_by_slug(),
+            'question_type_dictionary':
+            self.latest_version.get_question_type_dictionary(),
+            }
         if debug: return survey_package
-        return pyxform.render_survey_package(survey_package)
+        return pyxform.create_survey(**survey_package)
     
     def add_or_update_section(self, *args, **kwargs):
         """
@@ -188,6 +192,9 @@ class XFormVersion(models.Model):
         if finalize: stamp = self._generate_unique_id_stamp()
         else: stamp = None
         return (qtypes, survey_data, stamp)
+
+    def get_question_type_dictionary(self):
+        return self.qtypes_section._questions_list()
     
     def _generate_unique_id_stamp(self):
         """
@@ -204,6 +211,13 @@ class XFormVersion(models.Model):
         sections = {}
         for s in self.sections.all(): sections[s.slug] = s
         return sections
+
+    def section_pyobjs_by_slug(self):
+        sections = {}
+        for s in self.sections.all():
+            pyobj = json.loads(s.section_json)
+            sections[s.slug] = pyobj
+        return sections
     
     def base_section_slugs(self):
         j_arr = json.loads(self.base_section.section_json)
@@ -214,6 +228,9 @@ class XFormVersion(models.Model):
                 include_slug = j.get(u'name')
                 slugs.append(include_slug)
         return slugs
+
+    def get_base_section_name(self):
+        return self.base_section_slugs()[0]
     
     def included_base_sections(self):
         if self._included_sections is None:
