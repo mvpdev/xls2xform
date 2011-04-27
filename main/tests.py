@@ -127,10 +127,20 @@ class ExportingFormViaPyxform(TestCase):
         self.assertEqual(self.xform.versions.count(), 1)
         
         #set section_json
-        sd = [{u'type':u'text', u'name':u'color'}]
-        lv = self.xform.add_or_update_section(section_dict=sd, slug="first_section")
+        kwargs = {
+            'section_dict': {
+                'type': 'survey',
+                'name': 'first_section',
+                'children' : [{u'type':u'text', u'name':u'color'}],
+                },
+            'slug': 'first_section',
+            }
+        lv = self.xform.add_or_update_section(**kwargs)
+        self.assertEqual(lv, self.xform.latest_version)
         
-        #these tests won't work until render_survey_package works...
+        # note: I needed to activate the section to get things working
+        new_section = lv.sections_by_slug()['first_section']
+        self.xform.activate_section(new_section)
         s = self.xform.export_survey()
         survey_id = s.id_string()
         
@@ -150,13 +160,21 @@ import pyxform
 
 class PassValuesToPyxform(TestCase):
     def test_package_values_create_survey(self):
-        survey_package = {u'survey': [
-            { u'type': u'text',
-              u'name': u'name'}],
-          u'name': u'TestAsurvey',
-          u'id_string': u'Test_canSpecifyIDstring'
-        }
-        s = pyxform.render_survey_package(survey_package)
+        survey_package = {
+            u'name_of_main_section': u'TestAsurvey',
+            u'sections': {
+                u'TestAsurvey': {
+                    u'name': u'TestAsurvey',
+                    u'type': u'survey',
+                    u'children' : [
+                        { u'type': u'text',
+                          u'name': u'name'}
+                        ],
+                    }
+                },
+            u'id_string': u'Test_canSpecifyIDstring'
+            }
+        s = pyxform.create_survey(**survey_package)
         self.assertEqual(s.get_name(), "TestAsurvey")
         self.assertEqual(s.id_string(), "Test_canSpecifyIDstring")
         self.assertEqual(len(s._children), 1)
