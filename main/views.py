@@ -36,15 +36,26 @@ def download_xform(request, survey_id, version_number=None, xform_file_name=None
 @login_required()
 def create_xform(request):
     """
-    Starts a new, empty xform.
+    Starts a new xform.
+    
+    If form is POSTed, it automagically appends it to the form.
     """
-    form_id_string = request.GET[u'id_string']
+    context = RequestContext(request)
     user = request.user
+    if request.method == 'POST':
+        section_file = request.FILES[u'section_file']
+        form_id_string, section_json = convert_file_to_json(section_file)
+    else:
+        form_id_string = request.GET[u'id_string']
+        section_json = None
     xform = XForm.objects.create(id_string=form_id_string, user=user)
+    if section_json is not None:
+        xform.add_or_update_section(slug=form_id_string, section_json=section_json)
+        xform.order_base_sections([form_id_string])
     return HttpResponseRedirect("/edit/%s" % form_id_string)
 
 def convert_file_to_json(file_io):
-    file_name = file_io.file_name
+    file_name = file_io.name
     if re.search("\.json$", file_name):
         slug = re.sub(".json$", "", file_name)
         section_json = section_file.read()
@@ -85,6 +96,10 @@ def edit_xform(request, survey_id):
         section_file = request.FILES[u'section_file']
         slug, section_json = convert_file_to_json(section_file)
         xform.add_or_update_section(slug=slug, section_json=section_json)
+        
+        #should we auto add this section if it's the first?
+#        if xform.latest_version.sections.count()==1:
+#            xform.order_base_sections([form_id_string])
     context.xform = xform
     
     lv = xform.latest_version
