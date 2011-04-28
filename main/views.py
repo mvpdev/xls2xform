@@ -17,49 +17,6 @@ def index(request):
     context.title = "XLS2XForm v2.0-beta1"
     return render_to_response("index.html", context_instance=context)
 
-def validate_xform(request, survey_id):
-    """
-    This will validate the xform and save it 
-    """
-    context = RequestContext(request)
-    user = request.user
-    xforms = request.user.xforms
-    xform = xforms.get(id_string=survey_id)
-    
-    response_dict = {'status': 'good'}
-    section_errors = 0
-    section_stats = {}
-    for section in xform.latest_version.sections.all():
-        section_response_dict = {}
-        section_valid = True
-        try:
-            section.validate()
-            section_valid = True
-            section_response_dict['status'] = 'good'
-        except Exception, e:
-            section_response_dict['status'] = 'error'
-            section_response_dict['message'] = e.__repr__()
-            section_valid = False
-        
-        section_stats[section.slug] = section_response_dict
-        if section_valid == False:
-            section_errors += 1
-    
-    response_dict[u'section_stats'] = section_stats
-    response_dict[u'section_errors'] = section_errors
-    
-    if section_errors == 0:
-        try:
-            survey_object = xform.export_survey()
-            survey_object.to_xml()
-        except Exception, e:
-            response_dict['status'] = 'error'
-            response_dict['message'] = e.__repr__()
-    else:
-        response_dict['status'] = 'error'
-        response_dict['message'] = 'There were errors in the sections.'
-    return HttpResponse(json.dumps(response_dict))
-
 def download_xform(request, survey_id, version_number=None, xform_file_name=None):
     context = RequestContext(request)
     user = request.user
@@ -191,3 +148,51 @@ def debug_json(request, survey_id):
         return HttpResponse(json.dumps(j))
     except Exception, e:
         return HttpResponse(json.dumps({'error': e.__repr__()}))
+
+
+
+"""
+This is probably not the best way to do the validation...
+We should talk about a better way to do this.
+
+def validate_xform(request, survey_id):
+#    This will validate the xform and save it 
+    context = RequestContext(request)
+    user = request.user
+    xforms = request.user.xforms
+    xform = xforms.get(id_string=survey_id)
+    
+    response_dict = {'status': 'good'}
+    section_errors = 0
+    section_stats = {}
+    for section in xform.latest_version.sections.all():
+        section_response_dict = {}
+        section_valid = True
+        try:
+            section.validate()
+            section_valid = True
+            section_response_dict['status'] = 'good'
+        except Exception, e:
+            section_response_dict['status'] = 'error'
+            section_response_dict['message'] = e.__repr__()
+            section_valid = False
+        
+        section_stats[section.slug] = section_response_dict
+        if section_valid == False:
+            section_errors += 1
+    
+    response_dict[u'section_stats'] = section_stats
+    response_dict[u'section_errors'] = section_errors
+    
+    if section_errors == 0:
+        try:
+            survey_object = xform.export_survey()
+            survey_object.to_xml()
+        except Exception, e:
+            response_dict['status'] = 'error'
+            response_dict['message'] = e.__repr__()
+    else:
+        response_dict['status'] = 'error'
+        response_dict['message'] = 'There were errors in the sections.'
+    return HttpResponse(json.dumps(response_dict))
+"""
