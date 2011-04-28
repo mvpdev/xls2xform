@@ -237,7 +237,7 @@ ol.form-section-list li a.move-down {
     background-position: center bottom;
     bottom: 4px;
 }
-#sections, #extra {
+.a-square-box, #sections, #extra {
     padding: 8px 10px;
     border: 1px solid #394367;
     margin: 8px 0;

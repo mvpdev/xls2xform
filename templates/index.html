@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
-<h1>
-	Your Forms
-</h1>
-<ul>
-	{% for xform in xforms %}
-	<li>
-		<a href="/edit/{{xform.id_string}}/">{{xform.id_string}}</a>
-	</li>
-	{% endfor %}
-</ul>
-<div id="new-empty-form">
+<div class="a-square-box">
+	<h1>
+		Your Forms
+	</h1>
+	<hr>
+	<ul>
+		{% for xform in xforms %}
+		<li>
+			<a href="/edit/{{xform.id_string}}/">{{xform.id_string}}</a>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+<div id="new-empty-form" class="a-square-box">
 	<h2>
 		Start a new form
 	</h2>
@@ -21,8 +24,7 @@
 		<input type="submit" value="Create Empty Form">
 	</form>
 </div>
-<br>
-<div>
+<div class="a-square-box">
 	<h2>
 		Form QuickUpload<span style="font-size:smaller"> &copy; </span>.
 	</h2>
