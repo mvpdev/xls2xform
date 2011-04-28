@@ -71,7 +71,7 @@ def process_xls_io_to_section_json(file_io):
     # independent.
     file_name = file_io.name
     slug = re.sub("\.xlsx?", "", file_name)
-    tmp_file_name = "%d_%s" % (random.randint(100000, 1000000), file_name)
+    tmp_file_name = file_name
     tmp_xls_dir = os.path.join(settings.CURRENT_DIR, "xls_tmp")
     if not os.path.exists(tmp_xls_dir): os.mkdir(tmp_xls_dir)
     tmp_xls_file = os.path.join(tmp_xls_dir, tmp_file_name)
