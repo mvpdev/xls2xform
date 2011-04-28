@@ -1,17 +1,59 @@
 {% extends 'base.html' %}
 {% block header %}
 <div>
-<h2>
-	<a href="/">
-		[ Home ]
-	</a>
+<h1>
+	<a href="/">Home</a> &raquo;
 	{{xform.id_string}} <em>r{{xform.latest_version.version_number}}</em>
-</h2>
+</h1>
 </div>
 {% endblock %}
 {% block content %}
+
+<div id="sections">
+	<h3>Active Sections</h3>
+	{% if base_sections_empty %}
+	<h5>No sections have been marked as active.</h5>
+	{% else %}
+	<h5>These are the main sections that will be included in this version of the survey.</h5>
+	<ol class="form-section-list">
+		{% for section in base_sections %}
+		<li class="section-{{section.slug}}" data-section-slug="{{section.slug}}">
+			<p>
+				{{section.slug}}
+			</p>
+			<p class="status" style="display:none"></p>
+			<ul class="sub-sections">
+				{% for ss in section.sub_sections %}
+				<li>
+					{{ss}}
+				</li>
+				{% endfor %}
+			</ul>
+			<a class="button deactivate" href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" title="Remove Section">&mdash;</a>
+			<a class="button move-up" href="/edit/{{xform.id_string}}/section/{{section.slug}}/up" title="Move Up">Move Up</a>
+			<a class="button move-down" href="/edit/{{xform.id_string}}/section/{{section.slug}}/down" title="Move Down">Move Down</a>
+		</li>
+		{% endfor %}
+	</ol>
+	<div id="actions">
+		<p class="survey-status">
+			<!-- we should give feedback in this line.
+			{{error_message}}
+			 -->
+		</p>
+		<p class="xform-buttons">
+			<!--
+			<a href="/edit/{{xform.id_string}}/validate/" id="validate">Validate XForm</a>
+			<br>
+			-->
+			<a href="/edit/{{xform.id_string}}/download/" id="download">Convert to XForm</a>
+		</p>
+	</div>
+	{% endif %}
+</div>
+
 <div id="available-sections">
-	<h3>Portfolio</h3>
+	<h3>Available Sections</h3>
 	{% if available_sections_empty %}
 	<h5>No sections have been added to the portfolio for this XForm.</h5>
 	{% else %}
@@ -26,9 +68,9 @@
 			</p>
 			<p class="section-buttons">
 				{% if section.is_marked_included %}
-				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Deactivate ]</a>
+				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Remove from XForm ]</a>
 				{% else %}
-				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Activate ]</a>
+				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Add to XForm ]</a>
 				{% endif %}
 				<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[ X ]</a>
 			</p>
@@ -39,13 +81,16 @@
 	<div id="upload-section">
 	<form action="." method="post" enctype="multipart/form-data">
 		<h4>
-			Add a section in either XLS or JSON.
+			Upload your section:
 		</h4>
-		<p>
-			Your file will pull the section id from the name of the file.
+		<p style="font-style:italic;color:#888">
+			The <u>section's id</u> comes from the name of the file.<br>
+			<em>Example: location_questions.xls will have the section's id: location_questions</em>
 			<br>
-			<em>Example: location_questions.xls will have the section id: location_questions</em>
+			<br>
+			If you would like to correct an error in the section, upload the file again with the same name.
 		</p>
+		<br>
 		<p>
 			{% csrf_token %}
 			<input type="file" name="section_file" >
@@ -54,48 +99,7 @@
 	</form>
 	</div>
 </div>
-<div id="sections">
-	<h3>Active Sections</h3>
-	{% if base_sections_empty %}
-	<h5>No sections have been marked as active.</h5>
-	{% else %}
-	<h5>These are the main sections that will be included in this version of the survey.</h5>
-	<ol>
-		{% for section in base_sections %}
-		<li class="section-{{section.slug}}" data-section-slug="{{section.slug}}">
-			<p>
-				{{section.slug}}
-				<span class="buttons">
-					<a class="move-up" href="/edit/{{xform.id_string}}/section/{{section.slug}}/up">[Up]</a>
-					<a class="move-down" href="/edit/{{xform.id_string}}/section/{{section.slug}}/down">[Down]</a>
-					<a class="deactivate" href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate">[x]</a>
-				</span>
-			</p>
-			<p class="status" style="display:none"></p>
-			<ul class="sub-sections">
-				{% for ss in section.sub_sections %}
-				<li>
-					{{ss}}
-				</li>
-				{% endfor %}
-			</ul>
-		</li>
-		{% endfor %}
-	</ol>
-	{% endif %}
-	<div id="actions">
-		<!-- this could be status bar or something -->
-		<p class="survey-status" style="display:none">
-		</p>
-		<p class="xform-buttons">
-			<!--
-			<a href="/edit/{{xform.id_string}}/validate/" id="validate">Validate XForm</a>
-			<br>
-			-->
-			<a href="/edit/{{xform.id_string}}/download/" id="download">Download XForm</a><span> | </span>
-		</p>
-	</div>
-</div>
+
 {% endblock %}
 
 {% block js %}
@@ -154,7 +158,8 @@ var debugJson = $("<a />", {'href':'#'}).text("View Compiled JSON").click(functi
 	});
 	evt.preventDefault();
 }).appendTo($('p.xform-buttons'));
-
+/*--
+--*/
 -->
 </script>
 {% endblock %}

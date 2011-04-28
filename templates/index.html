@@ -1,12 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<p>
-	if you aren't logged in, please log in and come back here... <a href="/admin/">admin login</a>
-	Logged in as {{user.username}}
-</p>
-<h2>
+{% if user.is_authenticated %}
+<h1>
 	Your Forms
-</h2>
+</h1>
 <ul>
 	{% for xform in xforms %}
 	<li>
@@ -23,4 +20,7 @@
 		<input type="submit" value="Create Empty Form">
 	</form>
 </fieldset>
+{% else %}
+<p><em>You must be logged in to create an xform</em></p>
+{% endif %}
 {% endblock %}

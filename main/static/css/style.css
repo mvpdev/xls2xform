@@ -143,8 +143,6 @@ div#container {
 #available-sections {
 	border: 1px solid #394367;
 	padding: 8px 10px;
-	width: 400px;
-	float: left;
 }
 #sections h3, #available-sections h3 {
 	font-size: 14px;
@@ -157,17 +155,20 @@ div#container {
 #available-sections h4 {
 	font-size: 12px;
 	font-weight: bold;
+	margin-bottom: 7px;
 }
 #available-sections ul {
 	list-style-type: none; margin: 0; padding: 0;
 }
 #available-sections ul li {
 	position: relative;
-	background-color: #eee;
+	background-color: #f8f8f8;
 	border-bottom: 1px solid #bbb;
+	border-color: #bbb;
 	padding: 3px 8px 3px 16px;
 }
 #available-sections ul li div.left-bar {
+    opacity: 0.3;
 	width: 6px;
 	height: 100%;
 	position: absolute;
@@ -193,33 +194,91 @@ div#container {
 	font-size: smaller;
 }
 #available-sections ul li p.section-buttons a {
-	display: inline-block; width: 100px;
+	display: inline-block; width: 200px;
+}
+
+ol.form-section-list li a.move-up, ol.form-section-list li a.move-down {
+    position: absolute;
+    right: 30px;
+    font-size: 4px;
+    line-height: 1px;
+    color: transparent;
+    width: 30px;
+    height: 20px;
+    background-image: url('/static/images/up-down.png');
+    background-position: center top;
+    border: 0 none;
+    opacity: 0.3;
+}
+ol.form-section-list li:last-child a.button.move-down, ol.form-section-list li:first-child a.button.move-up {
+    opacity: 0.1;
+    cursor: default;
+}
+ol.form-section-list li a.button:hover {
+    opacity: 0.4;
+}
+ol.form-section-list li a.deactivate {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    opacity: 0.3;
+    width: 9px;
+    height: 9px;
+    font-size: 10px;
+    text-align: center;
+    line-height: 9px;
+    opacity: 0.6;
+    border-radius: 4px;
+}
+ol.form-section-list li a.move-up {
+    top: 4px;
+}
+ol.form-section-list li a.move-down {
+    background-position: center bottom;
+    bottom: 4px;
 }
 #sections, #extra {
-    width: 620px;
     padding: 8px 10px;
     border: 1px solid #394367;
-    float: right;
-    margin: 0 0 12px;
+    margin: 8px 0;
 }
 #sections #actions {
     border: 1px solid #394367;
     padding: 3px 6px;
 }
 #upload-section {
-    padding: 2px 6px;
+    margin: 6px 0;
+    padding: 8px 10px;
+    border: 1px solid #aaa;
 }
-header h2 {
+header h1 {
+    font-size: 16px;
     margin: 4px 0;
 }
-header h2 em {
-    color: #777;
+ol.form-section-list {
+    line-height: 20px;
+    font-size: 15px;
+}
+ol.form-section-list > li {
+    min-height: 54px;
+    clear: both;
+    position: relative;
+}
+ol.form-section-list li a {
+    display: block;
+    font-size: 11px;
+    width: 70px;
+    text-align: center;
+    padding: 1px 2px;
+    border: 1px solid #607890;
+    margin: 2px 0;
+    text-decoration: none;
+}
+header h1 em {
+    color: #ccc;
     font-weight: normal;
     font-size: 11px;
-}
-header h2 em:before {
-    color: #777;
-    content: '– ';
+    margin-left: 8px;
 }
 #sections ol {
     padding: 12px 0;
