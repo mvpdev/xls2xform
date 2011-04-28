@@ -6,6 +6,7 @@ from main.models import XForm
 from django.views.decorators.csrf import csrf_exempt
 import json, re, random, os
 
+from pyxform.xls2json import SurveyReader
 from xls2xform import settings
 
 def index(request):
@@ -85,6 +86,36 @@ def create_xform(request):
     xform = XForm.objects.create(id_string=form_id_string, user=user)
     return HttpResponseRedirect("/edit/%s" % form_id_string)
 
+def convert_file_to_json(file_io):
+    file_name = file_io.file_name
+    if re.search("\.json$", file_name):
+        slug = re.sub(".json$", "", file_name)
+        section_json = section_file.read()
+    elif re.search("\.xlsx?$", file_name):
+        slug, section_json = process_xls_io_to_section_json(file_io)
+    else:
+        raise Exception("This file is not understood: %s" % file_name)
+    return (slug, section_json)
+
+def process_xls_io_to_section_json(file_io):
+    # I agree that this function is not pretty, but I don't think we should 
+    # move this into the model because I prefer to think of the model as file-format
+    # independent.
+    file_name = file_io.name
+    slug = re.sub("\.xlsx?", "", file_name)
+    tmp_file_name = "%d_%s" % (random.randint(100000, 1000000), file_name)
+    tmp_xls_dir = os.path.join(settings.CURRENT_DIR, "xls_tmp")
+    if not os.path.exists(tmp_xls_dir): os.mkdir(tmp_xls_dir)
+    tmp_xls_file = os.path.join(tmp_xls_dir, tmp_file_name)
+    f = open(tmp_xls_file, 'w')
+    f.write(file_io.read())
+    f.close()
+    xlr = SurveyReader(tmp_xls_file)
+    xls_vals = xlr.to_dict()
+    qjson = json.dumps(xls_vals)
+    os.remove(tmp_xls_file)
+    return (slug, qjson)
+
 @login_required()
 def edit_xform(request, survey_id):
     context = RequestContext(request)
@@ -95,7 +126,8 @@ def edit_xform(request, survey_id):
     if request.method == 'POST':
         #file has been posted
         section_file = request.FILES[u'section_file']
-        xform.add_or_update_section_from_file(section_file)
+        slug, section_json = convert_file_to_json(section_file)
+        xform.add_or_update_section(slug=slug, section_json=section_json)
     context.xform = xform
     
     lv = xform.latest_version
