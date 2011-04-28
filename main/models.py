@@ -142,7 +142,12 @@ class XForm(models.Model):
         slug_list_includes = []
         for slug in slug_list:
             slug_list_includes.append({u'type': u'include', u'name': slug})
-        new_base.section_json = json.dumps(slug_list_includes)
+        full_survey = {
+            u'type': u'survey',
+            u'name': self.latest_version.base_section.slug,
+            u'children' : slug_list_includes
+            }
+        new_base.section_json = json.dumps(full_survey)
         new_base.save()
         v.save()
         self.latest_version = v
@@ -163,7 +168,14 @@ class XFormVersion(models.Model):
     
     def __init__(self, *args, **kwargs):
         #this even creates a new base_section when the value doesn't change.
-        base_section_json = kwargs.pop(u'base_section_json', u'[]')
+        empty_base_survey = {
+            u'type': 'survey',
+            u'name': u'',
+            u'children': []
+            }
+        empty_base_survey_str = json.dumps(empty_base_survey)
+        base_section_json = kwargs.pop(u'base_section_json',
+                                       empty_base_survey_str)
         base_section = XFormSection.objects.create(section_json=base_section_json, slug="_base")
         kwargs[u'base_section'] = base_section
         
@@ -209,17 +221,19 @@ class XFormVersion(models.Model):
     def sections_by_slug(self):
         sections = {}
         for s in self.sections.all(): sections[s.slug] = s
+        # why isn't the base section in sections.all()
+        sections[self.base_section.slug] = self.base_section
         return sections
 
     def section_pyobjs_by_slug(self):
-        sections = {}
-        for s in self.sections.all():
-            pyobj = json.loads(s.section_json)
-            sections[s.slug] = pyobj
+        sections = self.sections_by_slug()
+        for k, v in sections.items():
+            sections[k] = json.loads(v.section_json)
         return sections
     
     def base_section_slugs(self):
-        j_arr = json.loads(self.base_section.section_json)
+        base_section_json = self.base_section.section_json 
+        j_arr = json.loads(base_section_json)[u'children']
         slugs = []
         for j in j_arr:
             s = j.get(u'type', None)
@@ -229,7 +243,7 @@ class XFormVersion(models.Model):
         return slugs
 
     def get_base_section_name(self):
-        return self.base_section_slugs()[0]
+        return self.base_section.slug
     
     def included_base_sections(self):
         if self._included_sections is None:
