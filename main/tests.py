@@ -67,15 +67,14 @@ class SectionOrderingViaBaseSection(TestCase):
 
     def test_empty_form_has_empty_base_section(self):
         version = self.xform.latest_version
-        self.assertEqual([], version.base_section._questions_list())
+        self.assertEqual([], version.base_section._questions_list().get(u'children'))
 
     def test_new_section_is_not_yet_added(self):
         """
         Adding a section to an xform shouldn't add it to the base section.
         """
-        
         version = self.xform.latest_version
-        self.assertEqual([], version.base_section._questions_list())
+        self.assertEqual([], version.base_section._questions_list().get(u'children'))
         self.assertEqual(3, self.xform.versions.count())
         
         # only when the user chooses to place the sections, 
@@ -83,7 +82,7 @@ class SectionOrderingViaBaseSection(TestCase):
         self.xform.order_base_sections(["first_section", "second_section"])
         self.assertEqual(4, self.xform.versions.count())
         
-        included_slugs = self.xform.latest_version.base_section._questions_list()
+        included_slugs = self.xform.latest_version.base_section._questions_list().get(u'children')
         expected_dict = [{u'type':u'include', 'name':u'first_section'}, {u'type':u'include', u'name': u'second_section'}]
         self.assertEqual(included_slugs, expected_dict)
     
