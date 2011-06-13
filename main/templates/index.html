@@ -11,11 +11,15 @@
 		<input type="submit" value="Create New Form">
 	</form>
 </div>
+{% endif %}
+
+{% if xforms.count %}
 <div class="a-square-box">
 	<h1>
 		Your existing forms:
 	</h1>
 	<hr>
+
 	<ul>
 		{% for xform in xforms %}
 		<li>
@@ -24,7 +28,6 @@
 		{% endfor %}
 	</ul>
 </div>
-{% else %}
-<p><em>You must be logged in to create an xform</em></p>
 {% endif %}
+
 {% endblock %}
