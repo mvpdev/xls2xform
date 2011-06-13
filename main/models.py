@@ -21,6 +21,7 @@ class CircularInclude(SectionIncludeError):
 class XForm(models.Model):
     #id_string should definitely be changed to "name".
     id_string = models.CharField(max_length=32)
+    title = models.CharField(max_length=32)
     latest_version = models.ForeignKey('XFormVersion', null=True, related_name="active_xform")
     user = models.ForeignKey(User, related_name="xforms")
     date_created = models.DateTimeField(auto_now_add=True)
