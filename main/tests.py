@@ -13,61 +13,62 @@ class XFormCreationTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="TestUser")
         self.xform = XForm.objects.create(user=self.user, id_string="SimpleId")
-    
+
     def test_version(self):
         #one version exists by default
         self.assertEqual(self.xform.versions.count(), 1)
         #version is empty
         self.assertEqual(self.xform.latest_version.sections.count(), 0)
-    
+
     def test_add_section(self):
         sd1 = {u'type':u'text', u'name': u'colour'}
         first_version = self.xform.add_or_update_section(section_dict=sd1, slug="first_section")
         
         #VERSION COUNT INCREMENTED
         self.assertEqual(self.xform.versions.count(), 2)
-        
+
         #the latest_version should have one section
         self.assertEqual(self.xform.latest_version.sections.count(), 1)
-        
+
         #  -- add_or_update_section updates when the slug matches
         sd2 = {u'type':u'text', u'name': u'color'}
         second_version = self.xform.add_or_update_section(section_dict=sd2, slug="first_section")
-        
+
         #  -- the first version should not equal the second version, and other similar tests
         self.assertTrue(first_version != second_version)
-        
+
         #VERSION COUNT INCREMENTED
         self.assertEqual(self.xform.versions.count(), 3)
-        
+
         #the latest version should have 1 section still
         self.assertEqual(self.xform.latest_version.sections.count(), 1)
-        
+
         #we should be able to remove that section
         self.xform.remove_section(slug="first_section")
         self.assertEqual(self.xform.latest_version.sections.count(), 0)
         #removing a section creates a new version
         self.assertEqual(self.xform.versions.count(), 4)
-    
+
     def tearDown(self):
         self.user.delete()
         self.xform.delete()
+
 
 class SectionOrderingViaBaseSection(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="TestUser")
         self.xform = XForm.objects.create(user=self.user, id_string="SimpleId")
-        
+
         sd1 = [{u'type':u'text', u'name':u'color'}]
         self.xform.add_or_update_section(section_dict=sd1, slug="first_section")
-        
+
         sd2 = [{u'type':u'text', u'name':u'feeling'}]
         self.xform.add_or_update_section(section_dict=sd2, slug="second_section")
-    
+
     def test_empty_form_has_empty_base_section(self):
         version = self.xform.latest_version
         self.assertEqual([], version.base_section._questions_list())
-    
+
     def test_new_section_is_not_yet_added(self):
         """
         Adding a section to an xform shouldn't add it to the base section.
