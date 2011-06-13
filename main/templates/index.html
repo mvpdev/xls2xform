@@ -5,9 +5,12 @@
 	<h2>
 	  To start a new form, enter the title of your survey.
 	</h2>
-	<form action="/create_xform/">
+	<form action="." method="post">
 		{% csrf_token %}
-		<input name="id_string">
+		<table>
+			{{ form.as_table }}
+		</table>
+
 		<input type="submit" value="Create New Form">
 	</form>
 </div>

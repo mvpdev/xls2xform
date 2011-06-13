@@ -9,15 +9,52 @@ import json, re, random, os
 from pyxform.xls2json import SurveyReader
 from xls2xform import settings
 
+from django import forms
+
+from django.template.defaultfilters import slugify as django_slugify
+
+def slugify(str):
+    import re
+    return re.sub("-", "_", django_slugify(str))
+
+class CreateXForm(forms.Form):
+    title = forms.CharField()
+    id_string = forms.CharField()
+    
+    def clean_id_string(self):
+        id_string = slugify(self.data.get(u'id_string'))
+        user = self.data.get(u'user')
+        existing_forms = XForm.objects.filter(id_string=id_string,
+                     user=user).count()
+        if existing_forms > 0:
+            raise forms.ValidationError("You already have a form with this ID string: %s" % id_string)
+        return id_string
+
 @login_required
 def index(request):
     context = RequestContext(request)
-    # if not request.user.is_authenticated():
-    #     return HttpResponseRedirect("/admin/")
-    context.xforms = request.user.xforms.all()
     context.title = "XLS2XForm v2.0-beta1"
+    context.form = CreateXForm()
+    
+    if request.method == "POST":
+        id_string = request.POST.get(u'id_string')
+        title = request.POST.get(u'title')
+        
+        submitted_form = CreateXForm({
+            'id_string': id_string,
+            'title': title,
+            'user': request.user
+        })
+        if submitted_form.is_valid():
+            xf_data = submitted_form.cleaned_data
+            xf_data['user'] = request.user
+            xf = XForm.objects.create(**xf_data)
+            return HttpResponseRedirect("/edit/%s" % xf.id_string)
+        else:
+            #passed back to the page to display errors.
+            context.form = submitted_form
+    context.xforms = request.user.xforms.all()
     return render_to_response("index.html", context_instance=context)
-
 
 def download_xform(request, survey_id, version_number=None, xform_file_name=None):
     context = RequestContext(request)
@@ -34,20 +71,6 @@ def download_xform(request, survey_id, version_number=None, xform_file_name=None
         xf_filename = "%s.xml" % survey_object.id_string()
         xform_str = survey_object.to_xml()
         return HttpResponse(xform_str, mimetype="application/download")
-
-
-@login_required()
-def create_xform(request):
-    """
-    Starts a new xform.
-    
-    If form is POSTed, it automagically appends it to the form.
-    """
-    context = RequestContext(request)
-    user = request.user
-    form_id_string = request.GET[u'id_string']
-    xform = XForm.objects.create(id_string=form_id_string, user=user)
-    return HttpResponseRedirect("/edit/%s" % form_id_string)
 
 
 def convert_file_to_json(file_io):

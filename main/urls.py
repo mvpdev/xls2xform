@@ -5,7 +5,6 @@ from main import views as main_views
 
 urlpatterns = patterns('',
     url(r"^$", main_views.index),
-    url(r"^create_xform/", main_views.create_xform),
     url(r"^edit/(?P<survey_id>\S+)/download/$", main_views.download_xform),
     url(r"^edit/(?P<survey_id>\S+)/download/(?P<version_number>\S+)/(?P<xform_file_name>\S+)\.xml", main_views.download_xform),
     url(r"^edit/(?P<survey_id>\S+)/section/(?P<section_slug>\S+)/(?P<action>\S+)", main_views.edit_section),
