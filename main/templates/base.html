@@ -24,7 +24,7 @@
     <header>
 	{% block header %}
 	{% if user.is_authenticated %}
-	<a href="/accounts/logout/">Log out</a>
+	Logged in as: {{ user.username }} (<a href="{% url auth_logout %}">log out</a> | <a href="{% url auth_password_change %}">change password</a>)        
 	{% else %}
 	<a href="/accounts/login/">Log in</a>
 	{% endif %}
