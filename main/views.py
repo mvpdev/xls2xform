@@ -9,6 +9,7 @@ import json, re, random, os
 from pyxform.xls2json import SurveyReader
 from xls2xform import settings
 
+
 def index(request):
     context = RequestContext(request)
     if not request.user.is_authenticated():
@@ -16,6 +17,7 @@ def index(request):
     context.xforms = request.user.xforms.all()
     context.title = "XLS2XForm v2.0-beta1"
     return render_to_response("index.html", context_instance=context)
+
 
 def download_xform(request, survey_id, version_number=None, xform_file_name=None):
     context = RequestContext(request)
@@ -33,6 +35,7 @@ def download_xform(request, survey_id, version_number=None, xform_file_name=None
         xform_str = survey_object.to_xml()
         return HttpResponse(xform_str, mimetype="application/download")
 
+
 @login_required()
 def create_xform(request):
     """
@@ -42,17 +45,10 @@ def create_xform(request):
     """
     context = RequestContext(request)
     user = request.user
-    if request.method == 'POST':
-        section_file = request.FILES[u'section_file']
-        form_id_string, section_json = convert_file_to_json(section_file)
-    else:
-        form_id_string = request.GET[u'id_string']
-        section_json = None
+    form_id_string = request.GET[u'id_string']
     xform = XForm.objects.create(id_string=form_id_string, user=user)
-    if section_json is not None:
-        xform.add_or_update_section(slug=form_id_string, section_json=section_json)
-        xform.order_base_sections([form_id_string])
     return HttpResponseRedirect("/edit/%s" % form_id_string)
+
 
 def convert_file_to_json(file_io):
     file_name = file_io.name
