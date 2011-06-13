@@ -9,11 +9,11 @@ import json, re, random, os
 from pyxform.xls2json import SurveyReader
 from xls2xform import settings
 
-
+@login_required
 def index(request):
     context = RequestContext(request)
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect("/admin/")
+    # if not request.user.is_authenticated():
+    #     return HttpResponseRedirect("/admin/")
     context.xforms = request.user.xforms.all()
     context.title = "XLS2XForm v2.0-beta1"
     return render_to_response("index.html", context_instance=context)

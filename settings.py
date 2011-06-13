@@ -102,8 +102,11 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'xls2xform.urls'
 
+from registration_defaults.settings import REGISTRATION_TEMPLATE_DIR
+
 TEMPLATE_DIRS = (
-    'templates'
+    'templates',
+    REGISTRATION_TEMPLATE_DIR,
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -147,6 +150,9 @@ LOGGING = {
         },
     }
 }
+
+# registration settings
+ACCOUNT_ACTIVATION_DAYS = 2
 
 try:
     from local_settings import *
