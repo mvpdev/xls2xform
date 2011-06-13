@@ -1,9 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
+<div id="new-empty-form" class="a-square-box">
+	<h2>
+	  To start a new form, enter the title of your survey.
+	</h2>
+	<form action="/create_xform/">
+		{% csrf_token %}
+		<input name="id_string">
+		<input type="submit" value="Create New Form">
+	</form>
+</div>
 <div class="a-square-box">
 	<h1>
-		Your Forms
+		Your existing forms:
 	</h1>
 	<hr>
 	<ul>
@@ -13,16 +23,6 @@
 		</li>
 		{% endfor %}
 	</ul>
-</div>
-<div id="new-empty-form" class="a-square-box">
-	<h2>
-		Start a new form
-	</h2>
-	<form action="/create_xform/">
-		{% csrf_token %}
-		<input name="id_string">
-		<input type="submit" value="Create Empty Form">
-	</form>
 </div>
 {% else %}
 <p><em>You must be logged in to create an xform</em></p>
