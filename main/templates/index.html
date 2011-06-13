@@ -24,16 +24,6 @@
 		<input type="submit" value="Create Empty Form">
 	</form>
 </div>
-<div class="a-square-box">
-	<h2>
-		Form QuickUpload<span style="font-size:smaller"> &copy; </span>.
-	</h2>
-	<form action="/create_xform/" method="post" enctype="multipart/form-data">
-		{% csrf_token %}
-		<input type="file" name="section_file" > <span>&nbsp;|&nbsp;</span>
-		<input type="submit" value="I'm Feeling XLucky">
-	</form>
-</div>
 {% else %}
 <p><em>You must be logged in to create an xform</em></p>
 {% endif %}
