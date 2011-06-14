@@ -30,12 +30,20 @@ def deploy(deployment_name="alpha"):
     migrate()
     restart_wsgi()
 
+@hosts(HOST_INFO)
+def install_requirements(deployment_name="alpha"):
+    setup_env(deployment_name)
+    if env.pip_requirements_file is not None:
+        pull_from_origin()
+        run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
+
 def setup_env(deployment_name):
     env.project_directory = os.path.join(env.home, DEPLOYMENTS[deployment_name]['project'])
     env.code_src = os.path.join(env.project_directory, env.project)
     env.branch = DEPLOYMENTS[deployment_name]['branch']
     env.virtualenv_activate_script = "source %s" % os.path.join(env.project_directory, DEPLOYMENTS[deployment_name]['virtualenv_path'])
     env.wsgi_config_file = os.path.join(env.project_directory, 'apache', 'environment.wsgi')
+    env.pip_requirements_file = os.path.join(env.code_src, 'requirements.pip')
 
 def pull_from_origin():
     with cd(env.code_src):
