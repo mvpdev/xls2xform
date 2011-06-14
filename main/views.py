@@ -109,7 +109,7 @@ def edit_xform(request, survey_id):
     user = request.user
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
-    context.title = "Edit XForm - %s" % xform.id_string
+    context.title = "Edit XForm - %s" % xform.title
     if request.method == 'POST':
         #file has been posted
         section_file = request.FILES[u'section_file']
