@@ -199,14 +199,14 @@ class XFormVersion(models.Model):
         If this function passes without errors,
         then all the includes should be available.
         """
-        qtypes = self.qtypes_section._questions_list()
+        qtypes = self.qtypes_section.questions_list
         survey_data = self.base_section.gather_includes([], self.sections_by_slug())
         if finalize: stamp = self._generate_unique_id_stamp()
         else: stamp = None
         return (qtypes, survey_data, stamp)
 
     def get_question_type_dictionary(self):
-        return self.qtypes_section._questions_list()
+        return self.qtypes_section.questions_list
     
     def _generate_unique_id_stamp(self):
         """
@@ -314,9 +314,18 @@ class XFormSection(models.Model):
             else:
                 oput.append(qqq)
         return oput
-    
+
     def _questions_list(self):
-        return json.loads(self.section_json)
+        surv = json.loads(self.section_json)
+        if type(surv) == list:
+            qs = surv
+        elif surv is None:
+            qs = None
+        else:
+            qs = surv[u'children']
+        return qs
+
+    questions_list = property(_questions_list)
 
     def validate(self, version):
         """
