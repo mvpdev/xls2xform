@@ -20,6 +20,16 @@ DEPLOYMENTS = {
     },
 }
 
+@hosts(HOST_INFO)
+def deploy(deployment_name="alpha"):
+    """
+    TODO: figure out how to best use "@hosts" decorator.
+    """
+    setup_env(deployment_name)
+    pull_from_origin()
+    migrate()
+    restart_wsgi()
+
 def setup_env(deployment_name):
     env.project_directory = os.path.join(env.home, DEPLOYMENTS[deployment_name]['project'])
     env.code_src = os.path.join(env.project_directory, env.project)
@@ -40,10 +50,3 @@ def migrate():
 
 def restart_wsgi():
     run('touch %s' % env.wsgi_config_file)
-
-@hosts(HOST_INFO)
-def deploy(deployment_name="alpha"):
-    setup_env(deployment_name)
-    pull_from_origin()
-    migrate()
-    restart_wsgi()
