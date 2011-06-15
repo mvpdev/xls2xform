@@ -178,8 +178,8 @@ def debug_json(request, survey_id):
     xform = user.xforms.get(id_string=survey_id)
 #    j = xform._export_survey_package()
     try:
-        j = xform.export_survey(finalize=False, debug=True)
-        return HttpResponse(json.dumps(j))
+        survey_object = xform.export_survey(finalize=False, debug=False)
+        return HttpResponse(json.dumps(survey_object.to_dict()))
     except Exception, e:
         return HttpResponse(json.dumps({'error': e.__repr__()}))
 
