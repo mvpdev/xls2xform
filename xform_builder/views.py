@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from main.models import XForm
+from xform_builder.models import XForm
 from django.views.decorators.csrf import csrf_exempt
 import json, re, random, os
 

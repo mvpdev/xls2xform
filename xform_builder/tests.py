@@ -7,7 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 
-from main.models import *
+from xform_builder.models import *
 
 class XFormCreationTest(TestCase):
     def setUp(self):

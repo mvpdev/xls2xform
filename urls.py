@@ -7,7 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'xls2xform.views.home', name='home'),
-    url(r'', include('xls2xform.main.urls')),
+    url(r'', include('xls2xform.xform_builder.urls')),
     
     # registration
     url(r'^accounts/', include('registration.urls')),
