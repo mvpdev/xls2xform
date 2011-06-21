@@ -55,16 +55,25 @@ class XForm(models.Model):
                 * questions_list (with hierarchy of groups, etc.)
                 * question_types (for maximum customizability, language compaitibility, etc.)
         """
-        survey_package = {
-            'name_of_main_section':
-            self.latest_version.get_base_section_name(),
-            'sections':
-            self.latest_version.section_pyobjs_by_slug(),
-            'question_type_dictionary':
-            self.latest_version.get_question_type_dictionary(),
-            }
+        survey_package = self._create_survey_package()
         if debug: return survey_package
         return pyxform.create_survey(**survey_package)
+    
+    def _create_survey_package(self):
+        """
+        since the base_section is the "main" section, we want to remove it from the
+        "sections" being included.
+        """
+        included_sections = self.latest_version.section_pyobjs_by_slug()
+        included_sections.pop('_base')
+        return {
+            'name': self.id_string,
+            'id': self.latest_version.get_unique_id(),
+            'main_section': self.latest_version.base_section.questions_list,
+            'sections': included_sections,
+            'question_type_dictionary':
+            self.latest_version.get_question_type_dictionary(),
+        }
     
     def add_or_update_section(self, *args, **kwargs):
         """
@@ -208,7 +217,7 @@ class XFormVersion(models.Model):
     def get_question_type_dictionary(self):
         return self.qtypes_section.questions_list
     
-    def _generate_unique_id_stamp(self):
+    def get_unique_id(self):
         """
         it would be awesome to have the ability to look up surveys
         by their unique id stamps.
@@ -216,8 +225,11 @@ class XFormVersion(models.Model):
         also, a null id_stamp is a good indication that the version
         can be purged.
         """
-        #todo --make a nice timestamp. consistent format?
-        self.id_stamp = "15_05_2011_xyzabc"
+        if self.id_stamp is None:
+            #todo --make a nice timestamp. consistent format?
+            self.id_stamp = "15_05_2011_xyzabc"
+            self.save()
+        return self.id_stamp
     
     def sections_by_slug(self):
         sections = {}
@@ -273,7 +285,16 @@ class XFormSection(models.Model):
         converts a section_dict argument to json.
         """
         d = kwargs.pop(u'section_dict', kwargs.pop('section_dict', None))
-        if d is not None: kwargs[u'section_json'] = json.dumps(d)
+        if type(d) == list:
+            #if a list, then wrap in an empty survey
+            d = {
+                u'type': 'survey',
+                u'name': u'',
+                u'children': d
+                }
+        
+        if d is not None:
+            kwargs[u'section_json'] = json.dumps(d)
         return super(XFormSection, self).__init__(*args, **kwargs)
 
     def sub_sections(self):

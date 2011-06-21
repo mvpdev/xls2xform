@@ -142,15 +142,18 @@ class ExportingFormViaPyxform(TestCase):
         new_section = lv.sections_by_slug()['first_section']
         self.xform.activate_section(new_section)
         s = self.xform.export_survey()
-        survey_id = s.id_string()
+        pyxform_survey_id = s.id_string()
         
-#        self.assertEqual(s.to_xml(), """<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input></h:body></h:html>""" % survey_id)
+        # The latest version generates a unique id and passes it in the survey object. pyxform should use it.
+        self.assertEqual(lv.get_unique_id(), pyxform_survey_id)
+        
+        self.assertEqual(s.to_xml(validate=False), """<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input></h:body></h:html>""" % pyxform_survey_id)
         
         sd2 = [{u'type': u'integer', u'name': u'weight'}]
         lv2 = self.xform.add_or_update_section(section_dict=sd2, slug="second_section")
         
         s = self.xform.export_survey()
-#        self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % survey_id, s.to_xml())
+        self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % survey_id, s.to_xml())
     
     def tearDown(self):
         self.user.delete()
