@@ -165,15 +165,13 @@ class PassValuesToPyxform(TestCase):
     def test_package_values_create_survey(self):
         survey_package = {
             u'name_of_main_section': u'TestAsurvey',
-            u'sections': {
-                u'TestAsurvey': {
-                    u'name': u'TestAsurvey',
-                    u'type': u'survey',
-                    u'children' : [
-                        { u'type': u'text',
-                          u'name': u'name'}
-                        ],
-                    }
+            u'main_section': {
+                u'name': u'TestAsurvey',
+                u'type': u'survey',
+                u'children' : [
+                    { u'type': u'text',
+                      u'name': u'name'}
+                    ],
                 },
             u'id_string': u'Test_canSpecifyIDstring'
             }

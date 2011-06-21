@@ -68,7 +68,7 @@ class XForm(models.Model):
         included_sections.pop('_base')
         return {
             'name': self.id_string,
-            'id': self.latest_version.get_unique_id(),
+            'id_string': self.latest_version.get_unique_id(),
             'main_section': self.latest_version.base_section.questions_list,
             'sections': included_sections,
             'question_type_dictionary':
