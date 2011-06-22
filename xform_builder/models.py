@@ -18,6 +18,15 @@ class CircularInclude(SectionIncludeError):
         return "The section '%s' detected a circular include of section '%s'" % \
                     (self.container, self.include_slug)
 
+def base36encode(num, alphabet='abcdefghijklmnopqrstuvwxyz0123456789'):
+    if num == 0:
+        return alphabet[0]
+    base36 = ''
+    while num != 0:
+        num, i = divmod(num, len(alphabet))
+        base36 = alphabet[i] + base36
+    return base36
+
 class XForm(models.Model):
     #id_string should definitely be changed to "name".
     id_string = models.CharField(max_length=32)
@@ -225,9 +234,10 @@ class XFormVersion(models.Model):
         also, a null id_stamp is a good indication that the version
         can be purged.
         """
-        if self.id_stamp is None:
-            #todo --make a nice timestamp. consistent format?
-            self.id_stamp = "15_05_2011_xyzabc"
+        if self.id_stamp in [None, u'']:
+            import datetime
+            vn_str = base36encode(self.version_number)
+            self.id_stamp = "%s_%s_%s" % (self.xform.id_string, datetime.date.today().strftime("%Y_%m_%d"), vn_str)
             self.save()
         return self.id_stamp
     
