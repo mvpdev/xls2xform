@@ -284,12 +284,13 @@ class XFormSection(models.Model):
         """
         converts a section_dict argument to json.
         """
+        slug = kwargs.get(u'slug')
         d = kwargs.pop(u'section_dict', kwargs.pop('section_dict', None))
         if type(d) == list:
             #if a list, then wrap in an empty survey
             d = {
                 u'type': 'survey',
-                u'name': u'',
+                u'name': slug,
                 u'children': d
                 }
         

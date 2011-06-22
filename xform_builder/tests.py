@@ -151,9 +151,11 @@ class ExportingFormViaPyxform(TestCase):
         
         sd2 = [{u'type': u'integer', u'name': u'weight'}]
         lv2 = self.xform.add_or_update_section(section_dict=sd2, slug="second_section")
+        second_section = lv2.sections_by_slug()['second_section']
+        self.xform.activate_section(second_section)
         
         s = self.xform.export_survey()
-        self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % survey_id, s.to_xml())
+        self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % pyxform_survey_id, s.to_xml(validate=False))
     
     def tearDown(self):
         self.user.delete()
@@ -164,15 +166,11 @@ import pyxform
 class PassValuesToPyxform(TestCase):
     def test_package_values_create_survey(self):
         survey_package = {
-            u'name_of_main_section': u'TestAsurvey',
-            u'main_section': {
-                u'name': u'TestAsurvey',
-                u'type': u'survey',
-                u'children' : [
+            u'name': u'TestAsurvey',
+            u'main_section': [
                     { u'type': u'text',
                       u'name': u'name'}
-                    ],
-                },
+                ],
             u'id_string': u'Test_canSpecifyIDstring'
             }
         s = pyxform.create_survey(**survey_package)
