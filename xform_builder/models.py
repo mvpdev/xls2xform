@@ -18,15 +18,6 @@ class CircularInclude(SectionIncludeError):
         return "The section '%s' detected a circular include of section '%s'" % \
                     (self.container, self.include_slug)
 
-def base36encode(num, alphabet='abcdefghijklmnopqrstuvwxyz0123456789'):
-    if num == 0:
-        return alphabet[0]
-    base36 = ''
-    while num != 0:
-        num, i = divmod(num, len(alphabet))
-        base36 = alphabet[i] + base36
-    return base36
-
 class XForm(models.Model):
     #id_string should definitely be changed to "name".
     id_string = models.CharField(max_length=32)
@@ -39,6 +30,9 @@ class XForm(models.Model):
     def __init__(self, *args, **kwargs):
         sections = kwargs.pop(u'sections', [])
         super(XForm, self).__init__(*args, **kwargs)
+        
+    def __unicode__(self):
+        return "[%s]: %s" % (self.id_string, self.title)
     
     def save(self, *args, **kwargs):
         super(XForm, self).save(*args, **kwargs)
@@ -151,6 +145,10 @@ class XForm(models.Model):
             slugs.remove(section_slug)
             self.order_base_sections(slugs)
     
+    @property
+    def finalized_version_count(self):
+        return self.versions.exclude(id_stamp='').count()
+    
     def order_base_sections(self, slug_list):
         """
         This sets the order of the sections included in the base_section.
@@ -212,17 +210,9 @@ class XFormVersion(models.Model):
         for s in self.sections.all(): new_version.sections.add(s)
         return new_version
     
-    def gather_sections(self, finalize=False):
-        """
-        If this function passes without errors,
-        then all the includes should be available.
-        """
-        qtypes = self.qtypes_section.questions_list
-        survey_data = self.base_section.gather_includes([], self.sections_by_slug())
-        if finalize: stamp = self._generate_unique_id_stamp()
-        else: stamp = None
-        return (qtypes, survey_data, stamp)
-
+    #XFormSection.gather_includes --is it used?
+    #XFormVersion.sections_by_slug --is it used?
+    
     def get_question_type_dictionary(self):
         return self.qtypes_section.questions_list
     
@@ -234,10 +224,27 @@ class XFormVersion(models.Model):
         also, a null id_stamp is a good indication that the version
         can be purged.
         """
+        def base36encode(num, alphabet='abcdefghijklmnopqrstuvwxyz0123456789'):
+            #Using base36 encode to have a character (or 2) at the end
+            # of the xforms id_string that signifies the version number
+            # this way, xforms exported on the same day do not have the
+            # same ID string.
+            if num == 0:
+                return alphabet[0]
+            base36 = ''
+            while num != 0:
+                num, i = divmod(num, len(alphabet))
+                base36 = alphabet[i] + base36
+            return base36
+        
         if self.id_stamp in [None, u'']:
+            #creates format: "xform_2011_01_01a"
             import datetime
-            vn_str = base36encode(self.version_number)
-            self.id_stamp = "%s_%s_%s" % (self.xform.id_string, datetime.date.today().strftime("%Y_%m_%d"), vn_str)
+            self.id_stamp = "%s_%s%s" % (
+                    self.xform.id_string,
+                    datetime.date.today().strftime("%Y_%m_%d"),
+                    base36encode(self.xform.finalized_version_count)
+                )
             self.save()
         return self.id_stamp
     
