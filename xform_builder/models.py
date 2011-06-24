@@ -179,7 +179,7 @@ class XFormVersion(models.Model):
     
     base_section = models.ForeignKey('XFormSection', null=True, related_name="bversions")
     qtypes_section = models.ForeignKey('XFormSection', null=True, related_name="qversions")
-    id_stamp = models.CharField(max_length=24)
+    id_stamp = models.CharField(max_length=64)
     
     version_number = models.IntegerField()
     
