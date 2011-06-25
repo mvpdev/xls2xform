@@ -210,7 +210,6 @@ class XFormVersion(models.Model):
         for s in self.sections.all(): new_version.sections.add(s)
         return new_version
     
-    #XFormSection.gather_includes --is it used?
     #XFormVersion.sections_by_slug --is it used?
     
     def get_question_type_dictionary(self):
@@ -332,29 +331,8 @@ class XFormSection(models.Model):
             self._sub_sections = list(traverse_pyobj(sd))
         return self._sub_sections
     
-    def gather_includes(self, oput, portfolio, include_stack=[]):
-        """
-        This only goes 1 layer deep.
-        """
-        section_list = json.loads(self.section_json)
-        for qqq in section_list:
-            qqqtype = qqq.get(u'type', None)
-            if qqqtype=='include':
-                include_section = qqq.get(u'name', None)
-                if include_section not in portfolio:
-                    raise IncludeNotFound(self.slug, include_section)
-                if include_section in include_stack:
-                    raise CircularInclude(self.slug, include_section)
-                
-                bl = copy.copy(include_stack)
-                bl.append(include_section)
-                section = portfolio.get(include_section)
-                section.gather_includes(oput, portfolio, bl)
-            else:
-                oput.append(qqq)
-        return oput
-
-    def _questions_list(self):
+    @property
+    def questions_list(self):
         surv = json.loads(self.section_json)
         if type(surv) == list:
             qs = surv
@@ -363,15 +341,3 @@ class XFormSection(models.Model):
         else:
             qs = surv[u'children']
         return qs
-
-    questions_list = property(_questions_list)
-
-    def validate(self, version):
-        """
-        I think the section.validate() should only check to make sure that
-        the necessary includes are available.
-        
-        #not sure if this is used anywhere at the moment... but it could be useful to keep around.
-        """
-        section_array = self.gather_includes([self.slug], version.sections_by_slug())
-        return True
