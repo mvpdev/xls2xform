@@ -290,13 +290,14 @@ class XFormVersion(models.Model):
         for s in available_section_list: s.is_marked_included = s in self._included_sections
         return (available_section_list, self._included_sections)
 
+
 class XFormSection(models.Model):
-    slug = models.CharField(max_length=32)
+    slug = models.TextField()
     section_json = models.TextField()
     versions = models.ManyToManyField("XFormVersion", related_name="sections")
     is_marked_included = False
     _sub_sections = None
-    
+
     def __init__(self, *args, **kwargs):
         """
         converts a section_dict argument to json.
