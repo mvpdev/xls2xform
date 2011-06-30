@@ -46,7 +46,7 @@ class XForm(models.Model):
         (without writing temp files, which is hacky.)
 
         so i think it's best to go a different route--
-        
+
         1. have this django app gather all the includes (from the portfolio)
             -- this allows us to display what includes are missing and prompt
                for them before creating the survey
@@ -56,12 +56,14 @@ class XForm(models.Model):
                 * name (the survey name, no datestamp)
                 * id_string (for possible later reference)
                 * questions_list (with hierarchy of groups, etc.)
-                * question_types (for maximum customizability, language compaitibility, etc.)
+                * question_types (for maximum customizability,
+                                  language compaitibility, etc.)
         """
         survey_package = self._create_survey_package()
-        if debug: return survey_package
+        if debug:
+            return survey_package
         return pyxform.create_survey(**survey_package)
-    
+
     def _create_survey_package(self):
         """
         since the base_section is the "main" section, we want to remove it from the
@@ -70,7 +72,7 @@ class XForm(models.Model):
         included_sections = self.latest_version.section_pyobjs_by_slug()
         included_sections.pop('_base')
         return {
-            'name': self.id_string,
+            'title': self.title,
             'id_string': self.latest_version.get_unique_id(),
             'main_section': self.latest_version.base_section.questions_list,
             'sections': included_sections,
@@ -124,7 +126,7 @@ class XForm(models.Model):
             nv.sections.remove(matching_section)
             self.latest_version = nv
             self.save()
-    
+
     def activate_section(self, section):
         """
         Adds this section to the "base_section".
@@ -134,7 +136,8 @@ class XForm(models.Model):
         if section_slug not in slugs:
             slugs.append(section_slug)
             self.order_base_sections(slugs)
-    
+        return self.latest_version
+
     def deactivate_section(self, section):
         """
         Removes this section from the "base_section".

@@ -118,42 +118,58 @@ class SectionOrderingViaBaseSection(TestCase):
         self.assertEqual(incl.sub_sections(), ['include2'])
         #todo: deeper levels of include-ability?
 
+
 class ExportingFormViaPyxform(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="TestUser")
-        self.xform = XForm.objects.create(user=self.user, id_string="SimpleId")
-    
+        self.xform = XForm.objects.create(user=self.user,
+                                          id_string=u"SimpleId",
+                                          title=u"SimpleId")
+
     def test_export(self):
         self.assertEqual(self.xform.versions.count(), 1)
-        
+
         #set section_json
         kwargs = {
-            'section_dict': {
-                'type': 'survey',
-                'name': 'first_section',
-                'children' : [{u'type':u'text', u'name':u'color'}],
+            u'section_dict': {
+                u'type': u'survey',
+                u'name': u'first_section',
+                u'children': [
+                    {
+                        u'type': u'text',
+                        u'name': u'color'
+                        }
+                    ],
                 },
-            'slug': 'first_section',
+            u'slug': u'first_section',
             }
         lv = self.xform.add_or_update_section(**kwargs)
         self.assertEqual(lv, self.xform.latest_version)
-        
+
         # note: I needed to activate the section to get things working
-        new_section = lv.sections_by_slug()['first_section']
-        self.xform.activate_section(new_section)
+        new_section = lv.sections_by_slug()[u'first_section']
+        lv = self.xform.activate_section(new_section)
+        #self.xform.order_sections([u'first_section'])
         s = self.xform.export_survey()
         pyxform_survey_id = s.id_string()
-        
-        # The latest version generates a unique id and passes it in the survey object. pyxform should use it.
+
+        # The latest version generates a unique id and passes it in
+        # the survey object. pyxform should use it.
         self.assertEqual(lv.get_unique_id(), pyxform_survey_id)
-        
+        self.maxDiff = 3000
         self.assertEqual(s.to_xml(validate=False), """<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input></h:body></h:html>""" % pyxform_survey_id)
         
-        sd2 = [{u'type': u'integer', u'name': u'weight'}]
+        sd2 = [
+            {
+                u'type': u'integer',
+                u'name': u'weight'
+                }
+            ]
         lv2 = self.xform.add_or_update_section(section_dict=sd2, slug="second_section")
         second_section = lv2.sections_by_slug()['second_section']
-        self.xform.activate_section(second_section)
-        
+        lv2 = self.xform.activate_section(second_section)
+        pyxform_survey_id = lv2.get_unique_id()
+
         s = self.xform.export_survey()
         self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % pyxform_survey_id, s.to_xml(validate=False))
     
@@ -166,10 +182,12 @@ import pyxform
 class PassValuesToPyxform(TestCase):
     def test_package_values_create_survey(self):
         survey_package = {
-            u'name': u'TestAsurvey',
+            u'title': u'TestAsurvey',
             u'main_section': [
-                    { u'type': u'text',
-                      u'name': u'name'}
+                {
+                    u'type': u'text',
+                    u'name': u'name'
+                    }
                 ],
             u'id_string': u'Test_canSpecifyIDstring'
             }
