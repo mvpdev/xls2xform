@@ -19,7 +19,10 @@ def convert_file(request):
 
     # here's a hack to avoid dealing with serving static files
     # I've passed the responsibility to settings.py
-    readme = codecs.open(settings.PATH_TO_XLS2XFORM + "README.mkdn", mode="r", encoding="utf8")
+    CURRENT_FILE = os.path.abspath(__file__)
+    CURRENT_DIR = os.path.dirname(CURRENT_FILE)
+    path_to_readme = os.path.join(CURRENT_DIR, "README.mkdn")
+    readme = codecs.open(path_to_readme, mode="r", encoding="utf8")
     text = readme.read()
     kwargs["documentation"] = markdown.markdown(text)
 

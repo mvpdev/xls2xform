@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'xls2xform.xform_builder',
+    'xls2xform.original_xls2xform',
     'registration',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
