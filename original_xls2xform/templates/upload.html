@@ -1,36 +1,5 @@
 {% extends "base.html" %}
 
-{% block head %}
-<script type="text/javascript">
-//<![CDATA[
-	var xlsf = (function(j$){
-			function submittable(tf) {
-				if(tf) {
-					j$('#convert_button').removeClass('disabled')
-				} else {
-					j$('#convert_button').addClass('disabled')
-				}
-			}
-			function submitForm() {
-				j$('form').submit();
-				if('undefined'!==typeof xformer) {
-					xformer.pulse();
-				}
-			}
-			function checkSubmittable() {
-				this.submittable(j$('#id_file').val()!=="");
-			}
-			return {
-				submittable: submittable,
-				checkSubmittable: checkSubmittable,
-				submitForm: submitForm
-			}
-		})(jQuery);
-//]]>
-</script>
-{% endblock %}
-
-
 {% block content %}
 <div id="tabs">
 	<ul>
@@ -72,26 +41,6 @@
 		</tr>
 	</table>
 {% endif %}
-
-<script type="text/javascript">
-//<![CDATA[
-
-(function(j$){
-	/*-- On Page Load:
-	---- Checks if the file is submittable, adjusts "disabled" attr
-	--*/
-	xlsf.checkSubmittable();
-
-	/*-- On Input Change:
-	---- Checks if the file is submittable, adjusts "disabled" attr
-	--*/
-	j$('input#id_file').change(function(){
-		xlsf.checkSubmittable();
-	})
-})(jQuery);
-
-//]]>
-</script>
 		</div>
 
 	<h1>Privacy Policy</h1>
@@ -115,6 +64,62 @@
 	<h1>API</h1>
 	<pre>{{ api }}</pre>
 </div>
+{% endblock %}
+{% block header %}
+<h1 id="title">XLS2XForm</h1>
+{% endblock %}
+{% block head %}
+<link href="/static/webcontent/css/xls2xform-simple.css" rel="stylesheet" type="text/css" />
+<link  href="//fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic" rel="stylesheet" 
+type="text/css" >
+<link type="text/css" href="/static/webcontent/css/Aristo/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />	
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+	var xlsf = (function(j$){
+			function submittable(tf) {
+				if(tf) {
+					j$('#convert_button').removeClass('disabled')
+				} else {
+					j$('#convert_button').addClass('disabled')
+				}
+			}
+			function submitForm() {
+				j$('form').submit();
+				if('undefined'!==typeof xformer) {
+					xformer.pulse();
+				}
+			}
+			function checkSubmittable() {
+				this.submittable(j$('#id_file').val()!=="");
+			}
+			return {
+				submittable: submittable,
+				checkSubmittable: checkSubmittable,
+				submitForm: submitForm
+			}
+		})(jQuery);
+		
+		
+		(function(j$){
+			/*-- On Page Load:
+			---- Checks if the file is submittable, adjusts "disabled" attr
+			--*/
+			xlsf.checkSubmittable();
+
+			/*-- On Input Change:
+			---- Checks if the file is submittable, adjusts "disabled" attr
+			--*/
+			j$('input#id_file').change(function(){
+				xlsf.checkSubmittable();
+			})
+		})(jQuery);
+
+//]]>
+</script>
 <script type="text/javascript">
 //<![CDATA[
 (function(j$){
