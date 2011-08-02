@@ -6,57 +6,53 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-  <title>{{title}}</title>
   <meta name="author" content="mvpdev">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{title}}</title>
+
   <link rel="shortcut icon" href="/static/favicon.ico">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
-
   <link rel="stylesheet" href="/static/css/style.css?v=2">
+
   <script src="/static/js/libs/modernizr-1.7.min.js"></script>
   <script type="text/javascript" charset="utf-8">
-  	window.csrf_token = "{{csrf_token|safe}}";
+    window.csrf_token = "{{csrf_token|safe}}";
   </script>
-  {% block head %}
-  {% endblock %}
+
+  {% block head %}{% endblock %}
 </head>
+
 <body>
   <div id="container">
     <header>
-	{% block header %}
-	{% if user.is_authenticated %}
-	Logged in as: {{ user.username }} (<a href="{% url auth_logout %}">log out</a> | <a href="{% url auth_password_change %}">change password</a>)        
-	{% else %}
-	<a href="/accounts/login/">Log in</a>
-	{% endif %}
-	{% endblock %}
+      {% block header %}{% endblock %}
     </header>
     <div id="main" role="main">
-		{% block content %}
-		{% endblock %}
+      {% block content %}{% endblock %}
     </div>
     <footer>
-		{% block footer %}{% endblock %}
+      {% block footer %}
+        To use the original xls2xform go
+        <a href="{% url original_xls2xform.views.convert_file %}">here</a>.
+      {% endblock %}
     </footer>
   </div> <!-- eo #container -->
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='/static/js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
 
-
   <!-- scripts concatenated and minified via ant build script-->
   <script src="/static/js/plugins.js"></script>
   <script src="/static/js/script.js"></script>
   <!-- end scripts-->
-
 
   <!--[if lt IE 7 ]>
     <script src="/static/js/libs/dd_belatedpng.js"></script>
     <script>DD_belatedPNG.fix("img, .png_bg");</script>
   <![endif]-->
 
-	{% block js %}
-	{% endblock %}
+  {% block js %}{% endblock %}
+
 </body>
 </html>
