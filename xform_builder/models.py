@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-import json, copy, os
+import json
+import copy
+import os
+import re
 import pyxform
 
 class SectionIncludeError(Exception):
@@ -72,7 +75,7 @@ class XForm(models.Model):
         included_sections = self.latest_version.section_pyobjs_by_slug()
         included_sections.pop('_base')
         return {
-            'title': self.title,
+            'title': re.sub(" ", "_", self.title),
             'id_string': self.latest_version.get_unique_id(),
             'main_section': self.latest_version.base_section.questions_list,
             'sections': included_sections,

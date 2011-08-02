@@ -1,0 +1,13 @@
+{% extends 'xform_builder_base.html' %}
+
+{% block content %}
+<div>
+        <form action="." method="post">
+              {% csrf_token %}
+              <table>
+                {{ form.as_table }}
+              </table>
+              <input type="submit" value="Convert to XForm">
+        </form>
+</div>
+{% endblock %}
