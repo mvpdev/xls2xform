@@ -18,6 +18,41 @@ def slugify(str):
     return re.sub("-", "_", django_slugify(str))
 
 
+class QuickConverter(forms.Form):
+    xls_file = forms.FileField(label="XLS File")
+
+    def _get_xforms_using_original_xls2xform(self):
+        # to use the original xls2xform script we have to save the
+        # xls_file to disk and call write_xforms with the path to the
+        # xls file.
+        pass
+
+    def _get_xform_using_pyxform(self):
+        assert False, self.xls_file
+
+    def get_xforms(self):
+        # If the pyxform conversion works, return the corresponding
+        # xform. If the original xls2xform conversion works return
+        # the corresponding xforms. Otherwise return a pair of the two
+        # exceptions that were thrown.
+        return self._get_xform_using_pyxform()
+
+
+def quick_converter(request):
+    context = RequestContext(request)
+    context.form = QuickConverter()
+
+    if request.method == 'POST':
+        context.form = QuickConverter(request.POST)
+        if context.form.is_valid():
+            return context.form.get_xforms()
+        assert False
+
+    return render_to_response(
+        'quick_converter.html', context_instance=context
+        )
+
+
 class CreateXForm(forms.Form):
     title = forms.CharField()
     id_string = forms.CharField(help_text="The ID string is used internally to link submissions to this survey.")
@@ -78,8 +113,8 @@ def convert_file_to_json(file_io):
     file_name = file_io.name
     if re.search("\.json$", file_name):
         slug = re.sub(".json$", "", file_name)
-        section_json = section_file.read()
-    elif re.search("\.xlsx?$", file_name):
+        section_json = file_io.read()
+    elif re.search("\.xls$", file_name):
         slug, section_json = process_xls_io_to_section_json(file_io)
     else:
         raise Exception("This file is not understood: %s" % file_name)
