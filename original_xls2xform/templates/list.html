@@ -18,22 +18,32 @@
 			</li>
 		{% endfor %}
 		</ol>
-		<script type="text/javascript">
-		//<![CDATA[
-		(function(){
-			$('ol#filelist span.filename').each(function(li){
-				var lname = this.innerHTML.split("/");
-				var fname = lname[lname.length - 1];
-				$(this).text(fname);
-			})
-		})(jQuery);
-		//]]>
-		</script>
 <br style="clear:both" /><br style="clear:both" />
 	</div>
 </div>
+{% endblock %}
+
+{% block header %}
+<h1 id="title">XLS2XForm</h1>
+{% endblock %}
+
+{% block head %}
+<link href="/static/webcontent/css/xls2xform-simple.css" rel="stylesheet" type="text/css" />
+<link  href="//fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css" >
+<link type="text/css" href="/static/webcontent/css/Aristo/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
 <script type="text/javascript">
 //<![CDATA[
+(function(){
+	$('ol#filelist span.filename').each(function(li){
+		var lname = this.innerHTML.split("/");
+		var fname = lname[lname.length - 1];
+		$(this).text(fname);
+	})
+})(jQuery);
+
 (function(j$){
 /*-- jQuery-UI initializers --*/
 	$('#tabs').tabs();

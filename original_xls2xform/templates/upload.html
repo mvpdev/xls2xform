@@ -31,8 +31,9 @@
 		<tr>
 			<td>
 	<!-- note: action is the url this form goes to after submitting. -->
-<form enctype="multipart/form-data" method="post" action="/">
-{{ form.as_p }}
+<form enctype="multipart/form-data" method="post" action="{% url original_xls2xform.views.convert_file %}">
+	{% csrf_token %}
+	{{ form.as_p }}
 </form>
 			</td>
 			<td>
@@ -70,9 +71,8 @@
 {% endblock %}
 {% block head %}
 <link href="/static/webcontent/css/xls2xform-simple.css" rel="stylesheet" type="text/css" />
-<link  href="//fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic" rel="stylesheet" 
-type="text/css" >
-<link type="text/css" href="/static/webcontent/css/Aristo/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />	
+<link  href="//fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css" >
+<link type="text/css" href="/static/webcontent/css/Aristo/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />
 {% endblock %}
 {% block js %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
