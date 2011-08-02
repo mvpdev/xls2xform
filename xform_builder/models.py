@@ -76,8 +76,8 @@ class XForm(models.Model):
             'id_string': self.latest_version.get_unique_id(),
             'main_section': self.latest_version.base_section.questions_list,
             'sections': included_sections,
-            'question_type_dictionary':
-            self.latest_version.get_question_type_dictionary(),
+#            'question_type_dictionary':
+#            self.latest_version.get_question_type_dictionary(),
         }
     
     def add_or_update_section(self, *args, **kwargs):
@@ -200,10 +200,10 @@ class XFormVersion(models.Model):
         kwargs[u'base_section'] = base_section
         
         #not sure if this is the best way to do this... but it works for now.
-        qtypes_json = kwargs.pop(u'qtypes_section_json', u'null')
-        qtypes_section = XFormSection.objects.create(section_json=qtypes_json, slug="_qtypes")
-        kwargs[u'qtypes_section'] = qtypes_section
-        
+        # qtypes_json = kwargs.pop(u'qtypes_section_json', u'null')
+        # qtypes_section = XFormSection.objects.create(section_json=qtypes_json, slug="_qtypes")
+        # kwargs[u'qtypes_section'] = qtypes_section
+
         super(XFormVersion, self).__init__(*args, **kwargs)
     
     def _clone(self):
