@@ -6,8 +6,49 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from django.test.client import Client
 
 from xform_builder.models import *
+
+from django.contrib.auth.models import User
+
+class TestIndexView(TestCase):
+    def setUp(self):
+        admin = User.objects.create(username="admin")
+        admin.set_password("pass")
+        admin.save()
+        self.c = Client()
+        #log in
+        self.c.login(username="admin", password="pass")
+
+    def post_new_form(self, id_string, title):
+        response = self.c.post("/", {
+            'id_string': id_string,
+            'title': title,
+        }, follow=True)
+        if len(response.redirect_chain)==0:
+            import pdb
+            pdb.set_trace()
+        self.assertTrue(len(response.redirect_chain) > 0)
+        def spaces_subbed(str):
+            import re
+            return re.sub(" ", "_", str)
+        self.assertEquals(response.redirect_chain[0][0], "http://testserver/edit/%s" % spaces_subbed(id_string))
+
+    def test_new_forms(self):
+        inputs = [
+            ('id_string1', 'title1'),
+            ('id string2', 'title2'), # definitely wont pass
+            ('id_string3', 'title with space'),
+            #('', 'title'), # definitely wont pass
+            #('id_string', ''), # definitely wont pass
+            ]
+        for input in inputs:
+            # XForm.objects.create({
+            #     'id_string': input[0],
+            #     'title': input[1]
+            # })
+            self.post_new_form(*input)
 
 class XFormCreationTest(TestCase):
     def setUp(self):
