@@ -102,11 +102,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'xls2xform.urls'
 
-from registration_defaults.settings import REGISTRATION_TEMPLATE_DIR
-
 TEMPLATE_DIRS = (
     'templates',
-    REGISTRATION_TEMPLATE_DIR,
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -123,6 +120,7 @@ INSTALLED_APPS = (
     'xls2xform.xform_builder',
     'xls2xform.original_xls2xform',
     'registration',
+    'registration_defaults',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
