@@ -1,0 +1,188 @@
+{% extends 'xform_builder_base.html' %}
+
+{% block content %}
+<!-- I'm not sure how to get these breadcrumbs showing up in the --
+  -- header block. When it was in block header it overwrote the base --
+  -- header. -->
+<div>
+<h1>
+	<a href="/">Home</a> &raquo;
+	{{xform.id_string}} <em>r{{xform.latest_version.version_number}}</em>
+</h1>
+</div>
+
+<div id="upload-section">
+  <form action="." method="post" enctype="multipart/form-data">
+    <h3>
+      Upload
+    </h3>
+    <p style="font-style:italic;color:#888">
+      To build an XForm for ODK Collect upload the XLS file(s) you
+      wish to convert. If your entire survey is described in a single
+      XLS file, upload that file, mark it as active, and download the
+      resulting XForm.<br><br><!-- todo: linebreaks are bootleg, we
+      should be using <p class="instruction"></p> ... -->
+
+      To update your survey, edit your XLS file, save the changes,
+      upload the file, and download the updated XForm.<br><br>
+
+      More detailed instructions on how to break your survey into
+      multiple files is coming soon.<br><br>
+    </p>
+    <br>
+    <p>
+      {% csrf_token %}
+      <input type="file" name="section_file" >
+      <input type="submit" value="Submit">
+    </p>
+  </form>
+</div>
+
+<div id="available-sections">
+  <h3>Uploaded Sections</h3>
+  {% if available_sections_empty %}
+  <h5>No sections have been uploaded yet.</h5>
+  {% else %}
+  <h5>Below is a list of all sections that have been uploaded for this
+  survey. You must add at least one section to your survey before you
+  can create an XForm for ODK Collect.</h5>
+  <ul>
+    {% for section in available_sections %}
+    <li data-section-slug="{{section.slug}}">
+      <div class="active-bar left-bar lb-a {% if section.is_marked_included %}active{% else %}inactive{% endif %}"></div>
+      <!--			<div class="included-bar left-bar lb-b"></div> -->
+      <p class="title">
+	<span class="section-slug">{{section.slug}}</span> <span class="sub-sections">{% for ss in section.sub_sections %}<span class="ss">{{ss}}</span>{% endfor %}</span>
+      </p>
+      <p class="section-buttons">
+
+	{% if section.is_marked_included %}
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Remove from Survey ]</a>
+	{% else %}
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Add to Survey ]</a>
+	{% endif %}
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[ Delete ]</a>
+      </p>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<div id="sections">
+  <h3>Order Active Sections</h3>
+  {% if base_sections_empty %}
+  <h5>No sections are active yet.</h5>
+  {% else %}
+  <h5>The list below describes how the active sections will be ordered
+  in the final survey. Use the up and down arrows to the right of each
+  section to move it up and down in the survey. Use the minus symbol
+  to deactivate a section of the survey.</h5>
+  <ol class="form-section-list">
+    {% for section in base_sections %}
+    <li class="section-{{section.slug}}" data-section-slug="{{section.slug}}">
+      <p>
+	{{section.slug}}
+      </p>
+      <p class="status" style="display:none"></p>
+      <ul class="sub-sections">
+	{% for ss in section.sub_sections %}
+	<li>
+	  {{ss}}
+	</li>
+	{% endfor %}
+      </ul>
+      <a class="button deactivate" href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" title="Remove Section">&mdash;</a>
+      <a class="button move-up" href="/edit/{{xform.id_string}}/section/{{section.slug}}/up" title="Move Up">Move Up</a>
+      <a class="button move-down" href="/edit/{{xform.id_string}}/section/{{section.slug}}/down" title="Move Down">Move Down</a>
+    </li>
+    {% endfor %}
+  </ol>
+  <div id="actions">
+    <p class="survey-status">
+      <!-- we should give feedback in this line.
+	   {{error_message}}
+	-->
+    </p>
+    <p class="xform-buttons">
+      <!--
+      <a href="/edit/{{xform.id_string}}/validate/" id="validate">Validate XForm</a>
+      <br>
+      -->
+      <a href="/edit/{{xform.id_string}}/download/" id="download">Download XForm</a>
+    </p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" charset="utf-8">
+<!--
+/*--
+function markOrderChanged() {
+	//when the order has been changed. it needs to be synced with the server.
+	//a button should be displayed to allow this.
+}
+$('#sections').delegate('a', 'click', function(evt){
+	var thisSection = $(this).parents('li').data('section-slug');
+	var li = $(this).parents('li')//.remove();
+	if($(this).hasClass('move-up')) {
+		if(li.prev().length) {
+			li.prev().before(li.remove());
+			markOrderChanged();
+		}
+	} else if ($(this).hasClass('move-down')){
+		if(li.next().length) {
+			li.next().after(li.remove())
+			markOrderChanged();
+		}
+	}
+	evt.preventDefault();
+})
+--*/
+$('#validate').click(function(evt){
+	$.getJSON('/edit/{{xform.id_string}}/validate').done(function(data){
+		console.log(data);
+		if(data.section_stats) {
+			$.each(data.section_stats, function(sectionSlug, stat){
+				var z = $('.section-'+sectionSlug).addClass(stat.status);
+				if(stat.message) {
+					z.find('p.status').text(stat.message).show();
+				}
+			});
+		}
+		if(data.status=="error") {
+			$('p.survey-status').text(data.message).show();
+		} else if(data.status=="good") {
+			$('p.survey-status').hide();
+		}
+	});
+	evt.preventDefault();
+});
+
+var debugJson = $("<a />", {'href':'#'}).text("View Underlying JSON").click(function(evt){
+	var ta = $('textarea#t');
+	if(ta.length===0) {
+		ta = $('<textarea />', {'id':'t'}).css({'width':'96%','height':'200px'});
+		$('#actions').append(ta);
+	}
+	$.getJSON("/edit/{{xform.id_string}}/debug_json").done(function(data){
+		ta.text(JSON.stringify(data));
+	});
+	evt.preventDefault();
+}).appendTo($('p.xform-buttons'));
+/*--
+--*/
+-->
+</script>
+{% endblock %}
+
+<script type="text/javascript" charset="utf-8">
+/*-- Some day-- might want to use this code
+	var uriContent = "data:application/download," + encodeURIComponent($('body').get(0).innerHTML)
+	window.open(uriContent, 'newdoc')
+	--*/
+</script>
+

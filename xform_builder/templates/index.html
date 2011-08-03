@@ -1,0 +1,36 @@
+{% extends 'xform_builder_base.html' %}
+{% block content %}
+{% if user.is_authenticated %}
+<div id="new-empty-form" class="a-square-box">
+	<h2>
+	  To start a new form, enter the title of your survey.
+	</h2>
+	<form action="." method="post">
+		{% csrf_token %}
+		<table>
+			{{ form.as_table }}
+		</table>
+
+		<input type="submit" value="Create New Form">
+	</form>
+</div>
+{% endif %}
+
+{% if xforms.count %}
+<div class="a-square-box">
+	<h1>
+		Your existing forms:
+	</h1>
+	<hr>
+
+	<ul>
+		{% for xform in xforms %}
+		<li>
+			<a href="/edit/{{xform.id_string}}/">{{xform.id_string}}</a>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}
+
+{% endblock %}

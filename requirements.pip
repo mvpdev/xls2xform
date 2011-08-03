@@ -1,0 +1,5 @@
+Django==1.3
+-e git://github.com/mvpdev/pyxform.git@master#egg=pyxform
+South==0.7.3
+django-registration==0.7
+Markdown==2.0.3
