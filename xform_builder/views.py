@@ -22,6 +22,10 @@ def slugify(str):
 
 class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
+    original_syntax = forms.BooleanField(
+        required=False,
+        help_text="Check this box if you are using the orginal xls2xform syntax. If you didn't know there were two different versions of xls2xform, leave this box unchecked."
+        )
 
     def _get_xforms_using_original_xls2xform(self):
         """
@@ -77,9 +81,10 @@ class QuickConverter(forms.Form):
         elif type(old) is dict:
             return self._package(old)
         else:
-            # it would be good to figure out which error message to
-            # send back
-            raise new
+            if self.cleaned_data['original_syntax']:
+                raise old
+            else:
+                raise new
 
     def _package(self, d):
         assert len(d) == 1, "Code only supports single XForms."
