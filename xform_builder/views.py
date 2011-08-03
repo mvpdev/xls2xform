@@ -13,7 +13,7 @@ from xform_builder.models import XForm
 from pyxform.xls2json import SurveyReader
 from pyxform.builder import create_survey_from_path
 from xls2xform import settings
-from original_xls2xform.xls2xform import write_xforms
+from original_xls2xform import write_xforms
 
 
 def slugify(str):
