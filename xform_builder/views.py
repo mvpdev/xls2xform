@@ -134,6 +134,7 @@ def index(request):
     context = RequestContext(request)
     context.title = "XLS2XForm v2.0-beta1"
     context.form = CreateXForm()
+    context.page_name = "Home"
 
     if request.method == "POST":
         id_string = request.POST.get(u'id_string')

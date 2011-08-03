@@ -19,8 +19,6 @@ time, mark, audio, video {
 
 header {
     color: #666;
-    border: 1px solid #555;
-    border-width: 0 0 1px;
 }
 
 article, aside, details, figcaption, figure,
@@ -288,4 +286,35 @@ header h1 em {
 }
 #sections ol {
     padding: 12px 0;
+}
+
+/*--
+Header & Logo
+--*/
+header h1 {}
+header {
+    padding-top: 60px;
+}
+header .logo-wrap img {
+    margin-top: -60px;
+    width: 75px;
+    float: left;
+}
+header .header-links {
+    float: right;
+    text-align: right;
+}
+header .header-links a {
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+    margin: 0 3px;
+    text-decoration: none;
+}
+
+
+header h1, header h2 {
+    display: inline;
+}
+header h1:after {
+    content: ': ';
 }
