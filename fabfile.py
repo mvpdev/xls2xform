@@ -19,7 +19,7 @@ DEPLOYMENTS = {
     },
     'prod': {
         'project': 'xls2xform_production',
-        'branch': 'develop',
+        'branch': 'master',
     }
 }
 
