@@ -17,6 +17,12 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
+header {
+    color: #666;
+    border: 1px solid #555;
+    border-width: 0 0 1px;
+}
+
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
