@@ -16,8 +16,11 @@ DEPLOYMENTS = {
     'alpha': {
         'project': 'xls2xform',
         'branch': 'develop',
-        'virtualenv_path': 'bin/activate'
     },
+    'prod': {
+        'project': 'xls2xform_production',
+        'branch': 'develop',
+    }
 }
 
 @hosts(HOST_INFO)
@@ -27,7 +30,9 @@ def deploy(deployment_name="alpha"):
     """
     setup_env(deployment_name)
     pull_from_origin()
-    migrate()
+    with cd(env.code_src):
+        run_in_virtualenv("python manage.py migrate")
+        run_in_virtualenv("python manage.py collectstatic --noinput")
     restart_wsgi()
 
 @hosts(HOST_INFO)
