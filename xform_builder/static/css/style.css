@@ -140,8 +140,8 @@ a:hover { color: #036; }
 
 
 div#container {
-    width: 1100px;
-    margin: 4px auto;
+    width: 75%;
+    margin: 0px auto;
 }
 
 #available-sections {
@@ -288,16 +288,18 @@ header h1 em {
     padding: 12px 0;
 }
 
-/*--
-Header & Logo
---*/
-header h1 {}
+
+/********** Header & Logo **********/
 header {
-    padding-top: 60px;
+    padding-top: 20px;
+    background-color: #eee;
+    border-width: 0px 1px 1px 1px;
+    border-color: #ccc;
+    border-style: solid;
 }
 header .logo-wrap img {
-    margin-top: -60px;
-    width: 75px;
+    margin-top: -15px;
+    width: 40px;
     float: left;
 }
 header .header-links {
@@ -310,11 +312,6 @@ header .header-links a {
     margin: 0 3px;
     text-decoration: none;
 }
-
-
-header h1, header h2 {
+header h1 {
     display: inline;
-}
-header h1:after {
-    content: ': ';
 }

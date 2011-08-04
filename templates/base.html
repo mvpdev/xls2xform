@@ -9,7 +9,7 @@
   <meta name="author" content="mvpdev">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>{{title}}</title>
+  <title>XLS2XForm : {{ page_name }}</title>
 
   <link rel="shortcut icon" href="/static/favicon.ico">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -26,17 +26,8 @@
 <body>
   <div id="container">
     <header>
-		<a href="/" class="logo-wrap">
-		<img src="/static/images/xls2xformer.png">
-		</a>
-		<h1>
-			XLS2XForm
-		</h1>
-		{% if page_name %}
-		<h2>
-			{{ page_name }}
-		</h2>
-		{% endif %}
+      <a href="/" class="logo-wrap"><img src="/static/images/xls2xformer.png"><h1>XLS2XForm</h1></a>
+		<h1> : {{ page_name }}</h1>
 		<div class="header-links">
 			{% if user.is_authenticated %}
 			<span class="user-name">{{ user.username }}</span>
