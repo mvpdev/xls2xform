@@ -281,16 +281,22 @@ header .logo-wrap img {
     margin-top: -15px;
     width: 40px;
     float: left;
+    padding: 0 5px 5px;
 }
 header .header-links {
     float: right;
     text-align: right;
+    padding-right: 8px;
 }
 header .header-links a {
     border: 1px solid #ccc;
     padding: 2px 4px;
     margin: 0 3px;
     text-decoration: none;
+    background-color: #eee;
+}
+header .header-links a:hover {
+    background-color: #ddd;
 }
 header h1 {
     display: inline;

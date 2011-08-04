@@ -1,14 +1,12 @@
 from django.conf.urls.defaults import patterns, url
+from xform_builder import views
 
-from xform_builder import views as main_views
-
-# todo: improve the regular expression \S+
-EDIT_XFORM = r"^edit/(?P<survey_id>.+)/"
+SURVEY_ID = r"(?P<survey_id>.+)"
 
 urlpatterns = patterns('',
-    url(r"^$", main_views.home),
-    url(EDIT_XFORM + r"section/(?P<section_slug>\S+)/(?P<action>\S+)", main_views.edit_section),
-    url(EDIT_XFORM + r"debug_json", main_views.debug_json),
-    url(EDIT_XFORM + r"", main_views.edit_xform),
-    url("^download/(?P<survey_id>.+)\.(?P<format>json|xml)", main_views.download_xform)
+    url(r"^$", views.home),
+    url(r"^edit/%s/section/(?P<section_slug>\S+)/(?P<action>\S+)" % SURVEY_ID, views.edit_section),
+    url(r"^edit/%s/" % SURVEY_ID, views.edit_xform),
+    url(r"^delete/%s$" % SURVEY_ID, views.delete_xform),
+    url(r"^download/%s\.(?P<format>json|xml)$" % SURVEY_ID, views.download_xform)
 )

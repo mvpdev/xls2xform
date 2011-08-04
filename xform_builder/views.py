@@ -156,6 +156,11 @@ def index(request):
     context.xforms = request.user.xforms.all()
     return render_to_response("index.html", context_instance=context)
 
+def delete_xform(request, survey_id):
+    xforms = request.user.xforms
+    xform = xforms.get(id_string=survey_id)
+    xform.delete()
+    return HttpResponseRedirect("/")
 
 def download_xform(request, survey_id, format):
     xforms = request.user.xforms
@@ -277,17 +282,3 @@ def edit_section(request, survey_id, section_slug, action):
             xform.order_base_sections(active_slugs)
     return HttpResponseRedirect("/edit/%s" % xform.id_string)
 
-
-@login_required
-def debug_json(request, survey_id):
-    """
-    This is for testing in early development. This returns a JSON string
-    with the values that should be passed to a pyxform builder.
-    """
-    user = request.user
-    xform = user.xforms.get(id_string=survey_id)
-    try:
-        survey_object = xform.export_survey(finalize=False, debug=False)
-        return HttpResponse(json.dumps(survey_object.to_dict()))
-    except Exception, e:
-        return HttpResponse(json.dumps({'error': e.__repr__()}))
