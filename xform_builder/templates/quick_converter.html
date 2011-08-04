@@ -2,12 +2,25 @@
 
 {% block content %}
 <div class="content-section">
-        <form action="." method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              <table>
-                {{ form.as_table }}
-              </table>
-              <input type="submit" value="Convert to XForm">
-        </form>
+  <h2>Using the Application</h2>
+  <ol>
+    <li> Read the
+      <a href="https://docs.google.com/document/d/1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ/edit?hl=en_US">help</a>
+      document.
+    <li> Choose your .xls file and submit it for conversion.
+    <li> If you are trying to convert an .xls file that uses the old
+      syntax, check the 'Original Syntax' box, this will give you more
+      informative error messages.
+  </ol>
+</div>
+
+<div class="content-section">
+  <form action="." method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <input type="submit" value="Convert to XForm">
+  </form>
 </div>
 {% endblock %}
