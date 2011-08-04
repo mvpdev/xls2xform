@@ -26,13 +26,16 @@ def xpath(a, b):
         return ""
     return xpath(a, b.parentNode) + "/" + b.localName
 
-def add_label(xml_str, node):
+def add_label(xml_str, node, escape_xml_str=False):
     """Add a label to node's list of children, the XML contained in
     that label comes from xml_str.
 
     We want to make referencing variables easier, maybe using
     $varname."""
     if xml_str:
+        if escape_xml_str:
+            from django.utils.html import escape
+            xml_str = escape(xml_str)
         s = u'<?xml version="1.0" ?><label>' + xml_str + u"</label>"
         node.appendChild( parseString(s.encode("utf-8")).documentElement )
 
