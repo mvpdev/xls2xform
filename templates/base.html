@@ -64,6 +64,14 @@
   <![endif]-->
 
   {% block js %}{% endblock %}
+  <script type="text/javascript" charset="utf-8">
+	// quick fix to get "helptext" displaying on hover:
+	//   set an element's "title" tag.
+  	$('.helptext').each(function(i,e){
+		var elem = $(e);
+		elem.parents('tr').attr('title', elem.text());
+	});
+  </script>
 
 </body>
 </html>
