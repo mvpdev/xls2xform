@@ -141,6 +141,8 @@ a:hover { color: #036; }
 
 div#container {
     width: 75%;
+    max-width: 1000px;
+    min-width: 525px;
     margin: 0px auto;
 }
 ul#available-sections-list {
