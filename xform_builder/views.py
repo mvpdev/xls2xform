@@ -157,12 +157,17 @@ def index(request):
     return render_to_response("index.html", context_instance=context)
 
 
-def download_xform(request, survey_id):
+def download_xform(request, survey_id, format):
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
     survey_object = xform.export_survey()
-    xf_filename = "%s.xml" % survey_object.id_string()
-    xform_str = survey_object.to_xml()
+    xf_filename = "%s.%s" % (survey_object.id_string(), format)
+    if format == 'xml':
+        xform_str = survey_object.to_xml()
+    elif format == 'json':
+        xform_str = json.dumps(survey_object.to_dict())
+    else:
+        raise Exception("Unknown file format", format)
     response = HttpResponse(xform_str, mimetype="application/download")
     response['Content-Disposition'] = 'attachment; filename=%s' % xf_filename
     return response
@@ -211,6 +216,7 @@ def edit_xform(request, survey_id):
     context = RequestContext(request)
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
+    context.page_name = "Edit %s" % xform.title
     context.title = "Edit XForm - %s" % xform.title
     if request.method == 'POST':
         #file has been posted

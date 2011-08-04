@@ -27,7 +27,7 @@
   <div id="container">
     <header>
       <a href="/" class="logo-wrap"><img src="/static/images/xls2xformer.png"><h1>XLS2XForm</h1></a>
-		<h1> : {{ page_name }}</h1>
+		<h1> : {{ page_name|safe }}</h1>
 		<div class="header-links">
 			{% if user.is_authenticated %}
 			<span class="user-name">{{ user.username }}</span>

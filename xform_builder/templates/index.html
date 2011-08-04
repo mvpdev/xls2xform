@@ -1,7 +1,7 @@
 {% extends 'xform_builder_base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
-<div id="new-empty-form" class="a-square-box">
+<div class="content-section">
 	<h2>
 	  To start a new form, enter the title of your survey.
 	</h2>
@@ -17,7 +17,7 @@
 {% endif %}
 
 {% if xforms.count %}
-<div class="a-square-box">
+<div class="content-section">
 	<h1>
 		Your existing forms:
 	</h1>
