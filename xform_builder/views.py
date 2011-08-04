@@ -103,6 +103,7 @@ def quick_converter(request):
         form = QuickConverter()
     context = RequestContext(request)
     context.form = form
+    context.page_name = "Home"
     return render_to_response(
         'quick_converter.html', context_instance=context
         )
