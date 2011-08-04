@@ -223,11 +223,14 @@ ol.form-section-list li a.move-down {
     background-position: center bottom;
     bottom: 4px;
 }
-.content-section, #extra {
+.content-section {
     padding: 8px 10px;
     border: 1px dashed #aaa;
     border-width: 0 0 1px;
     margin: 8px 0;
+}
+.content-section p {
+    margin: 5px 0;
 }
 /*.content-section h5 {
     font-size: 12px;
@@ -297,4 +300,12 @@ header h1 em {
     font-weight: normal;
     font-size: 11px;
     margin-left: 8px;
+}
+
+.helptext {
+    display: none;
+}
+
+.content-section table td {
+    padding: 3px 8px;
 }

@@ -216,7 +216,7 @@ def edit_xform(request, survey_id):
     context = RequestContext(request)
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
-    context.page_name = "Edit %s" % xform.title
+    context.page_name = "Edit - %s" % xform.title
     context.title = "Edit XForm - %s" % xform.title
     if request.method == 'POST':
         #file has been posted
