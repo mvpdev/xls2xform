@@ -134,6 +134,7 @@ def index(request):
     context = RequestContext(request)
     context.title = "XLS2XForm v2.0-beta1"
     context.form = CreateXForm()
+    context.page_name = "Home"
 
     if request.method == "POST":
         id_string = request.POST.get(u'id_string')
@@ -155,13 +156,23 @@ def index(request):
     context.xforms = request.user.xforms.all()
     return render_to_response("index.html", context_instance=context)
 
+def delete_xform(request, survey_id):
+    xforms = request.user.xforms
+    xform = xforms.get(id_string=survey_id)
+    xform.delete()
+    return HttpResponseRedirect("/")
 
-def download_xform(request, survey_id):
+def download_xform(request, survey_id, format):
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
     survey_object = xform.export_survey()
-    xf_filename = "%s.xml" % survey_object.id_string()
-    xform_str = survey_object.to_xml()
+    xf_filename = "%s.%s" % (survey_object.id_string(), format)
+    if format == 'xml':
+        xform_str = survey_object.to_xml()
+    elif format == 'json':
+        xform_str = json.dumps(survey_object.to_dict())
+    else:
+        raise Exception("Unknown file format", format)
     response = HttpResponse(xform_str, mimetype="application/download")
     response['Content-Disposition'] = 'attachment; filename=%s' % xf_filename
     return response
@@ -210,6 +221,7 @@ def edit_xform(request, survey_id):
     context = RequestContext(request)
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
+    context.page_name = "Edit - %s" % xform.title
     context.title = "Edit XForm - %s" % xform.title
     if request.method == 'POST':
         #file has been posted
@@ -270,17 +282,3 @@ def edit_section(request, survey_id, section_slug, action):
             xform.order_base_sections(active_slugs)
     return HttpResponseRedirect("/edit/%s" % xform.id_string)
 
-
-@login_required
-def debug_json(request, survey_id):
-    """
-    This is for testing in early development. This returns a JSON string
-    with the values that should be passed to a pyxform builder.
-    """
-    user = request.user
-    xform = user.xforms.get(id_string=survey_id)
-    try:
-        survey_object = xform.export_survey(finalize=False, debug=False)
-        return HttpResponse(json.dumps(survey_object.to_dict()))
-    except Exception, e:
-        return HttpResponse(json.dumps({'error': e.__repr__()}))

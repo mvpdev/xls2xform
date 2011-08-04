@@ -4,32 +4,22 @@
 <!-- I'm not sure how to get these breadcrumbs showing up in the --
   -- header block. When it was in block header it overwrote the base --
   -- header. -->
-<div>
-<h1>
-	<a href="/">Home</a> &raquo;
-	{{xform.id_string}} <em>r{{xform.latest_version.version_number}}</em>
-</h1>
-</div>
 
-<div id="upload-section">
+<div class="content-section">
   <form action="." method="post" enctype="multipart/form-data">
-    <h3>
-      Upload
-    </h3>
-    <p style="font-style:italic;color:#888">
+    <h2>
+      Upload Section
+    </h2>
+    <p>
       To build an XForm for ODK Collect upload the XLS file(s) you
       wish to convert. If your entire survey is described in a single
       XLS file, upload that file, mark it as active, and download the
-      resulting XForm.<br><br><!-- todo: linebreaks are bootleg, we
-      should be using <p class="instruction"></p> ... -->
-
+      resulting XForm.
+	</p>
+	<p>
       To update your survey, edit your XLS file, save the changes,
-      upload the file, and download the updated XForm.<br><br>
-
-      More detailed instructions on how to break your survey into
-      multiple files is coming soon.<br><br>
+      upload the file, and download the updated XForm.
     </p>
-    <br>
     <p>
       {% csrf_token %}
       <input type="file" name="section_file" >
@@ -38,15 +28,15 @@
   </form>
 </div>
 
-<div id="available-sections">
-  <h3>Uploaded Sections</h3>
+<div class="content-section">
+  <h2>Uploaded Sections</h2>
   {% if available_sections_empty %}
-  <h5>No sections have been uploaded yet.</h5>
+  <p>No sections have been uploaded yet.</p>
   {% else %}
-  <h5>Below is a list of all sections that have been uploaded for this
+  <p>Below is a list of all sections that have been uploaded for this
   survey. You must add at least one section to your survey before you
-  can create an XForm for ODK Collect.</h5>
-  <ul>
+  can create an XForm for ODK Collect.</p>
+  <ul id="available-sections-list">
     {% for section in available_sections %}
     <li data-section-slug="{{section.slug}}">
       <div class="active-bar left-bar lb-a {% if section.is_marked_included %}active{% else %}inactive{% endif %}"></div>
@@ -57,11 +47,11 @@
       <p class="section-buttons">
 
 	{% if section.is_marked_included %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Remove from Survey ]</a>
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">Remove from Survey</a>
 	{% else %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Add to Survey ]</a>
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">Add to Survey</a>
 	{% endif %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[ Delete ]</a>
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">Delete</a>
       </p>
     </li>
     {% endfor %}
@@ -69,15 +59,15 @@
   {% endif %}
 </div>
 
-<div id="sections">
-  <h3>Order Active Sections</h3>
+<div class="content-section">
+  <h2>Order Active Sections</h2>
   {% if base_sections_empty %}
-  <h5>No sections are active yet.</h5>
+  <p>No sections are active yet.</p>
   {% else %}
-  <h5>The list below describes how the active sections will be ordered
+  <p>The list below describes how the active sections will be ordered
   in the final survey. Use the up and down arrows to the right of each
   section to move it up and down in the survey. Use the minus symbol
-  to deactivate a section of the survey.</h5>
+  to deactivate a section of the survey.</p>
   <ol class="form-section-list">
     {% for section in base_sections %}
     <li class="section-{{section.slug}}" data-section-slug="{{section.slug}}">
@@ -98,20 +88,10 @@
     </li>
     {% endfor %}
   </ol>
-  <div id="actions">
-    <p class="survey-status">
-      <!-- we should give feedback in this line.
-	   {{error_message}}
-	-->
-    </p>
-    <p class="xform-buttons">
-      <!--
-      <a href="/edit/{{xform.id_string}}/validate/" id="validate">Validate XForm</a>
-      <br>
-      -->
-      <a href="/edit/{{xform.id_string}}/download/" id="download">Download XForm</a>
-    </p>
-  </div>
+  <p class="xform-buttons">
+    <a href="/download/{{xform.id_string}}.xml" id="download">Download XForm</a>
+    <a href="/download/{{xform.id_string}}.json" id="download">Download JSON</a>
+  </p>
   {% endif %}
 </div>
 
@@ -120,28 +100,10 @@
 {% block js %}
 <script type="text/javascript" charset="utf-8">
 <!--
-/*--
-function markOrderChanged() {
-	//when the order has been changed. it needs to be synced with the server.
-	//a button should be displayed to allow this.
-}
-$('#sections').delegate('a', 'click', function(evt){
-	var thisSection = $(this).parents('li').data('section-slug');
-	var li = $(this).parents('li')//.remove();
-	if($(this).hasClass('move-up')) {
-		if(li.prev().length) {
-			li.prev().before(li.remove());
-			markOrderChanged();
-		}
-	} else if ($(this).hasClass('move-down')){
-		if(li.next().length) {
-			li.next().after(li.remove())
-			markOrderChanged();
-		}
-	}
-	evt.preventDefault();
-})
---*/
+$('a.delete').click(function(evt){
+	!confirm('Are you sure you want to delete this section?') && evt.preventDefault();
+});
+
 $('#validate').click(function(evt){
 	$.getJSON('/edit/{{xform.id_string}}/validate').done(function(data){
 		console.log(data);
@@ -162,27 +124,20 @@ $('#validate').click(function(evt){
 	evt.preventDefault();
 });
 
+/*--
 var debugJson = $("<a />", {'href':'#'}).text("View Underlying JSON").click(function(evt){
 	var ta = $('textarea#t');
 	if(ta.length===0) {
-		ta = $('<textarea />', {'id':'t'}).css({'width':'96%','height':'200px'});
-		$('#actions').append(ta);
+		ta = $('<textarea />', {'id':'t'})
+			.css({'width':'96%','height':'200px'})
+			.appendTo($('.xform-buttons'));
 	}
 	$.getJSON("/edit/{{xform.id_string}}/debug_json").done(function(data){
 		ta.text(JSON.stringify(data));
 	});
 	evt.preventDefault();
 }).appendTo($('p.xform-buttons'));
-/*--
 --*/
 -->
 </script>
 {% endblock %}
-
-<script type="text/javascript" charset="utf-8">
-/*-- Some day-- might want to use this code
-	var uriContent = "data:application/download," + encodeURIComponent($('body').get(0).innerHTML)
-	window.open(uriContent, 'newdoc')
-	--*/
-</script>
-
