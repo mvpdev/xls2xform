@@ -47,11 +47,11 @@
       <p class="section-buttons">
 
 	{% if section.is_marked_included %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">[ Remove from Survey ]</a>
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">Remove from Survey</a>
 	{% else %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">[ Add to Survey ]</a>
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">Add to Survey</a>
 	{% endif %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">[ Delete ]</a>
+	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">Delete</a>
       </p>
     </li>
     {% endfor %}
@@ -100,6 +100,10 @@
 {% block js %}
 <script type="text/javascript" charset="utf-8">
 <!--
+$('a.delete').click(function(evt){
+	!confirm('Are you sure you want to delete this section?') && evt.preventDefault();
+});
+
 $('#validate').click(function(evt){
 	$.getJSON('/edit/{{xform.id_string}}/validate').done(function(data){
 		console.log(data);
