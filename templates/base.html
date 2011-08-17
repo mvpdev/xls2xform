@@ -9,7 +9,7 @@
   <meta name="author" content="mvpdev">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>XLS2XForm : {{ page_name }}</title>
+  <title>XLS2XForm {% if page_name %} : {{ page_name }} {% endif %}</title>
 
   <link rel="shortcut icon" href="/static/favicon.ico">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -31,7 +31,7 @@
 		<div class="header-links">
 			{% if user.is_authenticated %}
 			<span class="user-name">{{ user.username }}</span>
-			<a href="{% url auth_logout %}">log out</a>
+			<a href="{% url auth_logout %}?next=/">log out</a>
 			<a href="{% url auth_password_change %}">change password</a>
 			{% else %}
 			<a href="/accounts/login/">log in</a>
