@@ -1,0 +1,8 @@
+xls2xform
+=========
+
+_xls2xform_ is a Django project to convert properly formatted
+Microsoft Excel files into XForms for ODK Collect.
+
+Check out the documentation
+[here](https://docs.google.com/document/d/1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ/edit?hl=en_US).
