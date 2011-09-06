@@ -221,8 +221,8 @@ class ExportingFormViaPyxform(TestCase):
 import pyxform
 
 class PassValuesToPyxform(TestCase):
-    def test_package_values_create_survey(self):
-        survey_package = {
+    def setUp(self):
+        self.survey_package = {
             u'title': u'TestAsurvey',
             u'main_section': [
                 {
@@ -232,8 +232,14 @@ class PassValuesToPyxform(TestCase):
                 ],
             u'id_string': u'Test_canSpecifyIDstring'
             }
-        s = pyxform.create_survey(**survey_package)
-        self.assertEqual(s.get_name(), "TestAsurvey")
-        self.assertEqual(s.id_string(), "Test_canSpecifyIDstring")
-        self.assertEqual(len(s._children), 1)
-    #    -- what else do we need to test?
+        self.s = pyxform.create_survey(**self.survey_package)
+
+    def test_package_values_create_survey(self):
+        self.assertEqual(self.s.get_name(), "TestAsurvey")
+        self.assertEqual(self.s.id_string(), "Test_canSpecifyIDstring")
+        self.assertEqual(len(self.s._children), 1)
+
+    def test_odk_validate(self):
+        # TODO: write a test for a form that should validate
+        #       and a form that should not validate.
+        self.s.to_xml()

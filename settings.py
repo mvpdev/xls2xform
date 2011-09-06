@@ -151,7 +151,11 @@ LOGGING = {
 # registration settings
 ACCOUNT_ACTIVATION_DAYS = 2
 
+ADDITIONAL_INSTALLED_APPS = ()
+
 try:
     from local_settings import *
 except ImportError, e:
     raise ImportError('local_settings.py could not be found. Please see local_settings_example.py')
+
+INSTALLED_APPS = INSTALLED_APPS + ADDITIONAL_INSTALLED_APPS
