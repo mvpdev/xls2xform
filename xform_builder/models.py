@@ -78,6 +78,7 @@ class XForm(models.Model):
             'title': re.sub(" ", "_", self.title),
             'id_string': self.latest_version.get_unique_id(),
             'main_section': self.latest_version.base_section.questions_list,
+            'print_name': self.title,
             'sections': included_sections,
 #            'question_type_dictionary':
 #            self.latest_version.get_question_type_dictionary(),

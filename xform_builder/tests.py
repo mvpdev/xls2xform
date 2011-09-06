@@ -160,6 +160,9 @@ class SectionOrderingViaBaseSection(TestCase):
         #todo: deeper levels of include-ability?
 
 
+def strip_spaces(str):
+    return re.sub("\s", "", str)
+
 class ExportingFormViaPyxform(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="TestUser")
@@ -198,7 +201,22 @@ class ExportingFormViaPyxform(TestCase):
         # the survey object. pyxform should use it.
         self.assertEqual(lv.get_unique_id(), pyxform_survey_id)
         self.maxDiff = 3000
-        self.assertEqual(s.to_xml(validate=False), """<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input></h:body></h:html>""" % pyxform_survey_id)
+        self.assertEqual(strip_spaces(s.to_xml()), strip_spaces("""<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <h:head>
+            <h:title>SimpleId</h:title>
+            <model>
+              <instance>
+                <SimpleId id="%s">
+                  <color/>
+                </SimpleId>
+              </instance>
+              <bind nodeset="/SimpleId/color" type="string"/>
+            </model>
+          </h:head>
+          <h:body>
+            <input ref="/SimpleId/color"/>
+          </h:body>
+        </h:html>""" % pyxform_survey_id))
         
         sd2 = [
             {
@@ -212,8 +230,30 @@ class ExportingFormViaPyxform(TestCase):
         pyxform_survey_id = lv2.get_unique_id()
 
         s = self.xform.export_survey()
-        self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % pyxform_survey_id, s.to_xml(validate=False))
-    
+        expected = """
+        <h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <h:head>
+            <h:title>SimpleId</h:title>
+            <model>
+              <instance>
+                <SimpleId id="%s">
+                  <color/>
+                  <weight/>
+                </SimpleId>
+              </instance>
+              <bind nodeset="/SimpleId/color" type="string"/>
+              <bind nodeset="/SimpleId/weight" type="int"/>
+            </model>
+          </h:head>
+          <h:body>
+            <input ref="/SimpleId/color"/>
+            <input ref="/SimpleId/weight"/>
+          </h:body>
+        </h:html>
+        """ % pyxform_survey_id
+        output = s.to_xml()
+        self.assertEqual(strip_spaces(output), strip_spaces(expected))
+
     def tearDown(self):
         self.user.delete()
         self.xform.delete()
@@ -222,21 +262,18 @@ import pyxform
 
 class PassValuesToPyxform(TestCase):
     def setUp(self):
-        self.survey_package = {
-            u'title': u'TestAsurvey',
-            u'main_section': [
-                {
+        main_section = [{
                     u'type': u'text',
                     u'name': u'name'
-                    }
-                ],
-            u'id_string': u'Test_canSpecifyIDstring'
-            }
-        self.s = pyxform.create_survey(**self.survey_package)
+                    }]
+        self.title = "TestAsurvey"
+        self.id_string = "Test_canSpecifyIDstring"
+        self.s = pyxform.create_survey(title=self.title, main_section=main_section, \
+                        id_string=self.id_string, print_name=self.title)
 
     def test_package_values_create_survey(self):
-        self.assertEqual(self.s.get_name(), "TestAsurvey")
-        self.assertEqual(self.s.id_string(), "Test_canSpecifyIDstring")
+        self.assertEqual(self.s.title(), self.title)
+        self.assertEqual(self.s.id_string(), self.id_string)
         self.assertEqual(len(self.s._children), 1)
 
     def test_odk_validate(self):
