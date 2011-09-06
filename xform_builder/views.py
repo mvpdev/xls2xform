@@ -22,75 +22,16 @@ def slugify(str):
 
 class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
-    original_syntax = forms.BooleanField(
-        required=False,
-        help_text="Check this box if you are using the orginal xls2xform syntax. If you didn't know there were two different versions of xls2xform, leave this box unchecked."
-        )
 
-    def _get_xforms_using_original_xls2xform(self):
-        """
-        Try using the original xls2xform script. If there is an
-        exception return the exception, otherwise return a dictionary
-        where the keys are the filenames and the values are the xml of
-        the corresponding xform. todo: we need to delete the files
-        created by write_xforms.
-        """
-        try:
-            xforms = write_xforms(self.path)
-        except Exception as e:
-            return e
-        result = {}
-        for xform in xforms:
-            with open(xform, "r") as f:
-                file_name = os.path.basename(xform)
-                result[file_name] = f.read()
-        return result
-
-    def _get_xform_using_pyxform(self):
-        """
-        Try using pyxform to convert the xls file into an xform. If
-        there is an exception return the exception, otherwise return a
-        dictionary where the single key is the desired file name and
-        the value is the xml of the xform.
-        """
-        try:
-            survey = create_survey_from_path(self.path)
-            xform_str = survey.to_xml()
-        except Exception as e:
-            return e
-        file_name = survey.id_string() + ".xml"
-        return {file_name: xform_str}
-
-    def get_xforms(self):
-        """
-        Try using both the old and new conversion methods on the
-        passed in xls file. If the new method works return the
-        resulting xform. If the old method works return the resulting
-        xform. Otherwise throw the exception from the new method. It
-        would be better to give the exception from both methods.
-        """
+    def get_xform(self):
         xls = self.cleaned_data['xls_file']
-        self.path = save_in_temp_dir(xls)
-
-        old = self._get_xforms_using_original_xls2xform()
-        new = self._get_xform_using_pyxform()
-        os.remove(self.path)
-
-        if type(new) is dict:
-            return self._package(new)
-        elif type(old) is dict:
-            return self._package(old)
-        else:
-            if self.cleaned_data['original_syntax']:
-                raise old
-            else:
-                raise new
-
-    def _package(self, d):
-        assert len(d) == 1, "Code only supports single XForms."
-        filename = d.keys()[0]
-        response = HttpResponse(d[filename], mimetype="application/download")
-        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        path = save_in_temp_dir(xls)
+        survey = create_survey_from_path(path)
+        xform_str = survey.to_xml()
+        file_name = survey.id_string() + ".xml"
+        os.remove(path)
+        response = HttpResponse(xform_str, mimetype="application/download")
+        response['Content-Disposition'] = 'attachment; filename=%s' % file_name
         return response
 
 
@@ -98,7 +39,7 @@ def quick_converter(request):
     if request.method == 'POST':
         form = QuickConverter(request.POST, request.FILES)
         if form.is_valid():
-            return form.get_xforms()
+            return form.get_xform()
     else:
         form = QuickConverter()
     context = RequestContext(request)
