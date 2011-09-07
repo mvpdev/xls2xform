@@ -16,10 +16,12 @@ DEPLOYMENTS = {
     'alpha': {
         'project': 'xls2xform',
         'branch': 'develop',
+        'pyxform_branch': 'develop',
     },
     'prod': {
         'project': 'xls2xform_production',
         'branch': 'master',
+        'pyxform_branch': 'develop',
     }
 }
 
@@ -31,7 +33,9 @@ def deploy(deployment_name="alpha"):
     setup_env(deployment_name)
     pull_from_origin()
     install_requirements()
+    remove_old_pyxform()
     with cd(env.code_src):
+#        run_in_virtualenv("pip install -e ")
         run_in_virtualenv("python manage.py migrate")
         run_in_virtualenv("python manage.py collectstatic --noinput")
     restart_wsgi()
@@ -40,11 +44,20 @@ def deploy(deployment_name="alpha"):
 def install_requirements():
     run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
 
+def remove_old_pyxform():
+    # remove the old pyxform from the virtualenvironment
+    with cd(env.ve_src_dir):
+        run("rm -rf pyxform")
+    # replace with the branch specified in deployment settings
+    run_in_virtualenv("pip install -e git://github.com/mvpdev/pyxform.git@%s#egg=pyxform" % env.pyxform_branch)
+
 def setup_env(deployment_name):
     env.project_directory = os.path.join(env.home, DEPLOYMENTS[deployment_name]['project'])
     env.code_src = os.path.join(env.project_directory, env.project)
     env.branch = DEPLOYMENTS[deployment_name]['branch']
+    env.pyxform_branch = DEPLOYMENTS[deployment_name]['pyxform_branch']
     env.virtualenv_activate_script = "source %s" % os.path.join(env.project_directory, 'project_env', 'bin', 'activate')
+    env.ve_src_dir = os.path.join(env.project_directory, 'project_env', 'src')
     env.wsgi_config_file = os.path.join(env.project_directory, 'apache', 'environment.wsgi')
     env.pip_requirements_file = os.path.join(env.code_src, 'requirements.pip')
 
