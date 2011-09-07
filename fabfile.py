@@ -30,17 +30,15 @@ def deploy(deployment_name="alpha"):
     """
     setup_env(deployment_name)
     pull_from_origin()
+    install_requirements()
     with cd(env.code_src):
         run_in_virtualenv("python manage.py migrate")
         run_in_virtualenv("python manage.py collectstatic --noinput")
     restart_wsgi()
 
 @hosts(HOST_INFO)
-def install_requirements(deployment_name="alpha"):
-    setup_env(deployment_name)
-    if env.pip_requirements_file is not None:
-        pull_from_origin()
-        run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
+def install_requirements():
+    run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
 
 def setup_env(deployment_name):
     env.project_directory = os.path.join(env.home, DEPLOYMENTS[deployment_name]['project'])
