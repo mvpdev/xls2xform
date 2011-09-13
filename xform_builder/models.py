@@ -82,7 +82,6 @@ class XForm(models.Model):
                 u'name': self.title,
                 u'children': self.latest_version.base_section.questions_list
             },
-            'print_name': self.title,
             'sections': included_sections,
 #            'question_type_dictionary':
 #            self.latest_version.get_question_type_dictionary(),
