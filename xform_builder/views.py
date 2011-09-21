@@ -37,7 +37,7 @@ class QuickConverter(forms.Form):
         path = save_in_temp_dir(xls)
         survey = create_survey_from_path(path)
         try:
-            file_name = survey.id_string()
+            file_name = survey.id_string
             xform_str = survey.to_xml()
             self.xform_str = xform_str
         except ODKValidateError, error:
@@ -126,7 +126,7 @@ def download_xform(request, survey_id, format):
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
     survey_object = xform.export_survey()
-    xf_filename = "%s.%s" % (survey_object.id_string(), format)
+    xf_filename = "%s.%s" % (survey_object.id_string, format)
     if format == 'xml':
         xform_str = survey_object.to_xml()
     elif format == 'json':
@@ -241,4 +241,3 @@ def edit_section(request, survey_id, section_slug, action):
             active_slugs.insert(ii + 1, section_slug)
             xform.order_base_sections(active_slugs)
     return HttpResponseRedirect("/edit/%s" % xform.id_string)
-
