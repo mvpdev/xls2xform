@@ -29,7 +29,7 @@ class QuickConverter(forms.Form):
 
     def get_xform(self):
         response = HttpResponse(self.xform_str, mimetype="application/download")
-        response['Content-Disposition'] = 'attachment; filename=%s' % file_name
+        response['Content-Disposition'] = 'attachment; filename=%s' % self.file_name
         return response
 
     def clean_xls_file(self):
@@ -39,6 +39,7 @@ class QuickConverter(forms.Form):
         try:
             file_name = survey.id_string
             xform_str = survey.to_xml()
+            self.file_name = file_name
             self.xform_str = xform_str
         except ODKValidateError, error:
             raise forms.ValidationError(u"Your XLS was valid but the form did not pass ODK Validate: %s" % repr(error))
