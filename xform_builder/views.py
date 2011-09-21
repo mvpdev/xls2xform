@@ -12,6 +12,10 @@ from django.template.defaultfilters import slugify as django_slugify
 from xform_builder.models import XForm
 from pyxform.xls2json import SurveyReader
 from pyxform.builder import create_survey_from_path
+
+from pyxform.errors import PyxformError
+from pyxform.odk_validate.errors import ODKValidateError
+
 from xls2xform import settings
 from original_xls2xform import write_xforms
 
@@ -24,22 +28,36 @@ class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
 
     def get_xform(self):
+        response = HttpResponse(self.xform_str, mimetype="application/download")
+        response['Content-Disposition'] = 'attachment; filename=%s' % file_name
+        return response
+
+    def clean_xls_file(self):
         xls = self.cleaned_data['xls_file']
         path = save_in_temp_dir(xls)
         survey = create_survey_from_path(path)
-        xform_str = survey.to_xml()
-        file_name = survey.id_string() + ".xml"
-        os.remove(path)
-        response = HttpResponse(xform_str, mimetype="application/download")
-        response['Content-Disposition'] = 'attachment; filename=%s' % file_name
-        return response
+        try:
+            file_name = survey.id_string
+            xform_str = survey.to_xml()
+            self.xform_str = xform_str
+        except ODKValidateError, error:
+            raise forms.ValidationError(u"Your XLS was valid but the form did not pass ODK Validate: %s" % repr(error))
+        except PyxformError, error:
+            raise forms.ValidationError(u"Pyxform Error with submission: %s" % repr(error))
+        except Exception, error:
+            raise forms.ValidationError(u"Unidentified Error with submission: %s" % repr(error))
+        finally:
+            os.remove(path)
 
 
 def quick_converter(request):
     if request.method == 'POST':
         form = QuickConverter(request.POST, request.FILES)
         if form.is_valid():
-            return form.get_xform()
+            try:
+                return form.get_xform()
+            except Exception, e:
+                return HttpResponse("NOT ok")
     else:
         form = QuickConverter()
     context = RequestContext(request)
@@ -108,7 +126,7 @@ def download_xform(request, survey_id, format):
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
     survey_object = xform.export_survey()
-    xf_filename = "%s.%s" % (survey_object.id_string(), format)
+    xf_filename = "%s.%s" % (survey_object.id_string, format)
     if format == 'xml':
         xform_str = survey_object.to_xml()
     elif format == 'json':
@@ -223,4 +241,3 @@ def edit_section(request, survey_id, section_slug, action):
             active_slugs.insert(ii + 1, section_slug)
             xform.order_base_sections(active_slugs)
     return HttpResponseRedirect("/edit/%s" % xform.id_string)
-

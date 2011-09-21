@@ -26,9 +26,6 @@ class TestIndexView(TestCase):
             'id_string': id_string,
             'title': title,
         }, follow=True)
-        if len(response.redirect_chain)==0:
-            import pdb
-            pdb.set_trace()
         self.assertTrue(len(response.redirect_chain) > 0)
         def spaces_subbed(str):
             import re
@@ -192,7 +189,7 @@ class ExportingFormViaPyxform(TestCase):
         lv = self.xform.activate_section(new_section)
         #self.xform.order_sections([u'first_section'])
         s = self.xform.export_survey()
-        pyxform_survey_id = s.id_string()
+        pyxform_survey_id = s.id_string
 
         # The latest version generates a unique id and passes it in
         # the survey object. pyxform should use it.
@@ -272,12 +269,12 @@ class PassValuesToPyxform(TestCase):
         self.title = "TestAsurvey"
         self.id_string = "Test_canSpecifyIDstring"
         self.s = pyxform.create_survey(title=self.title, main_section=main_section, \
-                        id_string=self.id_string, print_name=self.title)
+                        id_string=self.id_string)
 
     def test_package_values_create_survey(self):
-        self.assertEqual(self.s.title(), self.title)
-        self.assertEqual(self.s.id_string(), self.id_string)
-        self.assertEqual(len(self.s._children), 1)
+        self.assertEqual(self.s.title, self.title)
+        self.assertEqual(self.s.id_string, self.id_string)
+        self.assertEqual(len(self.s.children), 1)
 
     def test_odk_validate(self):
         # TODO: write a test for a form that should validate
