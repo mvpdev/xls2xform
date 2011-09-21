@@ -54,10 +54,7 @@ def quick_converter(request):
     if request.method == 'POST':
         form = QuickConverter(request.POST, request.FILES)
         if form.is_valid():
-            try:
-                return form.get_xform()
-            except Exception, e:
-                return HttpResponse("NOT ok")
+            return form.get_xform()
     else:
         form = QuickConverter()
     context = RequestContext(request)
