@@ -36,6 +36,13 @@ class QuickConverter(forms.Form):
         xls = self.cleaned_data['xls_file']
         path = save_in_temp_dir(xls)
         survey = create_survey_from_path(path)
+        xform_str = survey.to_xml()
+        self.file_name = "%s.xml" % survey.id_string
+        self.xform_str = xform_str
+        os.remove(path)
+        # the try/except block below will pass ValidationErrors to django forms.
+        # which should be better for the end user.
+"""
         try:
             xform_str = survey.to_xml()
             self.file_name = "%s.xml" % survey.id_string
@@ -48,7 +55,7 @@ class QuickConverter(forms.Form):
             raise forms.ValidationError(u"Unidentified Error with submission: %s" % repr(error))
         finally:
             os.remove(path)
-
+"""
 
 def quick_converter(request):
     if request.method == 'POST':
