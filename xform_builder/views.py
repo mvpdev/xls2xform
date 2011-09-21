@@ -37,9 +37,8 @@ class QuickConverter(forms.Form):
         path = save_in_temp_dir(xls)
         survey = create_survey_from_path(path)
         try:
-            file_name = survey.id_string
             xform_str = survey.to_xml()
-            self.file_name = file_name
+            self.file_name = "%s.xml" % survey.id_string
             self.xform_str = xform_str
         except ODKValidateError, error:
             raise forms.ValidationError(u"Your XLS was valid but the form did not pass ODK Validate: %s" % repr(error))
