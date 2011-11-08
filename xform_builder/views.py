@@ -13,7 +13,7 @@ from xform_builder.models import XForm
 from pyxform.xls2json import SurveyReader
 from pyxform.builder import create_survey_from_path
 
-from pyxform.errors import PyxformError
+from pyxform.errors import PyXFormError
 from pyxform.odk_validate.errors import ODKValidateError
 
 from xls2xform import settings

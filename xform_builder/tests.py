@@ -175,7 +175,8 @@ class ExportingFormViaPyxform(TestCase):
                 u'children': [
                     {
                         u'type': u'text',
-                        u'name': u'color'
+                        u'name': u'color',
+                        u'label': u'Color',
                         }
                     ],
                 },
@@ -209,7 +210,9 @@ class ExportingFormViaPyxform(TestCase):
     </model>
   </h:head>
   <h:body>
-    <input ref="/SimpleId/color"/>
+    <input ref="/SimpleId/color">
+      <label>Color</label>
+    </input>
   </h:body>
 </h:html>
             """.strip() % pyxform_survey_id)
@@ -217,7 +220,8 @@ class ExportingFormViaPyxform(TestCase):
         sd2 = [
             {
                 u'type': u'integer',
-                u'name': u'weight'
+                u'name': u'weight',
+                u'label': u'Weight',
                 }
             ]
         lv2 = self.xform.add_or_update_section(section_dict=sd2, slug="second_section")
@@ -242,8 +246,12 @@ class ExportingFormViaPyxform(TestCase):
     </model>
   </h:head>
   <h:body>
-    <input ref="/SimpleId/color"/>
-    <input ref="/SimpleId/weight"/>
+    <input ref="/SimpleId/color">
+      <label>Color</label>
+    </input>
+    <input ref="/SimpleId/weight">
+      <label>Weight</label>
+    </input>
   </h:body>
 </h:html>
         """ % pyxform_survey_id
@@ -263,7 +271,8 @@ class PassValuesToPyxform(TestCase):
             "name": "MyName",
             "children": [{
                     u'type': u'text',
-                    u'name': u'name'
+                    u'name': u'name',
+                    u'label': u'Name',
                    }]
         }
         self.title = "TestAsurvey"
