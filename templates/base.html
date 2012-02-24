@@ -32,6 +32,18 @@ type="text/css" >
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
+  
+  $(function(){
+    $('<div />', {'id': 'xls2xform-notice', 'title': 'XLS2XForm Has Moved'})
+        .text("XLS2XForm has Moved")
+        .dialog({
+          buttons: {
+            "Continue to Formhub": function() { window.location.href="http://formhub.org/xls2xform"; },
+            "Cancel": function(){ $('#xls2xform-notice').dialog('close'); }
+          }
+        });
+  });
+  
 //]]>
 </script>
 </body>
